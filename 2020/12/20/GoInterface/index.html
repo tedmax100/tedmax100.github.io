@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/20/GoInterface/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://tedmax100.github.io/images/Go/hqdefault.jpg">
+<meta property="og:updated_time" content="2020-12-20T14:48:41.600Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫">
+<meta name="twitter:description" content="​">
+<meta name="twitter:image" content="https://tedmax100.github.io/images/Go/hqdefault.jpg">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-GoInterface" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/20/GoInterface/" class="article-date">
+       <time datetime="2020-12-20T14:47:46.000Z" itemprop="datePublished">2020-12-20</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/20/GoInterface/" class="article-date">
+     <time datetime="2020-12-20T14:48:41.600Z" itemprop="dateModified">2020-12-20</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p><img src="https://tedmax100.github.io/images/Go/hqdefault.jpg" alt><br>​<a id="more"></a></p>
+<h1 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h1><p>一個interface(接口) 就是包含了一系列行為的method集合.<br>好處:</p>
+<ol>
+<li>能建立低耦合的系統</li>
+<li>透過這些被定義在接口的抽象行為, 讓要在多個單獨組件間彼此組合/通信會變得更為容易.</li>
+<li>隱藏每個Class對其實現的細節</li>
+<li>Reusability, 因為可重複利用, 能把一些複雜問題給簡化.</li>
+</ol>
+<h2 id="Go-Interface"><a href="#Go-Interface" class="headerlink" title="Go Interface"></a>Go Interface</h2><p>Go沒有真正的繼承, 所以沒有OOP那種該類別實際告訴大家我實現了某個接口這種聲明;<br>所以對於實現Interface是透過隱性的向上轉型的方式(Duck typing), 在程式代碼的上下文判定struct是否實現了接口聲明的方法.<br>所以只要該類型實現了該接口所有方法就是實現了該接口.</p>
+<p>example :</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Engine <span class="keyword">interface</span> &#123;</span><br><span class="line">	Start()</span><br><span class="line">	Stop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// CarEngine並沒繼承Engine也沒宣告自己實現了Engine</span></span><br><span class="line"><span class="keyword">type</span> CarEngine <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// CarEngine有自己的公開方法Start()</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c CarEngine)</span> <span class="title">Start</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Car engine is started"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c CarEngine)</span> <span class="title">Stop</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Car engine is stoped"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> TrainEngine <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t TrainEngine)</span> <span class="title">Start</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Train engine is started"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t TrainEngine)</span> <span class="title">Stop</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Train engine is stoped"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Starting和Stoping 的參數要求代入的是Engine這類型</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Starting</span><span class="params">(e Engine)</span></span> &#123;</span><br><span class="line">	e.Start()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Stoping</span><span class="params">(e Engine)</span></span> &#123;</span><br><span class="line">	e.Stop()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	carEngine := CarEngine&#123;&#125;</span><br><span class="line">	trainEngine := TrainEngine&#123;&#125;</span><br><span class="line">    <span class="comment">// 這裡會檢查CarEngine和TrainEngine是否有實現Engine的全部方法</span></span><br><span class="line">	engines := []Engine&#123;</span><br><span class="line">		carEngine, trainEngine,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, engine := <span class="keyword">range</span> engines &#123;</span><br><span class="line">		Starting(engine)</span><br><span class="line">		Stoping(engine)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 如果把TrainEngine的Stop刪除</span></span><br><span class="line"><span class="comment">// 在48行就會在編譯時期被檢查出錯誤</span></span><br></pre></td></tr></table></figure>
+
+<p>因為Duck typing幾乎都出現在動態語言上,  程式寫起來飛快,但錯誤往往都是在執行時才能被發現. 靜態語言就是能在編譯時期發現這類的錯誤.</p>
+<p>Go採取了折衷的方法, 在安全和靈活之間取得平衡:</p>
+<ol>
+<li>靜態類型</li>
+<li>隱性實現</li>
+<li>只有某個類型的變數實現了某個接口的全部方法, 這個變數才能在要求使用該接口的地方.</li>
+</ol>
+<h4 id="一個類型可以實現多個接口"><a href="#一個類型可以實現多個接口" class="headerlink" title="一個類型可以實現多個接口"></a>一個類型可以實現多個接口</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// io.Writer</span></span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">        Write(p []<span class="keyword">byte</span>) (n <span class="keyword">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// io.Closer</span></span><br><span class="line"><span class="keyword">type</span> Closer <span class="keyword">interface</span> &#123;</span><br><span class="line">        Close() error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Socket <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Socket)</span> <span class="title">Write</span><span class="params">(p []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Write has be involked"</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Socket)</span> <span class="title">Close</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Close has be involked"</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">usingWriter</span><span class="params">(writer io.Writer)</span></span> &#123;</span><br><span class="line">	writer.Write(<span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">usingCloser</span><span class="params">(closer io.Closer)</span></span> &#123;</span><br><span class="line">	closer.Close()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	s := <span class="built_in">new</span>(Socket)</span><br><span class="line">	usingWriter(s)</span><br><span class="line">	usingCloser(s)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output :</span></span><br><span class="line"><span class="comment">// Write has be involked</span></span><br><span class="line"><span class="comment">// Close has be involked</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tedmax100.github.io/images/Go/interface1.png" alt></p>
+<h4 id="多個類型可以實現同樣的接口-polymorphism"><a href="#多個類型可以實現同樣的接口-polymorphism" class="headerlink" title="多個類型可以實現同樣的接口(polymorphism)"></a>多個類型可以實現同樣的接口(polymorphism)</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Service <span class="keyword">interface</span> &#123;</span><br><span class="line">	Start()</span><br><span class="line">	Log(<span class="keyword">string</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Logger <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *Logger)</span> <span class="title">Log</span><span class="params">(l <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	fmt.Println(l)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> GameService <span class="keyword">struct</span> &#123;</span><br><span class="line">	Logger</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(g *GameService)</span> <span class="title">Start</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"game service start"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> s Service = <span class="built_in">new</span>(GameService)</span><br><span class="line">	s.Start()</span><br><span class="line">	s.Log(<span class="string">"hello"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output :</span></span><br><span class="line"><span class="comment">// game service start</span></span><br><span class="line"><span class="comment">// hello</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tedmax100.github.io/images/Go/interface2.png" alt></p>
+<h4 id="接口的嵌套組合"><a href="#接口的嵌套組合" class="headerlink" title="接口的嵌套組合"></a>接口的嵌套組合</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> device <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 實現</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(d *device)</span> <span class="title">Write</span><span class="params">(p []<span class="keyword">byte</span>)</span> <span class="params">(n <span class="keyword">int</span>, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 實現</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(d *device)</span> <span class="title">Close</span><span class="params">()</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">// WriteCloser is the interface that groups the basic Write and Close methods.</span></span><br><span class="line"><span class="comment">type WriteCloser interface &#123;</span></span><br><span class="line"><span class="comment">	Writer</span></span><br><span class="line"><span class="comment">	Closer</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">// Implementations must not retain p.</span></span><br><span class="line"><span class="comment">type Writer interface &#123;</span></span><br><span class="line"><span class="comment">	Write(p []byte) (n int, err error)</span></span><br><span class="line"><span class="comment">&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 宣告io.WriteClose, 並賦予device的實例</span></span><br><span class="line">	<span class="keyword">var</span> wc io.WriteCloser = <span class="built_in">new</span>(device)</span><br><span class="line"></span><br><span class="line">	wc.Write(<span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">	wc.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 宣告io.Writer, 並賦予device的實例</span></span><br><span class="line">	<span class="keyword">var</span> writeOnly io.Writer = <span class="built_in">new</span>(device)</span><br><span class="line"></span><br><span class="line">	writeOnly.Write(<span class="literal">nil</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tedmax100.github.io/images/Go/interface3.png" alt></p>
+<h3 id="空接口-interface"><a href="#空接口-interface" class="headerlink" title="空接口 interface{}"></a>空接口 interface{}</h3><p>interface{}是接口類型的特殊形式; 空接口沒有任何方法, 所以任何類型都沒必要去實現空接口; 反過來說, 任何值都滿足空接口的實現需求, 所以它可以保存任何值, 也能從空接口中取出值.<br>空接口類型類似C#, Java中的Object, C的void*.<br>空接口內部只保存了對象的類型和指針, 所以在使用上會比較慢一些.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// eface = empty interface</span></span><br><span class="line"><span class="keyword">type</span> eface <span class="keyword">struct</span> &#123;</span><br><span class="line">    _type *_type</span><br><span class="line">    data  unsafe.Pointer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> any <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">any = <span class="number">1</span></span><br><span class="line">fmt.Println(any)</span><br><span class="line"></span><br><span class="line">any = <span class="literal">false</span></span><br><span class="line">fmt.Println(any)</span><br><span class="line"><span class="comment">// Output :</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a <span class="keyword">int</span> =<span class="number">1</span></span><br><span class="line"><span class="keyword">var</span> i <span class="keyword">interface</span>&#123;&#125; = a </span><br><span class="line"><span class="keyword">var</span> b <span class="keyword">int</span> = i</span><br><span class="line"><span class="comment">// 第三行會報錯</span></span><br><span class="line"><span class="comment">// cannot use i (type interface&#123;&#125;) as type int in assigment : need type assertion</span></span><br><span class="line"><span class="comment">// 因為i 在此時還是interface&#123;&#125;類型, 並不是int類型</span></span><br><span class="line"><span class="comment">// 要使用類型斷言</span></span><br><span class="line"><span class="keyword">var</span> b <span class="keyword">int</span> = i.(<span class="keyword">int</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="接口斷言-Type-Assertions"><a href="#接口斷言-Type-Assertions" class="headerlink" title="接口斷言 Type Assertions"></a>接口斷言 Type Assertions</h2><p>Type Assertion是對於interface value的一種操作方法.<br>語法格式 </p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t, ok := i.(T)</span><br></pre></td></tr></table></figure>
+
+<p>i 代表實現接口的變數<br>T 表示轉換的目標類型<br>t 表示轉換後的變量<br>ok 檢查i接口是否實現T類型的效果</p>
+<p>鳥和豬有不同的特性, 一個能飛能走, 一個只能走.<br>讓鳥跟豬各自實現Flyer和Walker的接口.<br>然後實例被放進interface{}的map中, interface{}表示空接口, 所以什麼類型都能放.<br>透過斷言操作來操作各接口.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Flyer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Fly()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Walker <span class="keyword">interface</span> &#123;</span><br><span class="line">	Walk()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> bird <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *bird)</span> <span class="title">Fly</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"bird can fly"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *bird)</span> <span class="title">Walk</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"bird can walk"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> pig <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *pig)</span> <span class="title">Walk</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"pig can walk"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	animals := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">		<span class="string">"bird"</span>: <span class="built_in">new</span>(bird),</span><br><span class="line">		<span class="string">"pig"</span>:  <span class="built_in">new</span>(pig),</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> name, obj := <span class="keyword">range</span> animals &#123;</span><br><span class="line">		f, isFlyer := obj.(Flyer)</span><br><span class="line">		w, isWalker := obj.(Walker)</span><br><span class="line"></span><br><span class="line">		fmt.Printf(<span class="string">"name: %s isFlyer: %v isWalker: %v\n"</span>, name, isFlyer, isWalker)</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> isFlyer &#123;</span><br><span class="line">			f.Fly()</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> isWalker &#123;</span><br><span class="line">			w.Walk()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// Output :</span></span><br><span class="line"><span class="comment">// name: bird; isFlyer: true, isWalker: true</span></span><br><span class="line"><span class="comment">// bird can fly</span></span><br><span class="line"><span class="comment">// bird can walk</span></span><br><span class="line"><span class="comment">// name: pig; isFlyer: false, isWalker: true</span></span><br><span class="line"><span class="comment">// pig can walk</span></span><br></pre></td></tr></table></figure>
+
+<p>上面寫法會很多if<br>能用type  switch簡化</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span> obj := obj.(<span class="keyword">type</span>) &#123;</span><br><span class="line"><span class="keyword">case</span> Flyer:</span><br><span class="line">    fmt.Printf(<span class="string">"name: %s\n"</span>, name)</span><br><span class="line">    obj.Fly()</span><br><span class="line"><span class="keyword">case</span> Walker:</span><br><span class="line">    fmt.Printf(<span class="string">"name: %s\n"</span>, name)</span><br><span class="line">    obj.Walk()</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Go-OOP"><a href="#Go-OOP" class="headerlink" title="Go OOP"></a>Go OOP</h2><h3 id="封裝"><a href="#封裝" class="headerlink" title="封裝"></a>封裝</h3><p>透過package級別做封裝<br>私有成員跟方法在Go是以小寫開頭的, 只有在該package內可見.<br>公開成員跟方法是以大寫開頭.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Bag <span class="keyword">struct</span> &#123;</span><br><span class="line"><span class="comment">// private property for Bag</span></span><br><span class="line">    item []<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// public method for Bag</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Bag)</span> <span class="title">Insert</span><span class="params">(itemid <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    b.items = <span class="built_in">append</span>(b.items, itemid)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    b := <span class="built_in">new</span>(Bag)</span><br><span class="line">    b.Insert(<span class="number">1002</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Go沒有建構式, 透過簡單工廠方法來實現</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Bag <span class="keyword">struct</span> &#123;</span><br><span class="line"><span class="comment">// private property for Bag</span></span><br><span class="line">    item []<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// simple factory method</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewBag</span><span class="params">()</span> <span class="title">Bag</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;Bag&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="繼承"><a href="#繼承" class="headerlink" title="繼承"></a>繼承</h3><p>Go其實沒有繼承, 都是依靠組合(composition), 允許嵌入組合.<br>也因為沒有繼承, 就不會出現可多重繼承裡會出現的<a href="https://en.wikipedia.org/wiki/Multiple_inheritance#The_diamond_problem" target="_blank" rel="noopener">死亡鑽石問題</a>.</p>
+<p>只要嵌入一個匿名類型的組合就等同於實現了繼承,<br>如果只是嵌入struct那跟<a href="https://en.wikipedia.org/wiki/Fragile_base_class" target="_blank" rel="noopener">脆弱基類</a>是一樣的脆弱, 所以會透過嵌入接口, 來提早檢查問題.</p>
+<h3 id="多態"><a href="#多態" class="headerlink" title="多態"></a>多態</h3><p>Go 依賴接口來實現這特性.<br>只要對象實現相同的接口, Go就能處理不同類型的那些對象.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Shape <span class="keyword">interface</span> &#123;</span><br><span class="line">	Area() <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Rectangle <span class="keyword">struct</span> &#123;</span><br><span class="line">	width, height <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewRectangle</span><span class="params">(width, height <span class="keyword">int64</span>)</span> *<span class="title">Rectangle</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Rectangle&#123;</span><br><span class="line">		width:  width,</span><br><span class="line">		height: height,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Rectangle)</span> <span class="title">Area</span><span class="params">()</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> r.width * r.height</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Circle <span class="keyword">struct</span> &#123;</span><br><span class="line">	radius <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewCircle</span><span class="params">(radius <span class="keyword">int64</span>)</span> *<span class="title">Circle</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Circle&#123;</span><br><span class="line">		radius: radius,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Circle)</span> <span class="title">Area</span><span class="params">()</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.radius * c.radius</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	r := NewRectangle(<span class="number">10</span>, <span class="number">5</span>)</span><br><span class="line">	c := NewCircle(<span class="number">5</span>)</span><br><span class="line">	s := []Shape&#123;r, c&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, shape := <span class="keyword">range</span> s &#123;</span><br><span class="line">		fmt.Println(shape.Area())</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ithelp.ithome.com.tw/articles/10215623" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/20/GoInterface/" data-id="ckix8x14d000yve6xp3jss8qz" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫",
+        "image": "https://tedmax100.github.iohttps://tedmax100.github.io/images/Go/hqdefault.jpg",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-20",
+        "dateCreated": "2020-12-20",
+        "dateModified": "2020-12-20",
+        "url": "https://tedmax100.github.io/2020/12/20/GoInterface/",
+        "description": "​",
+        "wordCount": 1669
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/12/20/GoTypeStruct/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Type &amp; Struct, 從單細胞生物, 來到多細胞生物了</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoInterface/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://tedmax100.github.io/images/Go/hqdefault.jpg)" alt="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoInterface/" class="title">Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:47:46.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoTypeStruct/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoTypeStruct/" class="title">Type &amp; Struct, 從單細胞生物, 來到多細胞生物了</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:44:21.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoMap/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/87OwWpr.png)" alt="Map" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoMap/" class="title">Map</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:42:24.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/3兄弟-Ring/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/kiOhD1T.png)" alt="3兄弟-Ring" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/3兄弟-Ring/" class="title">3兄弟-Ring</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:37:57.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/3兄弟-Heap/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/XbheF2e.png)" alt="Container 3兄弟-Heap" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/3兄弟-Heap/" class="title">Container 3兄弟-Heap</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:16:31.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">8</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/20/GoInterface/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
