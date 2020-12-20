@@ -10,21 +10,21 @@
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
-    <meta name="keywords" content="Go">
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
     
-    <meta name="description" content="Everything you need to know about packages in Go Package(包)程式碼的目錄, 可以重複利用程式的方案, 方便維護。Go默認提供很多package, 像是fmt、is等。開發者也可以創建自己的package。 package要求所有檔案的第一行添加package名稱，標示該文件所歸屬的package。 1package 包名稱   一個目錄下的">
-<meta name="keywords" content="Go">
+    <meta name="description" content="​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go Package">
 <meta property="og:url" content="https://tedmax100.github.io/2019/07/14/Go-Package/index.html">
 <meta property="og:site_name" content="雷N&#39;s Blog">
-<meta property="og:description" content="Everything you need to know about packages in Go Package(包)程式碼的目錄, 可以重複利用程式的方案, 方便維護。Go默認提供很多package, 像是fmt、is等。開發者也可以創建自己的package。 package要求所有檔案的第一行添加package名稱，標示該文件所歸屬的package。 1package 包名稱   一個目錄下的">
+<meta property="og:description" content="​">
 <meta property="og:locale" content="zh-TW">
 <meta property="og:image" content="https://tedmax100.github.io/images/Go/source-files-to-package.001.png">
-<meta property="og:updated_time" content="2020-12-20T07:56:16.169Z">
+<meta property="og:updated_time" content="2020-12-20T14:54:05.073Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go Package">
-<meta name="twitter:description" content="Everything you need to know about packages in Go Package(包)程式碼的目錄, 可以重複利用程式的方案, 方便維護。Go默認提供很多package, 像是fmt、is等。開發者也可以創建自己的package。 package要求所有檔案的第一行添加package名稱，標示該文件所歸屬的package。 1package 包名稱   一個目錄下的">
+<meta name="twitter:description" content="​">
 <meta name="twitter:image" content="https://tedmax100.github.io/images/Go/source-files-to-package.001.png">
     
 
@@ -170,7 +170,7 @@
 <div class="article-date">
   <i class="fa fa-calendar-plus-o"></i>
   <a href="/2019/07/14/Go-Package/" class="article-date">
-     <time datetime="2020-12-20T07:56:16.169Z" itemprop="dateModified">2020-12-20</time>
+     <time datetime="2020-12-20T14:54:05.073Z" itemprop="dateModified">2020-12-20</time>
   </a>
 </div>
 
@@ -180,7 +180,7 @@
                 
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/Go/">Go</a>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
     </div>
 
                 
@@ -197,7 +197,8 @@
 
             
 
-            <p><img src="/images/Go/source-files-to-package.001.png" alt><br><a href="https://medium.com/rungo/everything-you-need-to-know-about-packages-in-go-b8bac62b74cc" target="_blank" rel="noopener">Everything you need to know about packages in Go</a></p>
+            <p><img src="/images/Go/source-files-to-package.001.png" alt><br>​<a id="more"></a><br><a href="https://medium.com/rungo/everything-you-need-to-know-about-packages-in-go-b8bac62b74cc" target="_blank" rel="noopener">Everything you need to know about packages in Go</a></p>
+<p>這次聊Package, 主要是因為接著都會需要對業務面向作模組的拆分.<br>或者對功能作拆分, 甚至是第三方套件的引入.<br>一個專案只要不是只有一個main.go, 就一定會有其他的package</p>
 <h3 id="Package-包"><a href="#Package-包" class="headerlink" title="Package(包)"></a>Package(包)</h3><p>程式碼的目錄, 可以重複利用程式的方案, 方便維護。<br>Go默認提供很多package, 像是fmt、is等。<br>開發者也可以創建自己的package。</p>
 <p>package要求所有檔案的第一行添加package名稱，標示該文件所歸屬的package。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> 包名稱</span><br></pre></td></tr></table></figure>
@@ -242,13 +243,16 @@
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ex2/reg.go</span></span><br><span class="line"><span class="keyword">package</span> ex1</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/tedmax100/factory/base"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Class2 <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Class2)</span> <span class="title">Do</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"class2"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	base.Register(<span class="string">"Class2"</span>, <span class="function"><span class="keyword">func</span><span class="params">()</span> <span class="title">base</span>.<span class="title">Class</span></span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">new</span>(Class2)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/tedmax100/factory/base"</span></span><br><span class="line">	_ <span class="string">"github.com/tedmax100/factory/ex1"</span></span><br><span class="line">	_ <span class="string">"github.com/tedmax100/factory/ex2"</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">//因為上面使用匿名導入了ex1 &amp; ex2 package.</span></span><br><span class="line"><span class="comment">//main()執行前, 這兩個package的init()會被調用, 而註冊了class1 &amp; class2</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	c1 := base.Create(<span class="string">"Class1"</span>)</span><br><span class="line">	c1.Do()</span><br><span class="line"></span><br><span class="line">	c2 := base.Create(<span class="string">"Class2"</span>)</span><br><span class="line">	c2.Do()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ithelp.ithome.com.tw/articles/10215623" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
         </div>
         <footer class="article-footer">
             
 
 
 
-    <a data-url="https://tedmax100.github.io/2019/07/14/Go-Package/" data-id="ckix90yu1000tkb6xr8hzaerv" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://tedmax100.github.io/2019/07/14/Go-Package/" data-id="ckix941om000v2p6xyjnjbt04" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -320,20 +324,14 @@
         },
         "headline": "Go Package",
         "image": "https://tedmax100.github.io/images/Go/source-files-to-package.001.png",
-        "keywords": "Go",
+        "keywords": "Go iT邦鐵人賽11Th",
         "genre": "Go",
         "datePublished": "2019-07-14",
         "dateCreated": "2019-07-14",
         "dateModified": "2020-12-20",
         "url": "https://tedmax100.github.io/2019/07/14/Go-Package/",
-        "description": "Everything you need to know about packages in Go
-Package(包)程式碼的目錄, 可以重複利用程式的方案, 方便維護。Go默認提供很多package, 像是fmt、is等。開發者也可以創建自己的package。
-package要求所有檔案的第一行添加package名稱，標示該文件所歸屬的package。
-1package 包名稱
-
-
-一個目錄下的",
-        "wordCount": 912
+        "description": "​",
+        "wordCount": 919
     }
 </script>
 
@@ -543,7 +541,7 @@ package要求所有檔案的第一行添加package名稱，標示該文件所歸
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">標籤</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">8</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">9</span></li></ul>
         </div>
     </div>
 
