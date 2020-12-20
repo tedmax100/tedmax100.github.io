@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Type &amp; Struct, 從單細胞生物, 來到多細胞生物了 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="Type &amp;amp; Struct, 從單細胞生物, 來到多細胞生物了可以創建類似Java的Class以及宣告屬性與方法​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Type &amp; Struct, 從單細胞生物, 來到多細胞生物了">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/20/GoTypeStruct/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="Type &amp;amp; Struct, 從單細胞生物, 來到多細胞生物了可以創建類似Java的Class以及宣告屬性與方法​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:updated_time" content="2020-12-20T14:46:16.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Type &amp; Struct, 從單細胞生物, 來到多細胞生物了">
+<meta name="twitter:description" content="Type &amp;amp; Struct, 從單細胞生物, 來到多細胞生物了可以創建類似Java的Class以及宣告屬性與方法​">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-GoTypeStruct" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Type &amp; Struct, 從單細胞生物, 來到多細胞生物了
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/20/GoTypeStruct/" class="article-date">
+       <time datetime="2020-12-20T14:44:21.000Z" itemprop="datePublished">2020-12-20</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/20/GoTypeStruct/" class="article-date">
+     <time datetime="2020-12-20T14:46:16.465Z" itemprop="dateModified">2020-12-20</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>Type &amp; Struct, 從單細胞生物, 來到多細胞生物了<br>可以創建類似Java的Class以及宣告屬性與方法<br>​<a id="more"></a></p>
+<h1 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h1><p>type這關鍵字用來聲明宣告一些東西</p>
+<ul>
+<li><p>struct<br>等下就介紹</p>
+</li>
+<li><p>interface<br>下次介紹</p>
+</li>
+<li><p>基礎型別</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 宣告別名</span></span><br><span class="line"><span class="keyword">type</span> name = <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定義新的基礎型別</span></span><br><span class="line"><span class="keyword">type</span> newStr <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SayName</span><span class="params">(str name)</span></span> &#123;</span><br><span class="line">	fmt.Println(str)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Say</span><span class="params">(str newStr)</span></span> &#123;</span><br><span class="line">	fmt.Println(str)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> str = <span class="string">"test"</span></span><br><span class="line">	SayName(str)</span><br><span class="line">	<span class="comment">// 這行會噴型別錯誤, 註解掉用下面的方式寫</span></span><br><span class="line">	<span class="comment">// Say(str)</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> ns newStr </span><br><span class="line">	ns =  <span class="string">"test newStr"</span></span><br><span class="line">	Say(ns)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">main.go:25:6: cannot use str (type string) as type newStr in argument to Say</span></span><br><span class="line"><span class="comment">str是字串類型, 可以傳入也是string但卻是別名的SayName, 可見類型一致.</span></span><br><span class="line"><span class="comment">但透過type宣告出來的基礎型別, 卻是不同的類型, 無法傳入使用string的Say.</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>類型查詢</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在switch使用變數名稱.(type), 查詢變數是由哪種類型賦值的</span></span><br><span class="line"><span class="keyword">switch</span> v := a.(<span class="keyword">type</span>) &#123;</span><br><span class="line">	<span class="keyword">case</span> <span class="keyword">string</span>:</span><br><span class="line">		fmt.Println(<span class="string">"string type"</span>)</span><br><span class="line">	<span class="keyword">case</span> <span class="keyword">int</span>:</span><br><span class="line">		fmt.Println(<span class="string">"int type"</span>)</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		fmt.Println(<span class="string">"other type"</span>, v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="Struct"><a href="#Struct" class="headerlink" title="Struct"></a>Struct</h1><p>Struct(結構體)是類型中帶有屬性成員的複合類型.<br>其實就非常類似其他語言的Class (87%相似)<br>用結構體名稱和結構體屬性來描述真實世界的實體和實體對應的各種屬性.</p>
+<ul>
+<li>每個屬性必須要有自己的類型和值</li>
+<li>屬性名稱在結構體內必須唯一</li>
+<li>屬性的類型也可以是結構體, 或是自己所在的結構體的指針, 但不能跟是自己的類型. </li>
+<li>可以屬性都不要設置, 稱為empty struct, 能用來給channel發訊號用.</li>
+<li>屬性成員名稱小寫開頭為private,  大寫為public</li>
+<li>沒有繼承, 用的是組合這概念, 這部份更多應用明天分享.</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> 類型名稱 <span class="keyword">struct</span> &#123;</span><br><span class="line">    屬性<span class="number">1</span> 屬性<span class="number">1</span>類型</span><br><span class="line">    屬性<span class="number">2</span> 屬性<span class="number">2</span>類型</span><br><span class="line">    屬性<span class="number">3</span>, 屬性<span class="number">4</span>, 屬性<span class="number">5</span> 屬性<span class="number">345</span>類型 (需要相同類型)</span><br><span class="line">    類型  <span class="comment">// 匿名屬性, 類型名稱就是成員屬性名稱</span></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><p>有很多種方式…這裡有沒有列出全部, 我也不太清楚QQ<br>JS要建立一個object, 也是超多種方式XD</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 匿名結構體, 無須透過type關鍵字來定義</span></span><br><span class="line">p := <span class="keyword">struct</span> &#123;</span><br><span class="line">    X <span class="keyword">int</span></span><br><span class="line">    Y <span class="keyword">int</span></span><br><span class="line">&#125; &#123;</span><br><span class="line">    X : <span class="number">20</span>,</span><br><span class="line">    Y : <span class="number">10</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 透過var聲明</span></span><br><span class="line"><span class="keyword">type</span> Point <span class="keyword">struct</span> &#123;</span><br><span class="line">  X <span class="keyword">int</span></span><br><span class="line">  Y <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p Point</span><br><span class="line">p.X = <span class="number">20</span></span><br><span class="line">p.Y = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 透過var的簡短聲明</span></span><br><span class="line"><span class="keyword">var</span> p = Point&#123;</span><br><span class="line">    X: <span class="number">20</span>,</span><br><span class="line">    Y: <span class="number">10</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 透過new實例出結構體,p是一個Point指標類型, 指向Point結構體的實例. </span></span><br><span class="line">p := <span class="built_in">new</span>(Point)</span><br><span class="line">p.X = <span class="number">20</span></span><br><span class="line">p.Y = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>new()的方法介面 : 回傳的就是指向該類型的指標<br>func new(Type) *Type</p>
+</blockquote>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 因為沒有類別也沒多載, 所以用各種不同名稱的外部方法來模擬建構式</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEmptyPoint</span><span class="params">()</span> <span class="title">Point</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> Point&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPoint</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">Point</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> Point&#123;</span><br><span class="line">        X : x,</span><br><span class="line">        Y : y,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEmptyPointPtr</span><span class="params">()</span> *<span class="title">Point</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Point&#123;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewPointPtr</span><span class="params">(x, y <span class="keyword">int</span>)</span> *<span class="title">Point</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Point&#123;</span><br><span class="line">        X : x,</span><br><span class="line">        Y : y,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// demo/pointer.go</span></span><br><span class="line"><span class="keyword">package</span> pointer</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Point <span class="keyword">struct</span> &#123;</span><br><span class="line">  X <span class="keyword">int</span></span><br><span class="line">  Y <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">New</span><span class="params">(x, y <span class="keyword">int</span>)</span> <span class="title">Point</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Point&#123;</span><br><span class="line">        X : x,</span><br><span class="line">        Y : y,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// main.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> <span class="string">"demo/pointer"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 這樣有沒有比較像建構式的feel了</span></span><br><span class="line">    p := pointer.New(<span class="number">10</span>, <span class="number">20</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這裡會發現跟C有些不同了, C對於ptr類型需要用-&gt;來存取成員屬性.<br>Go施予了語法糖來方便開發者, 自動的把ptr類型的p.X轉成(*p).X </p>
+<h2 id="Pointer-to-Struct-vs-Struct-value"><a href="#Pointer-to-Struct-vs-Struct-value" class="headerlink" title="Pointer to Struct vs  Struct value"></a>Pointer to Struct vs  Struct value</h2><p>上面會發現struct在使用上會有pointer to struct(結構體指針)跟Struct value(結構體實例)2種類型.</p>
+<ul>
+<li>結構體指針 <ul>
+<li>一個指向結構體實例的ptr</li>
+<li>傳遞給函數當參數時, 就只會複製該ptr而已, 省很多記憶體, 也快速.</li>
+<li>對結構體指針作任何修改, 都會影響到該指針所指向的結構體去作修改.</li>
+<li>要直接操作指向的對象時,要加上*</li>
+<li>會發生逃逸現象, 需要透過GC來回收.</li>
+<li>結構體指針的空值都是nil</li>
+</ul>
+</li>
+<li>結構體實例<ul>
+<li>傳遞給函數當參數時, 會複製物件本身.</li>
+<li>傳遞給函數時, 會放在stack內; 在離開函數時, 會被釋放.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Bag <span class="keyword">struct</span> &#123;</span><br><span class="line">	items []<span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Insert</span><span class="params">(b *Bag, itemId <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of *b: %p\n"</span>, b)</span><br><span class="line">	b.items = <span class="built_in">append</span>(b.items, itemId)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">InsertValue</span><span class="params">(b Bag, itemId <span class="keyword">int</span>)</span> <span class="title">Bag</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of b: %p\n"</span>, &amp;b)</span><br><span class="line">	b.items = <span class="built_in">append</span>(b.items, itemId)</span><br><span class="line">	<span class="keyword">return</span> b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	bag := <span class="built_in">new</span>(Bag)</span><br><span class="line">	fmt.Printf(<span class="string">"address of bag: %p\n"</span>, bag)</span><br><span class="line">	fmt.Println(<span class="string">"新增元素前給ptr: "</span>, bag)</span><br><span class="line">	Insert(bag, <span class="number">1000</span>)</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">"新增元素後給ptr: "</span>, bag)</span><br><span class="line"></span><br><span class="line">	bagValue := Bag&#123;&#125;</span><br><span class="line">	fmt.Printf(<span class="string">"address of bagValue: %p\n"</span>, bag)</span><br><span class="line">	fmt.Println(<span class="string">"新增元素前給實例前: "</span>, bagValue)</span><br><span class="line">	InsertValue(bagValue, <span class="number">1001</span>)</span><br><span class="line">	fmt.Println(<span class="string">"新增元素後, 但沒賦值回去: "</span>, bagValue)</span><br><span class="line">	bagValue = InsertValue(bagValue, <span class="number">1001</span>)</span><br><span class="line">	fmt.Println(<span class="string">"新增元素後, 有沒賦值回去: "</span>, bagValue)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">address of bag: 0xc00000c080</span></span><br><span class="line"><span class="comment">新增元素前給ptr:  &amp;&#123;[]&#125;</span></span><br><span class="line"><span class="comment">address of *b: 0xc00000c080</span></span><br><span class="line"><span class="comment">新增元素後給ptr:  &amp;&#123;[1000]&#125;</span></span><br><span class="line"><span class="comment">address of bagValue: 0xc00000c080</span></span><br><span class="line"><span class="comment">新增元素前給實例前:  &#123;[]&#125;</span></span><br><span class="line"><span class="comment">address of b: 0xc00000c100</span></span><br><span class="line"><span class="comment">新增元素後, 但沒賦值回去:  &#123;[]&#125;</span></span><br><span class="line"><span class="comment">address of b: 0xc00000c140</span></span><br><span class="line"><span class="comment">新增元素後, 有沒賦值回去:  &#123;[1001]&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>看完輸出能發現, 透過指針傳遞的都是指向同一個位置的變數, 我們對它作操作, 在方法結束後, 他的改變都是有效的.<br>透過值傳遞, 都不是同一個變數, 都是透過複製出來的副本, 所以要透過回傳, 再把回傳值複製一份給外面, 不然就不會真的作到修改.</p>
+<h1 id="結構體方法"><a href="#結構體方法" class="headerlink" title="結構體方法"></a>結構體方法</h1><p>Go中的方法, 適用於特定類型的函數. 稱為Receiver(接收器)<br>如果該特定類型是結構體實例或者是結構體指針時.<br>接收器的概念就類似JS的this. 就是方法作用的目標!!<br>當然任何類型都可以有自己的方法.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// (b *Bag) 這個就是接收器, 接受來自Point類型的指標</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b *Bag)</span> <span class="title">Insert</span><span class="params">(itemId <span class="keyword">int</span>)</span></span> &#123;...&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// (b Bag) 這個就是接收器, 接受來自Point實例</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(b Bag)</span> <span class="title">Insert</span><span class="params">(itemId <span class="keyword">int</span>)</span></span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="接收器的命名"><a href="#接收器的命名" class="headerlink" title="接收器的命名"></a>接收器的命名</h3><p><a href="https://github.com/golang/go/wiki/CodeReviewComments#receiver-names" target="_blank" rel="noopener">官方建議receiver的名字</a>, 第一個字小寫, 而不是用self/this等命名.</p>
+<h3 id="接收器的類型"><a href="#接收器的類型" class="headerlink" title="接收器的類型"></a>接收器的類型</h3><p>選擇在結構體方法的接收器是要用值還是指標…<br>蠻難抉擇的, 大部分都是用指標.<br>只有小部份情形會用值傳遞.</p>
+<ul>
+<li>map, func, chan 其實引用類型(reference type), 都是指針了,別再用一個指針指向他們, 然後作操作.</li>
+<li>如果結構體內有sync.Mutex或其他跟同步相關字眼的, 也別傳值, 傳指針, 讓各地方都用同一個記憶體空間作同步操作.</li>
+<li>如果想要呼叫的函數, 就直接能作內容修改, 就傳指針</li>
+<li>如果是自定義的結構體、Array、Slice就傳指針, 不用多複製; 且意圖更明顯, 就是在操作該物件自己; <a href="https://github.com/golang/go/wiki/CodeReviewComments#receiver-type" target="_blank" rel="noopener">官方建議</a>如果Array容量很小還是傳值比較好, 但我自己不太清楚怎樣去定義”小”, 所以我還是都傳指針.</li>
+<li>如果是基礎型別或者是內建的型別(time.Time這種), 它內部沒有指針屬性或者沒有mutable屬性時, 就傳值, 就不會發生逃逸進到Heap等待GC.</li>
+<li>不清楚? 就是傳指針</li>
+</ul>
+<p>但又如何XD<br>反正Go其實就只有傳值這概念, 只是傳的如果是指針類型, 還是複製一份指針的副本.<br>上面有提到會把ptr類型轉成(*ptr), 直接指向該物件去操作.<br>所以官方才說不清楚判斷該傳什麼, 就傳指針.</p>
+<p>我們要清楚的是, 該類型到底是基礎型別還是引用類型(), 這2種都傳值<br>裡面有沒有同步需要用到的mutex這些, 有就是傳值,<br>其他都傳ptr 就行了.</p>
+<h4 id="引用類型的範例"><a href="#引用類型的範例" class="headerlink" title="引用類型的範例"></a>引用類型的範例</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintMap</span><span class="params">(m <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of map: %p\n"</span>, m)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintFunc</span><span class="params">(f <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of func: %p\n"</span>, f)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintChan</span><span class="params">(c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of chan: %p\n"</span>, c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintSlice</span><span class="params">(s []<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of slice: %p\n"</span>, s)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintArray</span><span class="params">(a [3]<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of array: %p\n"</span>, &amp;a)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintArrayPtr</span><span class="params">(a *[3]<span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"address of array: %p\n"</span>, a)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	m := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>)</span><br><span class="line">	fmt.Printf(<span class="string">"address of map: %p\n"</span>, m)</span><br><span class="line">	PrintMap(m)</span><br><span class="line"></span><br><span class="line">	fun := <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"func"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">"address of func: %p\n"</span>, fun)</span><br><span class="line">	PrintFunc(fun)</span><br><span class="line"></span><br><span class="line">	channel := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	fmt.Printf(<span class="string">"address of chan: %p\n"</span>, channel)</span><br><span class="line">	PrintChan(channel)</span><br><span class="line"></span><br><span class="line">	s := <span class="built_in">make</span>([]<span class="keyword">int</span>, <span class="number">10</span>)</span><br><span class="line">	fmt.Printf(<span class="string">"address of slice: %p\n"</span>, s)</span><br><span class="line">	PrintSlice(s)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Array不是引用類型</span></span><br><span class="line">	a := [<span class="number">3</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;</span><br><span class="line">	fmt.Printf(<span class="string">"value of array: %p\n"</span>, a)</span><br><span class="line">	fmt.Printf(<span class="string">"address of array: %p\n"</span>, &amp;a)</span><br><span class="line">	PrintArray(a)</span><br><span class="line">	PrintArrayPtr(&amp;a)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">address of map: 0xc000078150</span></span><br><span class="line"><span class="comment">address of map: 0xc000078150</span></span><br><span class="line"><span class="comment">address of func: 0x489520</span></span><br><span class="line"><span class="comment">address of func: 0x489520</span></span><br><span class="line"><span class="comment">address of chan: 0xc000076060</span></span><br><span class="line"><span class="comment">address of chan: 0xc000076060</span></span><br><span class="line"><span class="comment">address of slice: 0xc0000200f0</span></span><br><span class="line"><span class="comment">address of slice: 0xc0000200f0</span></span><br><span class="line"><span class="comment">value of array: %!p([3]int=[1 2 3])</span></span><br><span class="line"><span class="comment">address of array: 0xc000018560</span></span><br><span class="line"><span class="comment">address of array: 0xc0000185a0</span></span><br><span class="line"><span class="comment">address of array: 0xc000018560</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>很明顯這些都是引用類型, 我們操作的一直都是指針類型的變數,<br>就不必再用一個指針去指向它們了.</p>
+<blockquote>
+<p>後面的0xnnnnnn數字不同, 每次跑我也都不同, 那是記憶體開始位置, 每次都會不同的, so…跑出來跟我範例不同, 不是程式寫錯QQ</p>
+</blockquote>
+<blockquote>
+<p><a href="https://blog.wu-boy.com/2019/05/what-is-different-between-pointer-and-value-in-golang/" target="_blank" rel="noopener">[Go 語言教學影片] 在 struct 內的 pointers 跟 values 差異</a><br>這是AppleBoy大大的影片, 有提到goroutine內傳指標會出現的問題.</p>
+</blockquote>
+<p><a href="https://ithelp.ithome.com.tw/articles/10215377" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/20/GoTypeStruct/" data-id="ckix8ty3q0014b96x2kzw9pu5" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Type &amp; Struct, 從單細胞生物, 來到多細胞生物了",
+        "image": "https://tedmax100.github.io",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-20",
+        "dateCreated": "2020-12-20",
+        "dateModified": "2020-12-20",
+        "url": "https://tedmax100.github.io/2020/12/20/GoTypeStruct/",
+        "description": "Type &amp; Struct, 從單細胞生物, 來到多細胞生物了可以創建類似Java的Class以及宣告屬性與方法​",
+        "wordCount": 1472
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/12/20/GoMap/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Map</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoTypeStruct/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoTypeStruct/" class="title">Type &amp; Struct, 從單細胞生物, 來到多細胞生物了</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:44:21.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoMap/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/87OwWpr.png)" alt="Map" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoMap/" class="title">Map</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:42:24.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/3兄弟-Ring/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/kiOhD1T.png)" alt="3兄弟-Ring" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/3兄弟-Ring/" class="title">3兄弟-Ring</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:37:57.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/3兄弟-Heap/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/XbheF2e.png)" alt="Container 3兄弟-Heap" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/3兄弟-Heap/" class="title">Container 3兄弟-Heap</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:16:31.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/3兄弟-List/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/uvSvMVU.png)" alt="Container 3兄弟-List" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/3兄弟-List/" class="title">Container 3兄弟-List</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T13:26:42.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">7</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 16px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 12px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 12px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 18px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 14px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 16px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/20/GoTypeStruct/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
