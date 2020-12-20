@@ -202,7 +202,7 @@
 <h1 id="Our-Go-program"><a href="#Our-Go-program" class="headerlink" title="Our Go program :"></a>Our Go program :</h1><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"Hello world!"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h1 id="Single-stage-build"><a href="#Single-stage-build" class="headerlink" title="Single-stage build"></a>Single-stage build</h1><p>Dockerfile :</p>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> golang:alpine</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> . /app</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> <span class="built_in">cd</span> /app &amp;&amp; go build -o goapp</span></span><br><span class="line"><span class="keyword">ENTRYPOINT</span><span class="bash"> ./goapp</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> golang:alpine</span><br><span class="line"><span class="keyword">WORKDIR</span> /app</span><br><span class="line"><span class="keyword">ADD</span> . /app</span><br><span class="line"><span class="keyword">RUN</span> cd /app &amp;&amp; go build -o goapp</span><br><span class="line"><span class="keyword">ENTRYPOINT</span> ./goapp</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># build image</span></span><br><span class="line">docker build -t main .</span><br></pre></td></tr></table></figure>
 
@@ -256,7 +256,7 @@
 
 
 
-    <a data-url="https://tedmax100.github.io/2019/08/08/Docker-Multi-Stage-Build/" data-id="ckix8x14b000ove6xdvgc4zme" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+    <a data-url="https://tedmax100.github.io/2019/08/08/Docker-Multi-Stage-Build/" data-id="ckix90ytw000gkb6x72ruzrsq" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -335,7 +335,7 @@
         "dateModified": "2020-12-20",
         "url": "https://tedmax100.github.io/2019/08/08/Docker-Multi-Stage-Build/",
         "description": "Docker 17.05版的發布了Multi-stage build, 讓image肥大的問題有了優雅的解法.",
-        "wordCount": 604
+        "wordCount": 599
     }
 </script>
 
@@ -422,7 +422,7 @@
                             <a href="/2020/12/20/GoInterface/" class="thumbnail">
     
     
-        <span style="background-image:url(https://tedmax100.github.io/images/Go/hqdefault.jpg)" alt="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫" class="thumbnail-image"></span>
+        <span style="background-image:url(/images/Go/download.jpeg)" alt="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫" class="thumbnail-image"></span>
     
     
 </a>
