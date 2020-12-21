@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go database/sql, 和資料庫打個招呼 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="SQL在做專案時, 都會需要關聯式資料庫做資料的CRUD.Go提供了database/sql包來讓開發者跟資料庫打交道, 這包就像Java的JDBC.database/sql包只是定義了一套操作資料庫的接口和抽象層定義.所以還是需要實體的驅動, 這裡我選用MySQL.各種Go SQL Drivers我們開發者幾乎都是在操作database/sql包所提供的接口方法而已.大部分情境, 都只要在程式的">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go database&#x2F;sql, 和資料庫打個招呼">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/Go-Database/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="SQL在做專案時, 都會需要關聯式資料庫做資料的CRUD.Go提供了database/sql包來讓開發者跟資料庫打交道, 這包就像Java的JDBC.database/sql包只是定義了一套操作資料庫的接口和抽象層定義.所以還是需要實體的驅動, 這裡我選用MySQL.各種Go SQL Drivers我們開發者幾乎都是在操作database/sql包所提供的接口方法而已.大部分情境, 都只要在程式的">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/y47gGlS.jpg">
+<meta property="og:updated_time" content="2020-12-21T13:38:04.060Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go database&#x2F;sql, 和資料庫打個招呼">
+<meta name="twitter:description" content="SQL在做專案時, 都會需要關聯式資料庫做資料的CRUD.Go提供了database/sql包來讓開發者跟資料庫打交道, 這包就像Java的JDBC.database/sql包只是定義了一套操作資料庫的接口和抽象層定義.所以還是需要實體的驅動, 這裡我選用MySQL.各種Go SQL Drivers我們開發者幾乎都是在操作database/sql包所提供的接口方法而已.大部分情境, 都只要在程式的">
+<meta name="twitter:image" content="https://i.imgur.com/y47gGlS.jpg">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Database" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go database/sql, 和資料庫打個招呼
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/Go-Database/" class="article-date">
+       <time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/Go-Database/" class="article-date">
+     <time datetime="2020-12-21T13:38:04.060Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h1 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h1><p>在做專案時, 都會需要關聯式資料庫做資料的CRUD.<br>Go提供了database/sql包來讓開發者跟資料庫打交道, 這包就像Java的JDBC.<br>database/sql包只是定義了一套操作資料庫的接口和抽象層定義.<br>所以還是需要實體的驅動, 這裡我選用<a href="https://github.com/go-sql-driver/mysql" target="_blank" rel="noopener">MySQL</a>.<br><a href="https://github.com/golang/go/wiki/SQLDrivers" target="_blank" rel="noopener">各種Go SQL Drivers</a><br>我們開發者幾乎都是在操作database/sql包所提供的接口方法而已.<br>大部分情境, 都只要在程式的某地方設定好驅動就好.<br>​<a id="more"></a></p>
+<h4 id="下載MySQL驅動包"><a href="#下載MySQL驅動包" class="headerlink" title="下載MySQL驅動包"></a>下載MySQL驅動包</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/go-sql-driver/mysql</span><br></pre></td></tr></table></figure>
+
+<h1 id="database-sql"><a href="#database-sql" class="headerlink" title="database/sql"></a><a href="https://golang.org/pkg/database/sql/" target="_blank" rel="noopener">database/sql</a></h1><p>來認識幾個type, 因為我在這撞牆蠻久的.<br>C#跟Node套件用習慣了QQ</p>
+<h2 id="DB"><a href="#DB" class="headerlink" title="DB"></a><a href="https://golang.org/pkg/database/sql/#DB" target="_blank" rel="noopener">DB</a></h2><p>資料庫的物件實例, 同時內部也有自己實現的連線池, 其池是一個包含多個open和idle連線的池子.<br>使用時被選到的連線會被標記成<code>open</code>, 完成後會被標記成<code>idle</code><br>他需要有driver打開或關閉資料庫, 管理連線池.<br>同時它也是線程安全的, 可以不必重複創立, 只需要一個就可以傳遞給多個goroutine使用.<br><img src="https://i.imgur.com/y47gGlS.jpg" alt><br>一個泳池的泳道數量設定好之後就是固定的, 只要有人使用, 該泳道就被open, 等到有人離開泳道, 該泳道就被視為idel.<br>maxlifetime, 就視為該泳道的開放使用時間吧, 也許設置成1小時換水清理一次.<br>但有人還在用的話, 當然就要等它被釋放出來, 才能開始清潔. (有點牽強的例子)</p>
+<p><img src="https://i.imgur.com/fj3fOcS.png" alt></p>
+<ul>
+<li><h3 id="SetMaxIdleConns"><a href="#SetMaxIdleConns" class="headerlink" title="SetMaxIdleConns"></a>SetMaxIdleConns</h3><p>設定空閒連線池的最大連線數</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">SetMaxIdleConns</span><span class="params">(n <span class="keyword">int</span>)</span></span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="SetMaxOpenConns"><a href="#SetMaxOpenConns" class="headerlink" title="SetMaxOpenConns"></a>SetMaxOpenConns</h3><p>設定最大打開的連線數, 0表示不限制.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span>（<span class="title">db</span> * <span class="title">DB</span>）<span class="title">SetMaxOpenConns</span>（<span class="title">n</span> <span class="title">int</span>）</span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><h3 id="SetConnMaxLifetime"><a href="#SetConnMaxLifetime" class="headerlink" title="SetConnMaxLifetime"></a>SetConnMaxLifetime</h3><p>設定連線可重複利用的最大時間長度, 0是預設值表示沒有max life, 總是可重複使用.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">SetConnMaxLifetime</span><span class="params">(d time.Duration)</span></span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.SetConnMaxLifetime(time.Hour)</span><br><span class="line"><span class="comment">// 設定每一個連線最大生命週期1hr</span></span><br><span class="line"><span class="comment">//</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><h3 id="Open"><a href="#Open" class="headerlink" title="Open"></a>Open</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Open</span><span class="params">(driverName, dataSourceName <span class="keyword">string</span>)</span> <span class="params">(*DB, error)</span></span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>初始化一個sql.DB對象, 但還沒真正建立連線.<br>會啟動一個connectionOpener的goroutine.<br>也初始化一個openerCh channel.<br>需要連線時, 就對該channel發送數據就好.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db := &amp;DB&#123;</span><br><span class="line">		driver:   driveri,</span><br><span class="line">		dsn:      dataSourceName,</span><br><span class="line">		openerCh: <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;, connectionRequestQueueSize),</span><br><span class="line">		lastPut:  <span class="built_in">make</span>(<span class="keyword">map</span>[*driverConn]<span class="keyword">string</span>),</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在這兩種情形下會去建立連線 :</p>
+<ol>
+<li>會在第一次呼叫ping(), 真正建立連線</li>
+<li>呼叫db.Exec()或者db.Query(), 如果空閒連線池有連線, 就直接取用; 如果沒有就會產生一個新的連線.</li>
+</ol>
+<h2 id="Config"><a href="#Config" class="headerlink" title="Config"></a><a href="https://godoc.org/github.com/go-sql-driver/mysql#Config" target="_blank" rel="noopener">Config</a></h2><p>go-sql-driver/mysql所提供的結構體, 有提供幾個針對DSN的方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// config的建構式</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewConfig</span><span class="params">()</span> *<span class="title">Config</span></span></span><br><span class="line"><span class="function">// 把<span class="title">dsn</span>字串剖析轉成<span class="title">config</span>物件</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">ParseDSN</span><span class="params">(dsn <span class="keyword">string</span>)</span> <span class="params">(cfg *Config, err error)</span></span></span><br><span class="line"><span class="function">// 複製一個<span class="title">config</span>物件的副本</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(cfg *Config)</span> <span class="title">Clone</span><span class="params">()</span> *<span class="title">Config</span></span></span><br><span class="line"><span class="function">// 把<span class="title">config</span>結構體格式化成<span class="title">dsn</span>格式的連線字串</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(cfg *Config)</span> <span class="title">FormatDSN</span><span class="params">()</span> <span class="title">string</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Row"><a href="#Row" class="headerlink" title="Row"></a><a href="https://golang.org/pkg/database/sql/#Row" target="_blank" rel="noopener">Row</a></h2><p>呼叫QueryRow()之後返回的單行結果<br>掃描取得的結果到dest上; 但如果有多個結果, scan做完第一行後, 就會丟棄其他行的資料了.<br>如果row是沒有資料的, 則是會返回ErrNoRows這錯誤.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Row)</span> <span class="title">Scan</span><span class="params">(dest ...<span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Rows"><a href="#Rows" class="headerlink" title="Rows"></a><a href="https://golang.org/pkg/database/sql/#Rows" target="_blank" rel="noopener">Rows</a></h2><p>查詢的結果, 會有個指標從開始直到結束.<br>呼叫Next(), 就去取得下一行row的資料.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 主要是用來讓連線釋放回連線池</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rs *Rows)</span> <span class="title">Close</span><span class="params">()</span> <span class="title">error</span></span> &#123;...&#125;</span><br><span class="line"><span class="comment">// 對資料做走訪,正常結束的話內部會自動呼叫rows.Close()</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(rs *Rows)</span> <span class="title">Next</span><span class="params">()</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function">// 切換到下一個結果集, 一次查詢是可以返回多個結果集的</span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(rs *Rows)</span> <span class="title">NextResultSet</span><span class="params">()</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function">// </span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(rs *Rows)</span> <span class="title">Scan</span><span class="params">(dest ...<span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Scanner"><a href="#Scanner" class="headerlink" title="Scanner"></a><a href="https://golang.org/pkg/database/sql/#Scanner" target="_blank" rel="noopener">Scanner</a></h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Scanner <span class="keyword">interface</span> &#123;</span><br><span class="line">    <span class="comment">// Scan assigns a value from a database driver.</span></span><br><span class="line">    Scan(src <span class="keyword">interface</span>&#123;&#125;) error</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Stmt"><a href="#Stmt" class="headerlink" title="Stmt"></a><a href="https://golang.org/pkg/database/sql/#Stmt" target="_blank" rel="noopener">Stmt</a></h2><p>查詢語句, DDL、DML等的prepared sql語句.</p>
+<h2 id="Tx"><a href="#Tx" class="headerlink" title="Tx"></a><a href="https://golang.org/pkg/database/sql/#Tx" target="_blank" rel="noopener">Tx</a></h2><p>一個進行中的資料庫事務.<br>呼叫db.Begin()之後, 會取得一個tx物件, 需要呼叫Commit()或Rollback()才會結束事務.並且歸還連線回連線池.</p>
+<h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a><a href="https://golang.org/pkg/database/sql/#Result" target="_blank" rel="noopener">Result</a></h2><p>主要是針對insert、update、delete的操作所返回的結果.<br>Result是個接口,  定義了LastInsertId()和RowsAffected().<br>各驅動會實作這接口的兩個方法.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Result <span class="keyword">interface</span> &#123;</span><br><span class="line">    LastInsertId() (<span class="keyword">int64</span>, error)</span><br><span class="line">    RowsAffected() (<span class="keyword">int64</span>, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MySqlDriver的實作:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> mysql</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> mysqlResult <span class="keyword">struct</span> &#123;</span><br><span class="line">	affectedRows <span class="keyword">int64</span></span><br><span class="line">	insertId     <span class="keyword">int64</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(res *mysqlResult)</span> <span class="title">LastInsertId</span><span class="params">()</span> <span class="params">(<span class="keyword">int64</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> res.insertId, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(res *mysqlResult)</span> <span class="title">RowsAffected</span><span class="params">()</span> <span class="params">(<span class="keyword">int64</span>, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> res.affectedRows, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Nullable-Property"><a href="#Nullable-Property" class="headerlink" title="Nullable Property"></a><a href="https://golang.org/pkg/database/sql/#NullBool" target="_blank" rel="noopener">Nullable Property</a></h2><p>各種允許null的基礎型別. 且都有實現Scanner的Scan().</p>
+<h2 id="IsolationLevel"><a href="#IsolationLevel" class="headerlink" title="IsolationLevel"></a><a href="https://golang.org/pkg/database/sql/#IsolationLevel" target="_blank" rel="noopener">IsolationLevel</a></h2><p>事務用的<a href="https://myapollo.com.tw/2018/09/30/database-transaction-isolation-levels/" target="_blank" rel="noopener">資料隔離等級</a>.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span>（</span><br><span class="line">    LevelDefault  IsolationLevel = <span class="literal">iota</span> </span><br><span class="line">    LevelReadUncommitted </span><br><span class="line">    LevelReadCommitted </span><br><span class="line">    LevelWriteCommitted </span><br><span class="line">    LevelRepeatableRead </span><br><span class="line">    LevelSnapshot </span><br><span class="line">    LevelSerializable </span><br><span class="line">    LevelLinearizable </span><br><span class="line">）</span><br></pre></td></tr></table></figure>
+
+<h1 id="來試著操作看看DB"><a href="#來試著操作看看DB" class="headerlink" title="來試著操作看看DB"></a>來試著操作看看DB</h1><h2 id="1-使用MySQL驅動"><a href="#1-使用MySQL驅動" class="headerlink" title="1. 使用MySQL驅動"></a>1. 使用MySQL驅動</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"database/sql"</span></span><br><span class="line">	_ <span class="string">"github.com/go-sql-driver/mysql"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就這樣…<br>疑?  別懷疑!!!<br>我們來看看sql包提供什麼方法給mysql注入驅動<br>mysql又怎麼偷偷去注入的.</p>
+<p>database/sql包的Register(), 有提供該方法注入驅動名稱跟驅動物件實例</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Register</span><span class="params">(name <span class="keyword">string</span>, driver driver.Driver)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>go-sql-driver/mysql則是在driver.go這裡有註冊了init要執行的動作.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// go-sql-driver/mysql/blob/master/driver.go</span></span><br><span class="line"><span class="keyword">package</span> mysql</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"database/sql"</span></span><br><span class="line">	<span class="string">"database/sql/driver"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	sql.Register(<span class="string">"mysql"</span>, &amp;MySQLDriver&#123;&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>還記得之前提到的package在相互import時, 如果有init會呼叫吧!<br>就是在這裡偷偷的注入了驅動.</p>
+<p>有了驅動, 就來建立連線.</p>
+<h2 id="2-嘗試建立連線"><a href="#2-嘗試建立連線" class="headerlink" title="2. 嘗試建立連線"></a>2. 嘗試建立連線</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"database/sql"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/go-sql-driver/mysql"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	config := mysql.Config&#123;</span><br><span class="line">		User:                 <span class="string">"root"</span>,</span><br><span class="line">		Passwd:               <span class="string">"m_root_pwd"</span>,</span><br><span class="line">		Addr:                 <span class="string">"172.31.0.11:3306"</span>,</span><br><span class="line">		Net:                  <span class="string">"tcp"</span>,</span><br><span class="line">		DBName:               <span class="string">"testSync"</span>,</span><br><span class="line">		AllowNativePasswords: <span class="literal">true</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">"conn: "</span>, config.FormatDSN())</span><br><span class="line">	<span class="comment">// db, err := sql.Open("mysql", "root:m_root_pwd@tcp(172.31.0.11:3306)/testSync")</span></span><br><span class="line">	<span class="comment">// Open()並不會真的去連接DB</span></span><br><span class="line">	db, err := sql.Open(<span class="string">"mysql"</span>, config.FormatDSN())</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 釋放連線</span></span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Ping會真的建立一條連線</span></span><br><span class="line">	err = db.Ping()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">conn:  root:m_root_pwd@tcp(172.31.0.11:3306)/testSync?maxAllowedPacket=0</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/tLlrQ2s.png" alt><br><img src="https://i.imgur.com/5cFsdaN.png" alt><br>利用中斷點可以明顯的知道Open()並無真正建立連線.<br>DB位置亂打也不會真的給錯誤XD.</p>
+<p>這裡的連線字串是採用DSN(Data Source Name)的結構<br>[username[:password]@][protocol[(host:[port])]]/dbname[?param1=value1&amp;…&amp;paramN=valueN]</p>
+<p>config.FormatDSN()則是把config轉成DSN格式的字串</p>
+<p><strong>重要提醒</strong><br>DB的連線都是被設計來當作長連線使用的, 所以不該頻繁的Open、Close.<br>Open()也並不是真正建立連線, 也沒去驗證連線參數, 只是提早準備好資料庫的抽象實例, 方便等等使用.<br>Open取得的db實例, 要重複一直利用, 不應該去重複生成.<br>但若程式退出, 最好在主執行緒上執行db.Close().<br>不然就要等MySQL主動來確認這連線是否還健康.</p>
+<h2 id="3-執行基本語句"><a href="#3-執行基本語句" class="headerlink" title="3.執行基本語句"></a>3.執行基本語句</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"database/sql"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/go-sql-driver/mysql"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	CreateUsersTable = <span class="string">"CREATE TABLE IF NOT EXISTS `users` (`user_id` bigint(20) NOT NULL AUTO_INCREMENT, `user_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,	`created_time` timestamp NOT NULL DEFAULT current_timestamp,	`updated_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	PRIMARY KEY (user_id)  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">logIfErr</span><span class="params">(err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Printf(<span class="string">"error occurred: %s"</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	config := mysql.Config&#123;</span><br><span class="line">		User:                 <span class="string">"root"</span>,</span><br><span class="line">		Passwd:               <span class="string">"m_root_pwd"</span>,</span><br><span class="line">		Addr:                 <span class="string">"172.31.0.11:3306"</span>,</span><br><span class="line">		Net:                  <span class="string">"tcp"</span>,</span><br><span class="line">		DBName:               <span class="string">"testSync"</span>,</span><br><span class="line">		AllowNativePasswords: <span class="literal">true</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">"conn: "</span>, config.FormatDSN())</span><br><span class="line">	<span class="comment">// db, err := sql.Open("mysql", "root:m_root_pwd@tcp(172.31.0.11:3306)/testSync")</span></span><br><span class="line">	db, err := sql.Open(<span class="string">"mysql"</span>, config.FormatDSN())</span><br><span class="line">	logIfErr(err)</span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line">	<span class="comment">// create users table</span></span><br><span class="line">	_, err = db.Exec(CreateUsersTable)</span><br><span class="line">	logIfErr(err)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// insert data</span></span><br><span class="line">	result, err := db.Exec(<span class="string">"INSERT INTO `users` (`user_name`) VALUES('test02')"</span>)</span><br><span class="line">	logIfErr(err)</span><br><span class="line">	rowCount, err := result.RowsAffected()</span><br><span class="line">	logIfErr(err)</span><br><span class="line">	log.Print(rowCount)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// query data</span></span><br><span class="line">	rows, err := db.Query(<span class="string">"SELECT user_name FROM users"</span>)</span><br><span class="line">	logIfErr(err)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">		<span class="keyword">var</span> s <span class="keyword">string</span></span><br><span class="line">		err = rows.Scan(&amp;s)</span><br><span class="line">		logIfErr(err)</span><br><span class="line">		log.Print(<span class="string">"%q"</span>, s)</span><br><span class="line">	&#125;</span><br><span class="line">	rows.Close()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// query data with arguments</span></span><br><span class="line">	rows, err = db.Query(<span class="string">"SELECT user_name FROM users WHERE user_name = ?"</span>, <span class="string">"nathan"</span>)</span><br><span class="line">	logIfErr(err)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">		<span class="keyword">var</span> s <span class="keyword">string</span></span><br><span class="line">		err = rows.Scan(&amp;s)</span><br><span class="line">		logIfErr(err)</span><br><span class="line">		log.Print(<span class="string">"%q"</span>, s)</span><br><span class="line">	&#125;</span><br><span class="line">	rows.Close()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="預編譯語句-Prepared-Statement"><a href="#預編譯語句-Prepared-Statement" class="headerlink" title="預編譯語句 Prepared Statement"></a>預編譯語句 Prepared Statement</h1><p>資料庫會接收到各種不同的敘述來執行. 尤其就以查詢來說, 很可能內容都是一樣的, 只是where條件稍微不同. 但是每一次接收到敘述時都還是要 檢查-&gt;解析-&gt;執行-&gt;回傳<br>這樣的一套流程.<br>要是我們可以省下檢查-&gt;解析的過程, 每次只要把變數代入做 執行-&gt;回傳的動作的話.<br>速度上會快上一些.<br><img src="https://i.imgur.com/WAN0NuL.png" alt></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> user_name <span class="keyword">FROM</span> <span class="keyword">users</span> <span class="keyword">WHERE</span> user_name = ? ;</span><br></pre></td></tr></table></figure>
+
+<p>這個?我們叫做佔位符號(placeholders); 用來避免直接在sql作字串拼接, 可以防止大部分的<a href="https://www.acunetix.com/websitesecurity/sql-injection/" target="_blank" rel="noopener">sql injection</a></p>
+<table>
+<thead>
+<tr>
+<th align="center">MySQL</th>
+<th align="center">Postgres</th>
+<th align="center">Oracle</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">WHERE col = ?</td>
+<td align="center">WHERE col = $1</td>
+<td align="center">WHERE col = :col</td>
+</tr>
+<tr>
+<td align="center">VALUES(?, ?, ?)</td>
+<td align="center">VALUES($1, $2, $3)</td>
+<td align="center">VALUES(:val1, :val2, :val3)</td>
+</tr>
+</tbody></table>
+<p>預處理過得語句在資料庫中會被存起來, 資料庫會對該語句先作檢查-&gt;剖析, 作執行計畫的判斷跟語句優化.<br>而後我們只要帶入變數資料, 就能直接執行了.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">userName := <span class="string">"nathan"</span></span><br><span class="line">stmt, err := db.Prepare(<span class="string">"SELECT user_name FROM users WHERE user_name = ? ;"</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    log.Fatal(err)</span><br><span class="line">&#125;</span><br><span class="line">rows, err := stmt.Query(userName)</span><br><span class="line"><span class="keyword">defer</span> stmt.Close()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">stmt,_ := db.Prepare(<span class="string">"SELECT uid,username FROM USER WHERE age = ?"</span>)</span><br><span class="line"><span class="keyword">defer</span> stmt.Close()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同樣語句, 不同變數; 這樣連線也只要跟連線池要一次就好</span></span><br><span class="line"><span class="keyword">for</span> age := <span class="number">18</span>; age &lt; <span class="number">100</span> ; age ++ &#123;</span><br><span class="line">    rows,_ = stmt.Query(age)</span><br><span class="line">    <span class="keyword">defer</span> rows.Close()</span><br><span class="line">    <span class="keyword">for</span> rows.Next()&#123;</span><br><span class="line">         <span class="keyword">var</span> name <span class="keyword">string</span></span><br><span class="line">         <span class="keyword">var</span> id <span class="keyword">int</span></span><br><span class="line">        <span class="keyword">if</span> err := rows.Scan(&amp;id,&amp;name); err != <span class="literal">nil</span> &#123;</span><br><span class="line">            log.Fatal(err)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">stmt,_ := db.Prepare(<span class="string">"SELECT uid,username FROM USER WHERE age = ?"</span>)</span><br><span class="line"><span class="keyword">defer</span> stmt.Close()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同樣語句, 不同變數; 這樣連線也只要跟連線池要一次就好</span></span><br><span class="line">	<span class="keyword">for</span> outerAge := <span class="number">18</span>; outerAge &lt; <span class="number">100</span>; outerAge++ &#123;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(age <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">			rows, _ = stmt.Query(age)</span><br><span class="line">			<span class="keyword">defer</span> rows.Close()</span><br><span class="line">			<span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">				<span class="keyword">var</span> name <span class="keyword">string</span></span><br><span class="line">				<span class="keyword">var</span> id <span class="keyword">int</span></span><br><span class="line">				<span class="keyword">if</span> err := rows.Scan(&amp;id, &amp;name); err != <span class="literal">nil</span> &#123;</span><br><span class="line">					log.Fatal(err)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;(outerAge)</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Query"><a href="#Query" class="headerlink" title="Query()"></a>Query()</h2><ul>
+<li>DB.Query(query string, args …interface{}) (*Rows, error)</li>
+<li>Tx.Query(query string, args …interface{}) (*Rows, error)</li>
+<li>Stmt.Query(args …interface{}) (*Rows, error)<br>前兩個只是參數多了sql查詢語句.<br>Stmt本來就先保存了一份prepared stmt在資料庫了, 這裡就只是傳遞參數.<br>回傳值都是一樣的.<br>使用就全看我們的情境了.</li>
+</ul>
+<p>Tx幾乎都是為了先鎖定確認資料的值, 才決定執行異動.<br>或者是多筆異動都要確保一起完成或失敗.</p>
+<h2 id="Rows-Next"><a href="#Rows-Next" class="headerlink" title="Rows.Next()"></a>Rows.Next()</h2><p>透過Next()得知還有沒有下一筆資料.<br>這時就能思考是否這時Query成功後, 其實所有的資料都在Go的服務的記憶中了??</p>
+<p>其實不是XD  真要是這樣那些撈報表的早就記憶體被塞爆了.<br>也沒有必要去手動遞延呼叫rows.Close(), 來歸還連線.</p>
+<p>之間的溝通全靠<a href="https://dev.mysql.com/doc/internals/en/com-query-response.html#packet-ProtocolText::ResultsetRow" target="_blank" rel="noopener">COM_QUERY</a>在串流式的發送命令和讀取TCP package進到buffer.<br>直到收到EOF時, 就表示沒有下一筆了.<br><a href="https://github.com/go-sql-driver/mysql/blob/8056f2ca4aa7be2e2e10ab01426a630d5a5bfa81/packets.go" target="_blank" rel="noopener">readRow()原始程式</a></p>
+<p>我以後再補一篇在個人網誌, 用wireshark就能抓到這mysql數據包了</p>
+<p>明天會介紹更多DB用法, 應該吧.</p>
+<blockquote>
+<p>資料庫許多事情, 能到<a href="https://www.facebook.com/groups/616369245163622/" target="_blank" rel="noopener">BackendTw</a>臉書社團詢問T大, 他的經驗跟講座都很值得聽.</p>
+</blockquote>
+<p><a href="https://ithelp.ithome.com.tw/articles/10220392" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/Go-Database/" data-id="ckiylx6km00117z6xsvimc9yr" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go database/sql, 和資料庫打個招呼",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/y47gGlS.jpg",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/Go-Database/",
+        "description": "SQL在做專案時, 都會需要關聯式資料庫做資料的CRUD.Go提供了database/sql包來讓開發者跟資料庫打交道, 這包就像Java的JDBC.database/sql包只是定義了一套操作資料庫的接口和抽象層定義.所以還是需要實體的驅動, 這裡我選用MySQL.各種Go SQL Drivers我們開發者幾乎都是在操作database/sql包所提供的接口方法而已.大部分情境, 都只要在程式的某地方設定好驅動就好.​",
+        "wordCount": 1847
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2020/12/21/Go-Database-Scan/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2020/12/21/Go-Reflection/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go_Reflection</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Testing/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Z9DjTgq.png)" alt="Go Testing初探" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Testing/" class="title">Go Testing初探</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database-Scan/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/a19yzfd.png)" alt="Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database-Scan/" class="title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/y47gGlS.jpg)" alt="Go database/sql, 和資料庫打個招呼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database/" class="title">Go database/sql, 和資料庫打個招呼</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Reflection/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg)" alt="Go_Reflection" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Reflection/" class="title">Go_Reflection</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:36:09.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Context-電話蟲/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://miro.medium.com/max/1002/1*4zwrwPEwhn8_2A_m2zrc7Q.jpeg)" alt="Go_Context_電話蟲" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Context-電話蟲/" class="title">Go_Context_電話蟲</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:26:53.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">19</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/Go-Database/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

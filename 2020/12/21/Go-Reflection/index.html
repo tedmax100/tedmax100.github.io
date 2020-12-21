@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go_Reflection | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="Reflection 反射反射指的是程式”運行”期間動態的調用對象的方法和屬性.Golang內建這功能, 在”reflect”包裡.​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go_Reflection">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/Go-Reflection/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="Reflection 反射反射指的是程式”運行”期間動態的調用對象的方法和屬性.Golang內建這功能, 在”reflect”包裡.​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg">
+<meta property="og:updated_time" content="2020-12-21T13:37:02.965Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go_Reflection">
+<meta name="twitter:description" content="Reflection 反射反射指的是程式”運行”期間動態的調用對象的方法和屬性.Golang內建這功能, 在”reflect”包裡.​">
+<meta name="twitter:image" content="https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Reflection" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go_Reflection
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/Go-Reflection/" class="article-date">
+       <time datetime="2020-12-21T13:36:09.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/Go-Reflection/" class="article-date">
+     <time datetime="2020-12-21T13:37:02.965Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p><img src="https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg" alt></p>
+<h1 id="Reflection-反射"><a href="#Reflection-反射" class="headerlink" title="Reflection 反射"></a>Reflection 反射</h1><p>反射指的是程式”運行”期間動態的調用對象的方法和屬性.<br>Golang內建這功能, 在”reflect”包裡.<br>​<a id="more"></a><br>思考一下interface{}這類型, 什麼都能代入.<br>但這麼方便的話, 我們幹麻不全傳它就好XD<br>Go在這裡面做了很多反射取型別的動作判斷.<br>不然幹麻出type assertion(類型斷言)這類的東西.<br>就是要想辦法告訴Go這變數是什麼類型, 要怎使用它.</p>
+<h1 id="Type-amp-Value-amp-Kind"><a href="#Type-amp-Value-amp-Kind" class="headerlink" title="Type &amp; Value &amp; Kind"></a>Type &amp; Value &amp; Kind</h1><p>一個變數一定包含 type和value兩個部份.<br>理解這點就知道為什麼 nil != nil, 像是字串的nil跟int的nil就不會一樣.</p>
+<h2 id="Kind"><a href="#Kind" class="headerlink" title="Kind"></a><a href="https://golang.org/pkg/reflect/#Kind" target="_blank" rel="noopener">Kind</a></h2><p>對象隸屬的種類…</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">    Invalid Kind = <span class="literal">iota</span></span><br><span class="line">    Bool  </span><br><span class="line">    Int</span><br><span class="line">    ...</span><br><span class="line">    Array</span><br><span class="line">    Chan</span><br><span class="line">    Func</span><br><span class="line">    Interface</span><br><span class="line">    Map</span><br><span class="line">    Ptr</span><br><span class="line">    Slice</span><br><span class="line">    String</span><br><span class="line">    Struct</span><br><span class="line">    UnsafePointer</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>很多…基本上就粗分成<br><code>基礎型別</code>, <code>引用型別</code>, <code>指針</code>這樣</p>
+<h2 id="Type"><a href="#Type" class="headerlink" title="Type"></a><a href="https://golang.org/pkg/reflect/#Type" target="_blank" rel="noopener">Type</a></h2><p>Type代表的是對象的類別資訊</p>
+<ul>
+<li><p>TypeOf  透過TypeOf取得對象的Type資訊</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TypeOf</span><span class="params">(i <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">Type</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Elem 透過Elem取得對象包含的值或者是對象是個指針所指向的值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Enum <span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	Zero Enum = <span class="number">0</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">type</span> cat <span class="keyword">struct</span> &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 實例化物件</span></span><br><span class="line">	typeOfCat := reflect.TypeOf(cat&#123;&#125;)</span><br><span class="line">	fmt.Println(typeOfCat.Name(), typeOfCat.Kind())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 基礎型別</span></span><br><span class="line">	typeOfA := reflect.TypeOf(Zero)</span><br><span class="line">	fmt.Println(typeOfA.Name(), typeOfA.Kind())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 指針類型, 指針是沒有類別名稱的, 不是nil是空字串</span></span><br><span class="line">	catInstance := &amp;cat&#123;&#125;</span><br><span class="line">	typeOfCatInstance := reflect.TypeOf(catInstance)</span><br><span class="line">	fmt.Printf(<span class="string">"name: '%v' kind:'%v'\n"</span>, typeOfCatInstance.Name(), typeOfCatInstance.Kind())</span><br><span class="line"></span><br><span class="line">	<span class="comment">//  透過Elem()來取得這指針指向的對象</span></span><br><span class="line">	typeOfCatInstanceElem := typeOfCatInstance.Elem()</span><br><span class="line">	fmt.Printf(<span class="string">"name: '%v' kind:'%v'\n"</span>, typeOfCatInstanceElem.Name(), typeOfCatInstanceElem.Kind())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">cat struct</span></span><br><span class="line"><span class="comment">Enum int</span></span><br><span class="line"><span class="comment">name: '' kind:'ptr'</span></span><br><span class="line"><span class="comment">name: 'cat' kind:'struct'</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="Value"><a href="#Value" class="headerlink" title="Value"></a><a href="https://golang.org/pkg/reflect/#Value" target="_blank" rel="noopener">Value</a></h2><p>Value就對象的原始值</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> a <span class="keyword">int</span> = <span class="number">1024</span></span><br><span class="line">	<span class="comment">// 透過valueof 取得對象的值</span></span><br><span class="line">	valueOfA := reflect.ValueOf(a)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 將對象的值以interface&#123;&#125; 類型返回取得</span></span><br><span class="line">	<span class="comment">// 再做類型斷言</span></span><br><span class="line">	<span class="keyword">var</span> getA <span class="keyword">int</span> = valueOfA.Interface().(<span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 將對象的值以int 類型返回取得</span></span><br><span class="line">	<span class="keyword">var</span> getA2 <span class="keyword">int</span> = <span class="keyword">int</span>(valueOfA.Int())</span><br><span class="line"></span><br><span class="line">	fmt.Println(getA, getA2)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 1024 1024</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="獲得struct的成員訊息"><a href="#獲得struct的成員訊息" class="headerlink" title="獲得struct的成員訊息"></a>獲得struct的成員訊息</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// struct</span></span><br><span class="line"><span class="keyword">type</span> Dummy <span class="keyword">struct</span> &#123;</span><br><span class="line">	a <span class="keyword">int</span></span><br><span class="line">	b <span class="keyword">string</span></span><br><span class="line">	<span class="keyword">float32</span></span><br><span class="line">	<span class="keyword">bool</span></span><br><span class="line">	<span class="comment">// 指針成員</span></span><br><span class="line">	next   *Dummy</span><br><span class="line">	nilPtr *Dummy</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// dummy實例</span></span><br><span class="line">	dummyIns := Dummy&#123;</span><br><span class="line">		next: &amp;Dummy&#123;&#125;,</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 取得成員屬性數量</span></span><br><span class="line">	d := reflect.ValueOf(dummyIns)</span><br><span class="line">	fmt.Println(<span class="string">"NumField:"</span>, d.NumField())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 透過索引來取得成員屬性</span></span><br><span class="line">	floatField := d.Field(<span class="number">2</span>)</span><br><span class="line">	fmt.Println(<span class="string">"Field2 :"</span>, floatField.Type())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 透過屬性名稱來取得成員屬性</span></span><br><span class="line">	fmt.Println(<span class="string">"FiledByName:(\"b\".Type"</span>, d.FieldByName(<span class="string">"b"</span>).Type())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 根據[]int的的值當索引取得成員屬性數量</span></span><br><span class="line">	<span class="comment">// []int&#123;4, 0&#125;, 4先取得的是next; 0指向的就是最初的成員 a int</span></span><br><span class="line">	fmt.Println(<span class="string">"FieldByIndex([]ubt&#123;4,0&#125;).Type()"</span>, d.FieldByIndex([]<span class="keyword">int</span>&#123;<span class="number">4</span>, <span class="number">0</span>&#125;).Type())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// IsNil()判斷該成員是不是nil</span></span><br><span class="line">	fmt.Println(<span class="string">"nilPtr *Dummy IsNill()"</span>, d.FieldByName(<span class="string">"nilPtr"</span>).IsNil())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// IsValid()判斷該成員的值是否合法, 就是看是否有值, 或是值是否有效</span></span><br><span class="line">	<span class="comment">// nilPtr 是個指針本身有值, 只是指向nil</span></span><br><span class="line">	fmt.Println(<span class="string">"nilPtr *Dummy IsValid()"</span>, d.FieldByName(<span class="string">"nilPtr"</span>).IsValid())</span><br><span class="line">	<span class="comment">// 查找abc()</span></span><br><span class="line">	fmt.Println(<span class="string">"func abc()"</span>, d.MethodByName(<span class="string">"abc"</span>).IsValid())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 這裡故意存取一個不存在的成員</span></span><br><span class="line">	fmt.Println(<span class="string">"notExist property IsValid()"</span>, d.FieldByName(<span class="string">""</span>).IsValid())</span><br><span class="line">	<span class="comment">// nil</span></span><br><span class="line">	fmt.Println(<span class="string">"nil IsValid()"</span>, reflect.ValueOf(<span class="literal">nil</span>).IsValid())</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 從map中查找一個不存在的鍵</span></span><br><span class="line">	mapIns := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>)</span><br><span class="line">	fmt.Println(<span class="string">"not exist key of map IsValid()"</span>, reflect.ValueOf(mapIns).MapIndex(reflect.ValueOf(<span class="string">"aa"</span>)).IsValid())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">NumField: 6</span></span><br><span class="line"><span class="comment">Field2 : float32</span></span><br><span class="line"><span class="comment">FiledByName:("b".Type string</span></span><br><span class="line"><span class="comment">FieldByIndex([]ubt&#123;4,0&#125;).Type() int</span></span><br><span class="line"><span class="comment">nilPtr *Dummy IsNill() true</span></span><br><span class="line"><span class="comment">nilPtr *Dummy IsValid() true</span></span><br><span class="line"><span class="comment">func abc() false</span></span><br><span class="line"><span class="comment">notExist property IsValid() false</span></span><br><span class="line"><span class="comment">nil IsValid() false</span></span><br><span class="line"><span class="comment">not exist key of map IsValid() false</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Struct-Tag-結構體標籤"><a href="#Struct-Tag-結構體標籤" class="headerlink" title="Struct Tag 結構體標籤"></a>Struct Tag 結構體標籤</h2><p>我們在JSON、SQL、ORM處理序列化或反序列化時, 都需要用到這些tag.<br>用tag來設定該屬性在處理時應該具備的特殊屬性或行為.</p>
+<p>tag格式: Key跟Value用:分隔, 值用”包起來; 不同鍵用一個空格作分隔.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`Key1:&quot;Value1&quot; Key2:&quot;Value&quot;`</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"encoding/json"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Cat <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name   <span class="keyword">string</span>  <span class="string">`json:"name"`</span></span><br><span class="line">	Type   <span class="keyword">int</span>     <span class="string">`json:"type" id:"100"`</span></span><br><span class="line">	Money  <span class="keyword">float64</span> <span class="string">`json:"money"`</span></span><br><span class="line">	Ignore <span class="keyword">bool</span>    <span class="string">`json:"-"`</span> <span class="comment">// - 表示會被忽略,  直接賦予該類型的零值</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ins := Cat&#123;</span><br><span class="line">		Name: <span class="string">"black"</span>,</span><br><span class="line">		Type: <span class="number">1</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	typeOfCat := reflect.TypeOf(ins)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; typeOfCat.NumField(); i++ &#123;</span><br><span class="line">		fieldType := typeOfCat.Field(i)</span><br><span class="line"></span><br><span class="line">		fmt.Printf(<span class="string">"name: %v ,tag:'%v'\n"</span>, fieldType.Name, fieldType.Tag)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> catType, ok := typeOfCat.FieldByName(<span class="string">"Type"</span>); ok &#123;</span><br><span class="line">		fmt.Println(catType.Tag.Get(<span class="string">"json"</span>))</span><br><span class="line">		fmt.Println(catType.Tag.Get(<span class="string">"id"</span>))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 透過Marshal(), 來把資料轉成json字串, 這裡會去讀取json tag</span></span><br><span class="line">	j, err := json.Marshal(ins)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="keyword">string</span>(j))</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 透過Unmarshal(), 來把json字串轉成對應物件, 這裡會去讀取json tag</span></span><br><span class="line">	<span class="keyword">var</span> jsonBody = []<span class="keyword">byte</span>(<span class="string">`&#123;"name":"yellow","type":2,"money":200&#125;`</span>)</span><br><span class="line">	<span class="keyword">var</span> cat Cat</span><br><span class="line">	err = json.Unmarshal(jsonBody, &amp;cat)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">"%+v"</span>, cat)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">name: Name ,tag:'json:"name"'</span></span><br><span class="line"><span class="comment">name: Type ,tag:'json:"type" id:"100"'</span></span><br><span class="line"><span class="comment">name: Money ,tag:'json:"money"'</span></span><br><span class="line"><span class="comment">name: Ignore ,tag:'json:"-"'</span></span><br><span class="line"><span class="comment">type</span></span><br><span class="line"><span class="comment">100</span></span><br><span class="line"><span class="comment">&#123;"name":"black","type":1,"money":0&#125;</span></span><br><span class="line"><span class="comment">&#123;Name:yellow Type:2 Money:200 Ignore:false&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Interface"><a href="#Interface" class="headerlink" title="Interface"></a>Interface</h3><p>之前提過實現Interface是透過隱性的向上轉型的方式(Duck typing).<br>來稍微用反射玩看看, 當然實際不是這樣做的, 效能會大打折扣.<br>Reflect相當吃效能.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CatPtrInterface <span class="keyword">interface</span> &#123;</span><br><span class="line">	MeowPtrReceiver()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> CatInterface <span class="keyword">interface</span> &#123;</span><br><span class="line">	MeowReceiver()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Cat <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c Cat)</span> <span class="title">MeowReceiver</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"meow"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Cat)</span> <span class="title">MeowPtrReceiver</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"meowptr"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> DogPtrInterface <span class="keyword">interface</span> &#123;</span><br><span class="line">	Woof()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	catPtrObject := &amp;Cat&#123;&#125;</span><br><span class="line">	<span class="comment">//catPtrInterfaceType := reflect.TypeOf((*CatPtrInterface)(nil)).Elem()</span></span><br><span class="line">	catPtrInterfaceType := reflect.TypeOf(<span class="built_in">new</span>(CatPtrInterface)).Elem()</span><br><span class="line">	catPtrObjectType := reflect.TypeOf(catPtrObject)</span><br><span class="line">	fmt.Println(<span class="string">"&amp;Cat&#123;&#125; implement CatPtrInterface? "</span>, catPtrObjectType.Implements(catPtrInterfaceType))</span><br><span class="line"></span><br><span class="line">	catObject := Cat&#123;&#125;</span><br><span class="line">    <span class="comment">// 建立一個CatInterface指標nil</span></span><br><span class="line">	catInterfaceType := reflect.TypeOf((*CatInterface)(<span class="literal">nil</span>)).Elem()</span><br><span class="line">	catObjectType := reflect.TypeOf(catObject)</span><br><span class="line">	fmt.Println(<span class="string">"Cat&#123;&#125; implement CatInterface? "</span>, catObjectType.Implements(catInterfaceType))</span><br><span class="line"></span><br><span class="line">	dogInterfaceType := reflect.TypeOf((*DogPtrInterface)(<span class="literal">nil</span>)).Elem()</span><br><span class="line">	fmt.Println(<span class="string">"&amp;Cat&#123;&#125; implement DogPtrInterface? "</span>, catPtrObjectType.Implements(dogInterfaceType))</span><br><span class="line">	fmt.Println(<span class="string">"Cat&#123;&#125; implement DogPtrInterface? "</span>, catObjectType.Implements(dogInterfaceType))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&amp;Cat&#123;&#125; implement CatPtrInterface?  true</span></span><br><span class="line"><span class="comment">Cat&#123;&#125; implement CatInterface?  true</span></span><br><span class="line"><span class="comment">&amp;Cat&#123;&#125; implement DogPtrInterface?  false</span></span><br><span class="line"><span class="comment">Cat&#123;&#125; implement DogPtrInterface?  false</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>題外話<br>小弟最近把Go升級到1.13版…結果VSCode沒法執行Debug  QQ<br>我的作法是把/usr/loca/go的資料刪除, 重新安裝GO1.12版 </p>
+</blockquote>
+<p><a href="https://ithelp.ithome.com.tw/articles/10219894" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/Go-Reflection/" data-id="ckiylx6kp001f7z6xt5idyikn" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go_Reflection",
+        "image": "https://tedmax100.github.iohttps://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/Go-Reflection/",
+        "description": "
+Reflection 反射反射指的是程式”運行”期間動態的調用對象的方法和屬性.Golang內建這功能, 在”reflect”包裡.​",
+        "wordCount": 1273
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2020/12/21/Go-Database/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Go database/sql, 和資料庫打個招呼
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2020/12/21/Go-Context-電話蟲/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go_Context_電話蟲</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Testing/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Z9DjTgq.png)" alt="Go Testing初探" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Testing/" class="title">Go Testing初探</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database-Scan/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/a19yzfd.png)" alt="Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database-Scan/" class="title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/y47gGlS.jpg)" alt="Go database/sql, 和資料庫打個招呼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database/" class="title">Go database/sql, 和資料庫打個招呼</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Reflection/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg)" alt="Go_Reflection" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Reflection/" class="title">Go_Reflection</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:36:09.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Context-電話蟲/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://miro.medium.com/max/1002/1*4zwrwPEwhn8_2A_m2zrc7Q.jpeg)" alt="Go_Context_電話蟲" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Context-電話蟲/" class="title">Go_Context_電話蟲</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:26:53.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">19</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/Go-Reflection/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

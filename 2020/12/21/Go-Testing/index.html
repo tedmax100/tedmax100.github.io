@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go Testing初探 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="程式寫好了!!來稍微測試自己的程式會不會跑.但Go只有main包的main()才能執行阿!! 還是要寫另一個專案的程式來測試剛剛寫的程式呢? Go內建測試框架testing讓你可以把想寫的測試程式寫在裡面, 透過go test來執行測試.​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go Testing初探">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/Go-Testing/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="程式寫好了!!來稍微測試自己的程式會不會跑.但Go只有main包的main()才能執行阿!! 還是要寫另一個專案的程式來測試剛剛寫的程式呢? Go內建測試框架testing讓你可以把想寫的測試程式寫在裡面, 透過go test來執行測試.​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/Z9DjTgq.png">
+<meta property="og:updated_time" content="2020-12-21T13:40:30.210Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go Testing初探">
+<meta name="twitter:description" content="程式寫好了!!來稍微測試自己的程式會不會跑.但Go只有main包的main()才能執行阿!! 還是要寫另一個專案的程式來測試剛剛寫的程式呢? Go內建測試框架testing讓你可以把想寫的測試程式寫在裡面, 透過go test來執行測試.​">
+<meta name="twitter:image" content="https://i.imgur.com/Z9DjTgq.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Testing" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go Testing初探
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/Go-Testing/" class="article-date">
+       <time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/Go-Testing/" class="article-date">
+     <time datetime="2020-12-21T13:40:30.210Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>程式寫好了!!<br>來稍微測試自己的程式會不會跑.<br>但Go只有main包的main()才能執行阿!!</p>
+<p>還是要寫另一個專案的程式來測試剛剛寫的程式呢?</p>
+<p>Go內建測試框架<a href="https://golang.org/pkg/testing/" target="_blank" rel="noopener">testing</a><br>讓你可以把想寫的測試程式寫在裡面, 透過<code>go test</code>來執行測試.<br>​<a id="more"></a></p>
+<h1 id="單元測試Unit-Test"><a href="#單元測試Unit-Test" class="headerlink" title="單元測試Unit Test"></a>單元測試<a href="https://zh.wikipedia.org/wiki/%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95" target="_blank" rel="noopener">Unit Test</a></h1><p>通常會利用testing來寫所謂的<code>單元測試UnitTest</code>.<br>用來測試某一個package, 或是某一段程式碼甚至是某一個函數.</p>
+<p>單元測試的單元指的是人為規定的最小的被測功能模組.<br>(恩, 打完這句話我自己也看不懂.)<br>廣義的說就是該被測功能的內部組成, 該組成能是<code>stucts</code>、有接收器的<code>method()</code>跟一些global的<code>func()</code>, 這些都能被叫做是<strong>單元</strong>.<br>這些單元要夠可靠、有效率, 這樣組合起來的模組才會一樣可靠有效率.</p>
+<p>所以透過unit test來協助我們來度量這些維度.</p>
+<p>先來寫一個FizzBuzz的功能.<br>一個班級有一堆學生(廢話)<br>老師指向隨機一個同學,  要他從1開始講, 然後下一位同學接著講下一個數字.<br>只要自己的數字能夠被3給整除, 就講Fizz ; 能被5整除講Buzz<br>要是該數字能被3跟5給整除, 就講FizzBuzz</p>
+<p><code>fizzBuzz.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"strconv"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">FizzBuzz</span><span class="params">(num <span class="keyword">int</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> num%<span class="number">15</span> == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"FizzBuzz"</span></span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> num%<span class="number">3</span> == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Fizz"</span></span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> num%<span class="number">5</span> == <span class="number">0</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"Buzz"</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> strconv.Itoa(num)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>main.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> studentAmount <span class="keyword">int</span> = <span class="number">50</span></span><br><span class="line">	<span class="keyword">for</span> number := <span class="number">1</span>; number &lt;= studentAmount; number++ &#123;</span><br><span class="line">		fmt.Println(FizzBuzz(number))</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Buzz</span></span><br><span class="line"><span class="comment">11</span></span><br><span class="line"><span class="comment">Fizz</span></span><br><span class="line"><span class="comment">13</span></span><br><span class="line"><span class="comment">14</span></span><br><span class="line"><span class="comment">FizzBuzz</span></span><br><span class="line"><span class="comment">16</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>m…怎確認對不對呢? 用肉眼檢查？<br>要是你想到是這樣的方式!!  那你還<code>不夠懶</code>!! 太勤勞了XD</p>
+<p>首先先建立一個fizzBuzz_test.go的檔案.<br>測試方法的參數都要是*testing.T.<br>方法名稱也要是Test開頭.</p>
+<p>testing.T提供的操作方法:</p>
+<h3 id="Log、Logf"><a href="#Log、Logf" class="headerlink" title="Log、Logf"></a>Log、Logf</h3><p>列印出Log, 並且結束測試<br>Logf是加上格式化的功能</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *T)</span> <span class="title">Log</span><span class="params">(args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(c *T)</span> <span class="title">Logf</span><span class="params">(format <span class="keyword">string</span>, args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Error、Errorf"><a href="#Error、Errorf" class="headerlink" title="Error、Errorf"></a>Error、Errorf</h3><p>列印出錯誤Log, 並且結束該案例的測試, 往下一個案例前進; 測試結果會是Fail</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *T)</span> <span class="title">Error</span><span class="params">(args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(c *T)</span> <span class="title">Errorf</span><span class="params">(format <span class="keyword">string</span>, args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Fatal、Fatalf"><a href="#Fatal、Fatalf" class="headerlink" title="Fatal、Fatalf"></a>Fatal、Fatalf</h3><p>列印出錯誤Log, 並且中斷測試; 測試結果會是Fail</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *T)</span> <span class="title">Failed</span><span class="params">()</span> <span class="title">bool</span></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="params">(c *T)</span> <span class="title">Fatal</span><span class="params">(args ...<span class="keyword">interface</span>&#123;&#125;)</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Table-Driven-Test"><a href="#Table-Driven-Test" class="headerlink" title="Table-Driven Test"></a>Table-Driven Test</h2><p>使用表驅動測試, 就是給一組列表內有輸入和預期的結果;<br>都去執行相同的待測單元, 然後比對預期的結果.<br>未來有新的case加進去就好.</p>
+<p>這裡我懶,  就跑一組</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestFizzBuzzSuccess</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> testCases = []<span class="keyword">struct</span> &#123;</span><br><span class="line">		in  []<span class="keyword">int</span></span><br><span class="line">		out []<span class="keyword">string</span></span><br><span class="line">	&#125;&#123;</span><br><span class="line">		&#123;</span><br><span class="line">			in:  []<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>, <span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>&#125;,</span><br><span class="line">			out: []<span class="keyword">string</span>&#123;<span class="string">"1"</span>, <span class="string">"2"</span>, <span class="string">"Fizz"</span>, <span class="string">"4"</span>, <span class="string">"Buzz"</span>, <span class="string">"Fizz"</span>, <span class="string">"7"</span>, <span class="string">"8"</span>, <span class="string">"Fizz"</span>, <span class="string">"Buzz"</span>, <span class="string">"11"</span>, <span class="string">"Fizz"</span>, <span class="string">"13"</span>, <span class="string">"14"</span>, <span class="string">"FizzBuzz"</span>&#125;,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> idx := <span class="keyword">range</span> testCases &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="keyword">range</span> testCases[idx].in &#123;</span><br><span class="line">			<span class="keyword">if</span> testCases[idx].out[i] != FizzBuzz(testCases[idx].in[i]) &#123;</span><br><span class="line">				t.Errorf(<span class="string">"not correct, input: %s ; output: %s"</span>, FizzBuzz(testCases[idx].in[i]), testCases[idx].out[i])</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span></span><br><span class="line">-----</span><br><span class="line">PASS</span><br><span class="line">ok      UnitTest     0.001s</span><br></pre></td></tr></table></figure>
+
+<p>錯誤也是一種測試情境, 當我們給錯誤資料或錯誤行為時, 本來就是預期返回錯誤.</p>
+<h2 id="go-test"><a href="#go-test" class="headerlink" title="go test"></a>go test</h2><p>go test默認行為是執行所有的測試範例.<br>加上<code>-run</code>可以指定單個測試範例執行.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> -run TestFizzBuzzSuccess</span><br></pre></td></tr></table></figure>
+
+<p>單元測試應該都要極快完成, 這樣我們未來改動一點點程式時, 都能跑一下單元測試.<br>不然改個幾個字, 要等1分鐘…生命就流逝去了.<br>但要怎麼夠快, 簡單的說就是只有測試邏輯, 不測試外部依賴跟資料.<br>外部依賴跟資料全作假的, 自然就會快了.<br>時間也是種外部依賴, 不然排程服務每次測試都要等時間到, 也是慢.</p>
+<h3 id="加上超時限制"><a href="#加上超時限制" class="headerlink" title="加上超時限制"></a>加上超時限制</h3><p>-timeout 時間</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> -run TestFizzBuzzSuccess -timeout 1ns </span><br><span class="line">---------</span><br><span class="line">panic: <span class="built_in">test</span> timed out after 1ns</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://marketplace.visualstudio.com/items?itemName=premparihar.gotestexplorer" target="_blank" rel="noopener">VsCode插件 - Go Test Explorer</a></p>
+<h1 id="Benchmark-Test"><a href="#Benchmark-Test" class="headerlink" title="Benchmark Test"></a>Benchmark Test</h1><p>Benchmark這個在遊戲測試報告中應該常聽到的名詞.<br>這裡是用來取得待測目標<code>執行效率</code>和<code>記憶體佔用</code>的情況作測試.</p>
+<p>這裡測試方法名稱要以Benchmark開頭, 傳入參數為(b *testing.B)<br>b.N表示的是循環的次數, 因為是壓測, 所有要反覆的測試待測目標</p>
+<p>測試時間預設是1秒鐘, 會顯示測試次數跟每次所花費的時間成本.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Benchmark_FizzBuzz</span><span class="params">(b *testing.B)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;</span><br><span class="line">		FizzBuzz(i)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="效率測試"><a href="#效率測試" class="headerlink" title="效率測試"></a>效率測試</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line">go <span class="built_in">test</span> -bench=.    </span><br><span class="line">----------------------</span><br><span class="line">goos: linux</span><br><span class="line">goarch: amd64</span><br><span class="line">pkg: UnitTest</span><br><span class="line">Benchmark_FizzBuzz-4    50000000                22.8 ns/op</span><br><span class="line">PASS</span><br><span class="line">ok      UnitTest     1.166s</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+
+<p>總共測試50000000次, 每次大約花費22.8 ns.</p>
+<p>還能自己定義測試時間<br>加上-benchtime</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> -bench=. -benchtime=2s</span><br><span class="line">-------</span><br><span class="line">goos: linux</span><br><span class="line">goarch: amd64</span><br><span class="line">pkg: UnitTest</span><br><span class="line">Benchmark_FizzBuzz-4    100000000               22.6 ns/op</span><br><span class="line">PASS</span><br><span class="line">ok      UnitTest     2.292s</span><br></pre></td></tr></table></figure>
+
+<h3 id="記憶體佔用測試"><a href="#記憶體佔用測試" class="headerlink" title="記憶體佔用測試"></a>記憶體佔用測試</h3><p>-benchmem</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> -bench=.  -benchmem</span><br><span class="line">-------</span><br><span class="line">goos: linux</span><br><span class="line">goarch: amd64</span><br><span class="line">pkg: UnitTest</span><br><span class="line">Benchmark_FizzBuzz-4    50000000                22.7 ns/op             4 B/op          0 allocs/op</span><br><span class="line">PASS</span><br><span class="line">ok      UnitTest     1.165s</span><br></pre></td></tr></table></figure>
+
+<p>4B/op 表示每次呼叫呼叫配置4Bytes<br>0 allocs/op 表示每次呼叫需要進行幾次分配對象記憶體.<br>這裡是0 是因為我們的待測目標沒有去new或是宣告任何參考型別.</p>
+<h3 id="輸出profile報告"><a href="#輸出profile報告" class="headerlink" title="輸出profile報告"></a>輸出profile報告</h3><p>-cpuprofile 檔名.out // 每10ms採集一次CPU使用情況<br>-memprofile 檔名.out // 執行期間, heap的分配情況<br>-memprofilerate n // n表示取樣間隔, 每當有n個Bytes的記憶體被配置時, 就會採樣紀錄一次<br>-blockprofile 檔名.out //記錄Goroutine發生的阻塞事件<br>-blockprofilerate n //記錄goroutine發生阻塞事件的時間間隔, n為次數, 預設1次.</p>
+<h1 id="匯出測試的覆蓋率"><a href="#匯出測試的覆蓋率" class="headerlink" title="匯出測試的覆蓋率"></a>匯出測試的覆蓋率</h1><p>-cover 啟動覆蓋率分析<br>-coverprofile 檔名.out // 把所有通過測試的覆蓋率報告寫檔<br><img src="https://i.imgur.com/Z9DjTgq.png" alt><br>把剛剛的coverprofile給圖像化<br>透過go tool來顯示, 方便我們理解哪裡沒有被測試到.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go tool cover -html=cov.out</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/OtnruNd.png" alt><br><img src="https://i.imgur.com/840JgTc.png" alt></p>
+<blockquote>
+<p>go還有強大的pprof的功能, 可以把各種上面的報表給圖像化的功能.<br>方便我們找出效能問題在哪裡.<br><img src="https://i.imgur.com/cP4A9F4.png" alt></p>
+</blockquote>
+<p><a href="https://ithelp.ithome.com.tw/articles/10221362" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/Go-Testing/" data-id="ckiylx6kq001j7z6xgkmnd3v8" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go Testing初探",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/Z9DjTgq.png",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/Go-Testing/",
+        "description": "程式寫好了!!來稍微測試自己的程式會不會跑.但Go只有main包的main()才能執行阿!!
+還是要寫另一個專案的程式來測試剛剛寫的程式呢?
+Go內建測試框架testing讓你可以把想寫的測試程式寫在裡面, 透過go test來執行測試.​",
+        "wordCount": 892
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/12/21/Go-Database-Scan/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Testing/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Z9DjTgq.png)" alt="Go Testing初探" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Testing/" class="title">Go Testing初探</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database-Scan/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/a19yzfd.png)" alt="Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database-Scan/" class="title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/y47gGlS.jpg)" alt="Go database/sql, 和資料庫打個招呼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database/" class="title">Go database/sql, 和資料庫打個招呼</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Reflection/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg)" alt="Go_Reflection" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Reflection/" class="title">Go_Reflection</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:36:09.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Context-電話蟲/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://miro.medium.com/max/1002/1*4zwrwPEwhn8_2A_m2zrc7Q.jpeg)" alt="Go_Context_電話蟲" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Context-電話蟲/" class="title">Go_Context_電話蟲</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:26:53.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">19</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/Go-Testing/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

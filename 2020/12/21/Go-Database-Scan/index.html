@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="Scanner &amp;amp; Valuer​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go database&#x2F;sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/Go-Database-Scan/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="Scanner &amp;amp; Valuer​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/a19yzfd.png">
+<meta property="og:updated_time" content="2020-12-21T13:40:20.626Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go database&#x2F;sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺">
+<meta name="twitter:description" content="Scanner &amp;amp; Valuer​">
+<meta name="twitter:image" content="https://i.imgur.com/a19yzfd.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Database-Scan" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/Go-Database-Scan/" class="article-date">
+       <time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/Go-Database-Scan/" class="article-date">
+     <time datetime="2020-12-21T13:40:20.626Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h1 id="Scanner-amp-Valuer"><a href="#Scanner-amp-Valuer" class="headerlink" title="Scanner &amp; Valuer"></a>Scanner &amp; Valuer</h1><p>​<a id="more"></a></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// package "database/sql"</span></span><br><span class="line"><span class="keyword">type</span> Scanner <span class="keyword">interface</span> &#123;</span><br><span class="line">    Scan(src <span class="keyword">interface</span>&#123;&#125;) error</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// package "database/sql/driver"</span></span><br><span class="line"><span class="keyword">type</span> Valuer <span class="keyword">interface</span> &#123;</span><br><span class="line">    Value() (Value, error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Scanner的Scan()讀取從資料庫傳來的內容，並轉成符合自己的格式；<br>也就是說Rows或者Row的Scan()其實就是調用每個來源類型的Scan(), 將其存到來源變數上, 來源變數必須滿足driver.Value的類型.</p>
+<p>相對的，Valuer 則是把自己的資料結構，轉成sql看得懂的形式。<br>也就是把Go的類型轉成driver.Value的對應類型.</p>
+<p>建立一張user_tbl表</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`user_tbl`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span>(<span class="number">10</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`userName`</span> <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8 <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`nickName`</span> <span class="built_in">varchar</span>(<span class="number">40</span>) <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8 <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`createTime`</span> <span class="built_in">bigint</span>(<span class="number">20</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`registTime`</span> datetime <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  <span class="string">`alive`</span> <span class="built_in">tinyint</span>(<span class="number">1</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line">  <span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`idx_user_tbl_userName`</span> (<span class="string">`userName`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8mb4 <span class="keyword">COLLATE</span>=utf8mb4_unicode_ci;</span><br></pre></td></tr></table></figure>
+
+<p>把<a href="https://ithelp.ithome.com.tw/articles/10220392" target="_blank" rel="noopener">昨天提到的部分</a>, 寫一下來簡單的執行.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"context"</span></span><br><span class="line">	<span class="string">"database/sql"</span></span><br><span class="line">	<span class="string">"errors"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/go-sql-driver/mysql"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> YesOrNo <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	Yes YesOrNo = <span class="literal">true</span></span><br><span class="line">	No          = <span class="literal">false</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> UserTbl <span class="keyword">struct</span> &#123;</span><br><span class="line">	Id         <span class="keyword">int</span>       <span class="string">`db:"id"`</span></span><br><span class="line">	UserName   <span class="keyword">string</span>    <span class="string">`db:"userName"`</span></span><br><span class="line">	NickName   <span class="keyword">string</span>    <span class="string">`db:"nickName"`</span></span><br><span class="line">	CreateTime <span class="keyword">int64</span>     <span class="string">`db:"createTime"`</span></span><br><span class="line">	RegistTime time.Time <span class="string">`db:"registTime"`</span></span><br><span class="line">	Alive      YesOrNo   <span class="string">`db:"alive"`</span></span><br><span class="line">	prvate     <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewEmptyUserTbl</span><span class="params">()</span> <span class="title">UserTbl</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> UserTbl&#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	config := mysql.Config&#123;</span><br><span class="line">		User:                 <span class="string">"root"</span>,</span><br><span class="line">		Passwd:               <span class="string">"m_root_pwd"</span>,</span><br><span class="line">		Addr:                 <span class="string">"172.31.0.11:3306"</span>,</span><br><span class="line">		Net:                  <span class="string">"tcp"</span>,</span><br><span class="line">		DBName:               <span class="string">"testSync"</span>,</span><br><span class="line">		AllowNativePasswords: <span class="literal">true</span>,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> err error</span><br><span class="line">	fmt.Println(<span class="string">"conn: "</span>, config.FormatDSN())</span><br><span class="line">	<span class="comment">// db, err := sql.Open("mysql", "root:m_root_pwd@tcp(172.31.0.11:3306)/testSync")</span></span><br><span class="line">	<span class="comment">// Open()並不會真的去連接DB</span></span><br><span class="line">	db, err := sql.Open(<span class="string">"mysql"</span>, config.FormatDSN())</span><br><span class="line">	<span class="comment">// 連線池中最大空閒連線數量</span></span><br><span class="line">	db.SetMaxIdleConns(<span class="number">10</span>)</span><br><span class="line">	<span class="comment">// 連接中的最大數量</span></span><br><span class="line">	db.SetMaxOpenConns(<span class="number">2</span>)</span><br><span class="line">	<span class="comment">// 連線可以被重用的最大存活時間</span></span><br><span class="line">	db.SetConnMaxLifetime(time.Second * <span class="number">600</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 釋放連線</span></span><br><span class="line">	<span class="keyword">defer</span> db.Close()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Ping會真的建立一條連線</span></span><br><span class="line">	err = db.Ping()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	usertbl := &amp;UserTbl&#123;</span><br><span class="line">		UserName:   <span class="string">"Nathan-1"</span>,</span><br><span class="line">		NickName:   <span class="string">"Thor-1"</span>,</span><br><span class="line">		CreateTime: <span class="number">1569420293000</span>,</span><br><span class="line">		RegistTime: time.Now(),</span><br><span class="line">		Alive:      Yes,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ctx, cancelCb := context.WithCancel(context.Background())</span><br><span class="line"></span><br><span class="line">	insertResult, _ := db.ExecContext(ctx, <span class="string">"INSERT INTO user_tbl  (userName, nickName, createTime, registTime, alive) VALUES(?, ?, ?,?, ?)"</span>,</span><br><span class="line">		usertbl.UserName, usertbl.NickName, usertbl.CreateTime, usertbl.RegistTime, usertbl.Alive)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	userResults := <span class="built_in">make</span>([]UserTbl, <span class="number">0</span>)</span><br><span class="line">	rows, err := db.QueryContext(ctx, <span class="string">"SELECT  nickName, userName, createTime, registTime, alive FROM user_tbl"</span>)</span><br><span class="line">	<span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">		usertbl := NewEmptyUserTbl()</span><br><span class="line">	</span><br><span class="line">		rows.Scan(&amp;usertbl.UserName, &amp;usertbl.NickName, &amp;usertbl.CreateTime, &amp;usertbl.RegistTime, &amp;usertbl.Alive)</span><br><span class="line">		userResults = <span class="built_in">append</span>(userResults, usertbl)</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">// 歸還連線</span></span><br><span class="line">	rows.Close()</span><br><span class="line">    <span class="keyword">for</span> idx := <span class="keyword">range</span> userResults &#123;</span><br><span class="line">		fmt.Println(userResults[idx])</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	cancelCb()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;0 Thor Nathan 1569420293000 0001-01-01 00:00:00 +0000 UTC false 0&#125;</span></span><br><span class="line"><span class="comment">&#123;0 Thor-1 Nathan-1 1569420293000 0001-01-01 00:00:00 +0000 UTC false 0&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>一般用法, 有多少欄位, 就要在scan列舉出所有相對物件的成員屬性, 不美觀;  未來也要改很多地方的程式.</p>
+<p>透過reflect, 把值反射進去對應名稱的成員</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetData</span><span class="params">(rows *sql.Rows, dest <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="comment">// 取得資料的每一列的名稱</span></span><br><span class="line">	col_names, err := rows.Columns()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 取得變數對象的值跟類型資訊</span></span><br><span class="line">	v := reflect.ValueOf(dest)</span><br><span class="line">	<span class="keyword">if</span> v.Elem().Type().Kind() != reflect.Struct &#123;</span><br><span class="line">		<span class="keyword">return</span> errors.New(<span class="string">"give me  a struct"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 宣告一個interface&#123;&#125;的slice</span></span><br><span class="line">	scan_dest := []<span class="keyword">interface</span>&#123;&#125;&#123;&#125;</span><br><span class="line">	<span class="comment">// 建立一個string, interface&#123;&#125;的map</span></span><br><span class="line">	addr_by_col_name := <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; v.Elem().NumField(); i++ &#123;</span><br><span class="line">		propertyName := v.Elem().Field(i)</span><br><span class="line">		col_name := v.Elem().Type().Field(i).Tag.Get(<span class="string">"db"</span>)</span><br><span class="line">		<span class="keyword">if</span> col_name == <span class="string">""</span> &#123;</span><br><span class="line">			<span class="keyword">if</span> v.Elem().Field(i).CanInterface() == <span class="literal">false</span> &#123;</span><br><span class="line">				<span class="keyword">continue</span></span><br><span class="line">			&#125;</span><br><span class="line">			col_name = propertyName.Type().Name()</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// Addr() 返回該屬性的記憶體位置的指針</span></span><br><span class="line">		<span class="comment">// Interface() 返回該屬性真正的值, 這裡還是存著位置</span></span><br><span class="line">		addr_by_col_name[col_name] = propertyName.Addr().Interface()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 把實際各成員屬性的位置, 給加到scan_dest中</span></span><br><span class="line">	<span class="keyword">for</span> _, col_name := <span class="keyword">range</span> col_names &#123;</span><br><span class="line">		scan_dest = <span class="built_in">append</span>(scan_dest, addr_by_col_name[col_name])</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 執行Scan</span></span><br><span class="line">	<span class="keyword">return</span> rows.Scan(scan_dest...)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這樣使用舒服多了.<br>但應該發現Alive這怎樣都是false.<br>不是資料庫存錯, 是Go這時候不認得怎樣Scan這種YesOrNo類型.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">	usertbl := NewEmptyUserTbl()</span><br><span class="line">	<span class="comment">// 一般用法, 有多少欄位, 就要在scan列舉出所有相對物件的成員屬性, 不美觀</span></span><br><span class="line">	<span class="comment">// rows.Scan(&amp;usertbl.UserName, &amp;usertbl.NickName, &amp;usertbl.CreateTime, &amp;usertbl.RegistTime, &amp;usertbl.Alive)</span></span><br><span class="line">       </span><br><span class="line">       <span class="comment">// 直接給rows跟對應的結構體指針</span></span><br><span class="line">	GetData(rows, &amp;usertbl)</span><br><span class="line">	userResults = <span class="built_in">append</span>(userResults, usertbl)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a><a href="https://golang.org/pkg/database/sql/driver/" target="_blank" rel="noopener">Driver</a></h1><p>這裡面定義很多接口,<br>其中有各種類型的ValueConverter接口的實現.<br>用途有</p>
+<ul>
+<li>互相轉換Go原生資料類型到MySql的資料類型</li>
+<li>轉換row的值, 變成driver.Value類型</li>
+<li>Scan()將driver.Value類型轉成用戶定義的類型</li>
+</ul>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(yon YesOrNo)</span> <span class="title">Value</span><span class="params">()</span> <span class="params">(driver.Value, error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">bool</span>(yon), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(yon *YesOrNo)</span> <span class="title">Scan</span><span class="params">(src <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    <span class="comment">// row裡面存的資料是空, 就給預設值</span></span><br><span class="line">	<span class="keyword">if</span> src == <span class="literal">nil</span> &#123;</span><br><span class="line">		*yon = YesOrNo(<span class="literal">false</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// row裡面存的資料轉成支援的driver value類型</span></span><br><span class="line">	<span class="keyword">if</span> bv, err := driver.Bool.ConvertValue(src); err == <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="comment">// 如果driver.Value能斷言成bool成功的話</span></span><br><span class="line">		<span class="keyword">if</span> v, ok := bv.(<span class="keyword">bool</span>); ok &#123;</span><br><span class="line">			<span class="comment">// 賦值給yon</span></span><br><span class="line">			*yon = YesOrNo(v)</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 無法轉成支援的driver value, 就噴錯</span></span><br><span class="line">	<span class="keyword">return</span> errors.New(<span class="string">"scan fail for YesOrNo"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;0 Thor Nathan 1569420293000 0001-01-01 00:00:00 +0000 UTC false 0&#125;</span></span><br><span class="line"><span class="comment">&#123;0 Thor-1 Nathan-1 1569420293000 0001-01-01 00:00:00 +0000 UTC true 0&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>能正常顯示了!</p>
+<h2 id="Null-Value"><a href="#Null-Value" class="headerlink" title="Null Value"></a>Null Value</h2><p>我改成設定registTime, 但這個欄位我是允許NULL, 且我真的沒特別設定usertbl.RegistTime, 所以它是零值.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">usertbl := &amp;UserTbl&#123;</span><br><span class="line">		UserName:   <span class="string">"Nathan-2"</span>,</span><br><span class="line">		NickName:   <span class="string">"Thor-2"</span>,</span><br><span class="line">		CreateTime: <span class="number">1569420293000</span>,</span><br><span class="line">		<span class="comment">// RegistTime: time.Now(),</span></span><br><span class="line">		Alive: Yes,</span><br><span class="line">&#125;</span><br><span class="line">_, err = db.ExecContext(ctx, <span class="string">"INSERT INTO user_tbl  (userName, nickName, createTime, registTime, alive) VALUES(?, ?, ?,?, ?)"</span>,</span><br><span class="line">		usertbl.UserName, usertbl.NickName, usertbl.CreateTime, usertbl.RegistTime, usertbl.Alive)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    fmt.Println(err)</span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">// Error 1292: Incorrect datetime value: '0000-00-00' for column 'registTime' at row 1</span></span><br></pre></td></tr></table></figure>
+
+<p>之前提到的組合就能用了</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 自定義一個Time結構, 內嵌time.Time</span></span><br><span class="line"><span class="keyword">type</span> Time <span class="keyword">struct</span> &#123;</span><br><span class="line">	time.Time</span><br><span class="line"></span><br><span class="line">	valid <span class="keyword">bool</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 實作Value接口</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t Time)</span> <span class="title">Value</span><span class="params">()</span> <span class="params">(driver.Value, error)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 當t的Time是零值時, 返回nil這值</span></span><br><span class="line">	<span class="keyword">if</span> t.IsZero() &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> t.Time, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *Time)</span> <span class="title">Scan</span><span class="params">(src <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	<span class="keyword">if</span> src == <span class="literal">nil</span> &#123;</span><br><span class="line">		t.Time, t.valid = time.Time&#123;&#125;, <span class="literal">false</span></span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> t.Time, t.valid = src.(time.Time); t.valid &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> errors.New(<span class="string">"scan fail for Time"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/a19yzfd.png" alt><br>這時就能看到有幾筆資料的registTime就會是NULL了.<br>Scan()也是如此. 我們都得實作這些Null的特殊處理</p>
+<p>先把mysql.Config中的ParseTime設定成true, 這幫助我們處理NullTime</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">config := mysql.Config&#123;</span><br><span class="line">    User:                 <span class="string">"root"</span>,</span><br><span class="line">    Passwd:               <span class="string">"m_root_pwd"</span>,</span><br><span class="line">    Addr:                 <span class="string">"172.31.0.11:3306"</span>,</span><br><span class="line">    Net:                  <span class="string">"tcp"</span>,</span><br><span class="line">    DBName:               <span class="string">"testSync"</span>,</span><br><span class="line">    AllowNativePasswords: <span class="literal">true</span>,</span><br><span class="line">    ParseTime:            <span class="literal">true</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>執行看看, 改成有撈取registTime</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">userResults := <span class="built_in">make</span>([]UserTbl, <span class="number">0</span>)</span><br><span class="line">rows, err := db.QueryContext(ctx, <span class="string">"SELECT  nickName, userName, registTime, alive FROM user_tbl"</span>)</span><br><span class="line"><span class="keyword">for</span> rows.Next() &#123;</span><br><span class="line">    usertbl := NewEmptyUserTbl()</span><br><span class="line">    GetData(rows, &amp;usertbl)</span><br><span class="line">    userResults = <span class="built_in">append</span>(userResults, usertbl)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">&#123;0 Nathan Thor  0 0001-01-01 00:00:00 +0000 UTC false false 0&#125;</span></span><br><span class="line"><span class="comment">&#123;0 Nathan-1 Thor-1  0 2019-09-25 15:55:41 +0000 UTC true false 0&#125;</span></span><br><span class="line"><span class="comment">&#123;0 Nathan-2 Thor-2  0 2019-09-25 17:14:25 +0000 UTC true false 0&#125;</span></span><br><span class="line"><span class="comment">&#123;0 Nathan-3 Thor-3  0 0001-01-01 00:00:00 +0000 UTC true false 0&#125;</span></span><br><span class="line"><span class="comment">&#123;0 Nathan-4 Thor-4  0 0001-01-01 00:00:00 +0000 UTC true false 0&#125;</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://ithelp.ithome.com.tw/articles/10220925" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/Go-Database-Scan/" data-id="ckiylx6kl000y7z6xy95k2m2z" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/a19yzfd.png",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/Go-Database-Scan/",
+        "description": "Scanner &amp; Valuer​",
+        "wordCount": 1736
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2020/12/21/Go-Testing/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Go Testing初探
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2020/12/21/Go-Database/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go database/sql, 和資料庫打個招呼</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Testing/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Z9DjTgq.png)" alt="Go Testing初探" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Testing/" class="title">Go Testing初探</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database-Scan/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/a19yzfd.png)" alt="Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database-Scan/" class="title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/y47gGlS.jpg)" alt="Go database/sql, 和資料庫打個招呼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database/" class="title">Go database/sql, 和資料庫打個招呼</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Reflection/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://ct.yimg.com/xd/api/res/1.2/5B7x8F4s6a.YL9BnXGWAiA--/YXBwaWQ9eXR3YXVjdGlvbnNlcnZpY2U7aD00NTg7cT04NTtyb3RhdGU9YXV0bzt3PTcwMA--/https://s.yimg.com/ob/image/d19578ac-9012-4614-8b72-5594dc44b3fc.jpg)" alt="Go_Reflection" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Reflection/" class="title">Go_Reflection</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:36:09.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Context-電話蟲/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://miro.medium.com/max/1002/1*4zwrwPEwhn8_2A_m2zrc7Q.jpeg)" alt="Go_Context_電話蟲" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Context-電話蟲/" class="title">Go_Context_電話蟲</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:26:53.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">23</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">19</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/Go-Database-Scan/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
