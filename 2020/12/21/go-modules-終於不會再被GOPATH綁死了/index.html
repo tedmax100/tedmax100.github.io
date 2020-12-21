@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go modules 終於不會再被GOPATH綁死了 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="Go ModulesGo modules 出現原因 解除對GOPATH的完全依賴, 有go modules就能在$GOPATH外開專案了. 不同環境或者是多專案, 需要一套切換vendor目錄. 同一個依賴包的多種版本共存問題, 加入了版本化的支援. 可以使用GOProxy來解決某些地區無法使用go get的問題. 以往需要將vendor目錄一起提交到git, 避免CI/CD去拉到外部的依賴包.">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go modules 終於不會再被GOPATH綁死了">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/go-modules-終於不會再被GOPATH綁死了/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="Go ModulesGo modules 出現原因 解除對GOPATH的完全依賴, 有go modules就能在$GOPATH外開專案了. 不同環境或者是多專案, 需要一套切換vendor目錄. 同一個依賴包的多種版本共存問題, 加入了版本化的支援. 可以使用GOProxy來解決某些地區無法使用go get的問題. 以往需要將vendor目錄一起提交到git, 避免CI/CD去拉到外部的依賴包.">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/Op2TRi6.png">
+<meta property="og:updated_time" content="2020-12-21T13:19:17.127Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go modules 終於不會再被GOPATH綁死了">
+<meta name="twitter:description" content="Go ModulesGo modules 出現原因 解除對GOPATH的完全依賴, 有go modules就能在$GOPATH外開專案了. 不同環境或者是多專案, 需要一套切換vendor目錄. 同一個依賴包的多種版本共存問題, 加入了版本化的支援. 可以使用GOProxy來解決某些地區無法使用go get的問題. 以往需要將vendor目錄一起提交到git, 避免CI/CD去拉到外部的依賴包.">
+<meta name="twitter:image" content="https://i.imgur.com/Op2TRi6.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-go-modules-終於不會再被GOPATH綁死了" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go modules 終於不會再被GOPATH綁死了
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="article-date">
+       <time datetime="2020-12-21T13:18:29.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="article-date">
+     <time datetime="2020-12-21T13:19:17.127Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <h1 id="Go-Modules"><a href="#Go-Modules" class="headerlink" title="Go Modules"></a>Go Modules</h1><h2 id="Go-modules-出現原因"><a href="#Go-modules-出現原因" class="headerlink" title="Go modules 出現原因"></a>Go modules 出現原因</h2><ol>
+<li>解除對GOPATH的完全依賴, 有go modules就能在$GOPATH外開專案了.</li>
+<li>不同環境或者是多專案, 需要一套切換vendor目錄.</li>
+<li>同一個依賴包的多種版本共存問題, 加入了版本化的支援.</li>
+<li>可以使用GOProxy來解決某些地區無法使用go get的問題.</li>
+<li>以往需要將vendor目錄一起提交到git, 避免CI/CD去拉到外部的依賴包.</li>
+<li>go modules有build cache, 在CI build server上速度飛快.<br>​<a id="more"></a></li>
+</ol>
+<h2 id="環境準備"><a href="#環境準備" class="headerlink" title="環境準備"></a>環境準備</h2><ul>
+<li>Go version &gt;= 1.11</li>
+<li>GO111MODULE=on (Go MOdule模式), 使用go module, 不諮詢GOPATH, 只是下載下來的依賴包依然存在GOPATH/pkg/mod/底下.<blockquote>
+<p>GO111MODULE=off, 這表示是GOPATH模式, 查找依賴包順序如同昨天提的vendor目錄和GOPATH下.  </p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>GO111MODULE=auto, 默認模式,在這模式下要使用go module, 需要滿足兩個條件</p>
+<ol>
+<li>該專案目錄不在GOPATH/src/下</li>
+<li>當前或上一層目錄存在go.mod檔案</li>
+</ol>
+</blockquote>
+<h2 id="Go-Mododules-對於匯入依賴包的影響"><a href="#Go-Mododules-對於匯入依賴包的影響" class="headerlink" title="Go Mododules 對於匯入依賴包的影響"></a>Go Mododules 對於匯入依賴包的影響</h2><ul>
+<li>可以在$GOPATH之外的地方建立專案</li>
+<li>該專案Go Module開啟後, 下載的package會放在$GOPATH/pkg/mod下.<br><img src="https://i.imgur.com/Op2TRi6.png" alt></li>
+<li>$GOPATH/bin的功能依然保持</li>
+</ul>
+<h3 id="Go-Mod-Commands"><a href="#Go-Mod-Commands" class="headerlink" title="Go Mod Commands"></a>Go Mod Commands</h3><p><img src="https://i.imgur.com/vHzYvzT.png" alt><br>有兩種方式能定義一個正確的Go module</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 在<span class="variable">$GOPATH</span>/src的目錄下, 建立合理的module路徑</span><br><span class="line">// 進入該module目錄, 執行下面命令</span><br><span class="line">go mod init [module name]</span><br><span class="line">///</span><br><span class="line">```bash</span><br><span class="line">// 在任意地方, 建立好module路徑</span><br><span class="line">// 在該目錄下, 執行</span><br><span class="line">go mod init [folder/]module name</span><br></pre></td></tr></table></figure>
+
+<p>就會在該專案下生出了go.mod文件了.<br><img src="https://i.imgur.com/PIIW4Bz.png" alt></p>
+<h3 id="go-mod的一些名詞"><a href="#go-mod的一些名詞" class="headerlink" title="go.mod的一些名詞"></a>go.mod的一些名詞</h3><ul>
+<li>module <ul>
+<li>定義模組路徑</li>
+</ul>
+</li>
+<li>go<ul>
+<li>定義預期的go version</li>
+</ul>
+</li>
+<li>require<ul>
+<li>指定依賴的功能包和其版本或是更高版本[預設是最新版]</li>
+</ul>
+</li>
+<li>exclude<ul>
+<li>排除該功能包和其版本</li>
+</ul>
+</li>
+<li>replace<ul>
+<li>使用不同的依賴包版本替換原有的依賴包版本</li>
+</ul>
+</li>
+<li>註解 <ul>
+<li>// 單行註解</li>
+<li>/* 多行註解 */</li>
+<li>indirect 被間接導入的依賴包<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">module my/package</span><br><span class="line">go 1.12</span><br><span class="line">require other/thing v1.0.2 // 註解</span><br><span class="line">require new/thing/v2 v2.3.4 // indirect</span><br><span class="line">exclude old/thing v1.2.3</span><br><span class="line">replace bad/thing v1.4.5 =&gt; good/thing v1.4.5</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="同專案的子目錄"><a href="#同專案的子目錄" class="headerlink" title="同專案的子目錄"></a>同專案的子目錄</h3><p>因為go.mod在專案的根目錄下, 子目錄的導入路徑會是該專案的導入路徑+子目錄路徑.<br>舉例: 建立了ithome的專案, 底下有一個ironman的子目錄.<br>則不需要也在子目錄建立go mod init指令, Go build會自動辨識ironman這目錄是ithome的一部分.</p>
+<h4 id="Go-Mod-Require"><a href="#Go-Mod-Require" class="headerlink" title="Go Mod Require"></a>Go Mod Require</h4><ul>
+<li>安裝一下logrus<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/sirupsen/logrus</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>go.mod</strong>的內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module modtest</span><br><span class="line">go 1.12</span><br><span class="line">require github.com/sirupsen/logrus v1.4.2 // indirect</span><br></pre></td></tr></table></figure>
+
+<p>此時把v1.4.2 改成v1.4.1<br>執行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go mod download</span><br></pre></td></tr></table></figure>
+
+<p><strong>go.mod</strong>的內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module modtest</span><br><span class="line">go 1.12</span><br><span class="line">require github.com/sirupsen/logrus v1.4.1 // indirect</span><br></pre></td></tr></table></figure>
+
+<p>也會發生$GOPATH/pkg/mod/github.com/sirupsen目錄下,多了<a href="mailto:logrus@v1.4.1" target="_blank" rel="noopener">logrus@v1.4.1</a>和1.4.2版本的源碼<br><img src="https://i.imgur.com/5WlkJoT.png" alt></p>
+<h4 id="Go-Mod-Exclude"><a href="#Go-Mod-Exclude" class="headerlink" title="Go Mod Exclude"></a>Go Mod Exclude</h4><p><strong>go.mod</strong>的內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module modtest</span><br><span class="line">go 1.12</span><br><span class="line">require github.com/sirupsen/logrus v1.4.2 // indirect</span><br><span class="line"></span><br><span class="line">exclude github.com/gin-gonic/gin v1.4.0</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/gin-gonic/gin</span><br></pre></td></tr></table></figure>
+
+<p>會發現應該是要下載當前最新板的v1.4.0的gin; 但因為有exclude gin 1.4.0 ;<br>所以改成下載v1.3.9<br><img src="https://i.imgur.com/mW1aVji.png" alt></p>
+<p><strong>go.mod</strong>的內容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">module modtest</span><br><span class="line">go 1.12</span><br><span class="line">require (</span><br><span class="line">	github.com/gin-contrib/sse v0.1.0 // indirect</span><br><span class="line">	github.com/gin-gonic/gin v1.3.0 // indirect</span><br><span class="line">	github.com/golang/protobuf v1.3.2 // indirect</span><br><span class="line">	github.com/mattn/go-isatty v0.0.8 // indirect</span><br><span class="line">	github.com/sirupsen/logrus v1.4.2</span><br><span class="line">	github.com/ugorji/go v1.1.7 // indirect</span><br><span class="line">	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect</span><br><span class="line">	gopkg.in/yaml.v2 v2.2.2 // indirect</span><br><span class="line">)</span><br><span class="line">exclude github.com/gin-gonic/gin v1.4.0</span><br></pre></td></tr></table></figure>
+
+<p>如果exclude指定gin的依賴功能包, 該功能包會避開該版號作安裝</p>
+<h4 id="Go-Mod-Replace"><a href="#Go-Mod-Replace" class="headerlink" title="Go Mod Replace"></a>Go Mod Replace</h4><p>如果有package被replace, 則編譯時會使用對應的項目來作取代.</p>
+<ol>
+<li>與require類似, 可以指向令一個repo</li>
+<li>又或是指向本地的一個目錄</li>
+</ol>
+<p><strong>gomodtest</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// go.mod</span></span><br><span class="line">module modtest</span><br><span class="line"><span class="keyword">go</span> <span class="number">1.12</span></span><br><span class="line">require github.com/sirupsen/logrus v1<span class="number">.4</span><span class="number">.2</span> <span class="comment">// indirect</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// modtest.go</span></span><br><span class="line"><span class="keyword">package</span> gomodtest</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	log <span class="string">"github.com/sirupsen/logrus"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Init</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Info(<span class="string">"godmodtest init"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Exec</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Info(<span class="string">"godmodtest exec"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>gomaintest</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// go.mod</span></span><br><span class="line">module github.com/tedmax100/gomaintest</span><br><span class="line"><span class="keyword">go</span> <span class="number">1.12</span></span><br><span class="line">replace github.com/tedmax100/modtest =&gt; ../gomodtest</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.go</span></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	modtest <span class="string">"github.com/tedmax100/modtest"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	modtest.Exec()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>執行結果<br><img src="https://i.imgur.com/h5OoYQS.png" alt>  </p>
+<p><strong><em>notes</em></strong></p>
+<ul>
+<li>Replace和Exclude都只對當前這module有影響, 對其他功能包不會去影響到 ;<br>其他功能包自己的replace也不會影響到這包.</li>
+</ul>
+<h2 id="自己寫個共用依賴模組用在自己的專案試試看"><a href="#自己寫個共用依賴模組用在自己的專案試試看" class="headerlink" title="自己寫個共用依賴模組用在自己的專案試試看"></a>自己寫個共用依賴模組用在自己的專案試試看</h2><h3 id="依賴包專案"><a href="#依賴包專案" class="headerlink" title="依賴包專案"></a>依賴包專案</h3><p>目錄結構 /GOPATH/src/ithome<br><img src="https://i.imgur.com/kwKItNC.png" alt></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go mod init github.com/tedmax100/ithome</span><br></pre></td></tr></table></figure>
+
+<p>因為我等等要推上github的repo中, 這裡就如以前說的會有域名/目錄/專案…<br>這樣的層次關係.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/sirupsen/logrus</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/FiWIWFs.png" alt><br>這裡跟govendor fetch有些不同了, 再有go modules專案內輸入go get.<br>預設會去抓最新的tag版本; 如果沒有設立tag, 就抓最新的commit版本.</p>
+<p>go.sum這時候就會把logrus目錄下go.mod跟go.sum的依賴包跟其版本保存起來.<br>go.sum 其實跟npm的package-lock.json有著一樣的功能.</p>
+<p>go.mod(npm的package.json)定義我們指名要的依賴跟版本.<br>go.sum把go.mod的所有依賴包,  每一個像是樹的根節點一樣, 開始走訪去下載,  並且紀錄關係在此.</p>
+<p><strong>ironman/ironman.go</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ironman</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	log <span class="string">"github.com/sirupsen/logrus"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintIronMan</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Info(<span class="string">"hi iron man"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>ithome.go</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ithome</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="comment">// 這裡因為我們定義的mod name就這麼長, </span></span><br><span class="line">    <span class="comment">// 子目錄的導入路徑會是該專案的導入路徑+子目錄路徑.</span></span><br><span class="line">	<span class="string">"github.com/tedmax100/ithome/ironman"</span></span><br><span class="line"></span><br><span class="line">	log <span class="string">"github.com/sirupsen/logrus"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintItHome</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Info(<span class="string">"hi ItHome"</span>)</span><br><span class="line">	ironman.PrintIronMan()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>存檔, commit, 推上github.<br>這裡我沒有打release tag.</p>
+<h3 id="可執行的專案"><a href="#可執行的專案" class="headerlink" title="可執行的專案"></a>可執行的專案</h3><p>目錄結構 /GOPATH/src/gomod<br><img src="https://i.imgur.com/9ktoRgl.png" alt></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">go mod init gomod</span><br><span class="line">// 下載依賴包</span><br><span class="line">go get -u github.com/tedmax100/ithome</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/pWoTXF4.png" alt></p>
+<p><img src="https://i.imgur.com/t3Ivc77.png" alt></p>
+<p><strong>main.go</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/tedmax100/ithome"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ithome.PrintItHome()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>執行main.go<br><img src="https://i.imgur.com/BY0VXSv.png" alt></p>
+<h2 id="把依賴包給作個release-tag-試試看"><a href="#把依賴包給作個release-tag-試試看" class="headerlink" title="把依賴包給作個release tag, 試試看"></a>把依賴包給作個release tag, 試試看</h2><p><img src="https://i.imgur.com/dkkYARP.png" alt></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 作個更新</span><br><span class="line">go get -u github.com/tedmax100/ithome</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/xApGu57.png" alt><br><img src="https://i.imgur.com/phh39lT.png" alt><br>可以看到ithome這依賴包, 從本來是紀錄commit hash, 變成是紀錄tag版本號了.</p>
+<h2 id="把依賴包給再進個commit-但tag-還在v0-0-1"><a href="#把依賴包給再進個commit-但tag-還在v0-0-1" class="headerlink" title="把依賴包給再進個commit, 但tag 還在v0.0.1"></a>把依賴包給再進個commit, 但tag 還在v0.0.1</h2><p><img src="https://i.imgur.com/li9NXnE.png" alt></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 作個更新</span><br><span class="line">go get -u github.com/tedmax100/ithome</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/yZak3mi.png" alt><br>正如前面說的, 他會先找tag/release有沒有, 沒有才去找最新的commit.<br>但因為我們已經有tag v0.0.1, 所以怎樣更新依賴,<br>只要沒有更新版的依賴被release就不會被更新.</p>
+<h2 id="那-就來進版吧"><a href="#那-就來進版吧" class="headerlink" title="那! 就來進版吧"></a>那! 就來進版吧</h2><p><img src="https://i.imgur.com/vuB48xY.png" alt><br><img src="https://i.imgur.com/5y7NWRb.png" alt></p>
+<p>各版本有下載過得都會在go/pkg/mod/匯入包路徑底下<br><img src="https://i.imgur.com/gOntitp.png" alt></p>
+<h2 id="反悔了-想退回去指定的某一版"><a href="#反悔了-想退回去指定的某一版" class="headerlink" title="反悔了! 想退回去指定的某一版"></a>反悔了! 想退回去指定的某一版</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/tedmax100/ithome@v0.0.1</span><br></pre></td></tr></table></figure>
+
+<p>因為快取有了, 就不必重抓<br><img src="https://i.imgur.com/ceLjbx5.png" alt><br>也會順便更改go.mod和go.sum的內容<br><img src="https://i.imgur.com/3aKN9Y8.png" alt></p>
+<h2 id="這外部的難用-我要用自己魔改過得-放在vendor底下的"><a href="#這外部的難用-我要用自己魔改過得-放在vendor底下的" class="headerlink" title="這外部的難用, 我要用自己魔改過得, 放在vendor底下的"></a>這外部的難用, 我要用自己魔改過得, 放在vendor底下的</h2><blockquote>
+<p>或 我怕外部有人偷偷在代碼放後門, 我要用自己網路cache有的, 複製到vendor下</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go mod vendor</span><br></pre></td></tr></table></figure>
+
+<p>這會建立出一個vendor目錄, 底下有現在go.mod依賴包的代碼.</p>
+<p>我們改一下程式<br><strong>gomod/vendor/github.com/tedmax100/ithome/ithome.go</strong></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ithome</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/tedmax100/ithome/ironman"</span></span><br><span class="line"></span><br><span class="line">	log <span class="string">"github.com/sirupsen/logrus"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintItHome</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 就改這行, 存檔</span></span><br><span class="line">	log.Info(<span class="string">"hi ItHome from vendor"</span>)</span><br><span class="line">	ironman.PrintIronMan()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>開心的在terminal輸入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go run main.go</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/VEhql7D.png" alt></p>
+<p>笑XD<br>因為只要啟用了go modules, 就會完全忽略了vendor目錄的存在, 只讀取go.mod的內容.</p>
+<p>那怎辦呢?<br>原本的指令go build, go install, go runm, go test啦<br>等等的加上<code>-mod=vendor</code></p>
+<p><img src="https://i.imgur.com/Mrm4fMm.png" alt></p>
+<h2 id="多安裝一些依賴包"><a href="#多安裝一些依賴包" class="headerlink" title="多安裝一些依賴包"></a>多安裝一些依賴包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/go-sql-driver/mysql</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/GnChMVz.png" alt></p>
+<p>結果最後根本沒有半個地方有import<br>怎辦, 自己檢查每一個.go檔案, 看哪些沒有import ?</p>
+<p>哪些依賴又沒有抓到呢?</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># add missing and remove unused module</span></span><br><span class="line">go mod tidy</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/9K6mvKj.png" alt></p>
+<h2 id="依賴包的module名稱能不能帶上版本號"><a href="#依賴包的module名稱能不能帶上版本號" class="headerlink" title="依賴包的module名稱能不能帶上版本號?"></a>依賴包的module名稱能不能帶上版本號?</h2><blockquote>
+<p>要是有breaking change, 新舊版本無法兼容呢?<br><strong>ithome/go.mod</strong></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module github.com/tedmax100/ithome@v2.0.0  // 這裡打上版本號</span><br><span class="line"></span><br><span class="line">go 1.12</span><br><span class="line"></span><br><span class="line">require github.com/sirupsen/logrus v1.4.2</span><br></pre></td></tr></table></figure>
+
+<p>改個程式</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> ithome</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/tedmax100/ithome/ironman"</span></span><br><span class="line"></span><br><span class="line">	log <span class="string">"github.com/sirupsen/logrus"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintItHome</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Info(<span class="string">"hi ItHome V0.0.7"</span>)</span><br><span class="line">	ironman.PrintIronMan()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PrintItHomeV2</span><span class="params">()</span></span> &#123;</span><br><span class="line">	log.Info(<span class="string">"hi ItHome V2.0"</span>)</span><br><span class="line">	ironman.PrintIronMan()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>存檔commit, push作release</p>
+<p>跑到執行專案, 執行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u github.com/tedmax100/ithome</span><br></pre></td></tr></table></figure>
+
+<p>這時候發現, 不會去下載這2.0.0版本的依賴包<br><img src="https://static.studygolang.com/190620/8e56f0a679b7f993b3354aa70f779da1.png" alt><br>因為版本號的v2.0.0, 這個第一個數字表示主版本號, 不同版本間若是無法兼容使用,<br>則建議是提昇這版本號, 且建議遠端分之多上v2分支.<br>版本號若是v1.10.13, 這個1表示主要版本號, 10表示次要版本號,  13表示修正版本號<br>且go get -u會檢查go mod的版本號, 並不會主動去下載並提昇到不同的主要版本號的依賴包.</p>
+<p>這裡import改成使用v2版</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/tedmax100/ithome/v2"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ithome.PrintItHome()</span><br><span class="line">	ithome.PrintItHomeV2()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go mod tidy</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/OdaAcQJ.png" alt></p>
+<p><strong>開心了, 收工</strong></p>
+<p>go mod 可以相當完美的跟vendor做切換並存.<br>有機會來玩玩看goproxy.</p>
+<p><a href="https://ithelp.ithome.com.tw/articles/10217414" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" data-id="ckiyl7mn200293a6xsb0a6gyh" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go modules 終於不會再被GOPATH綁死了",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/Op2TRi6.png",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/go-modules-終於不會再被GOPATH綁死了/",
+        "description": "Go ModulesGo modules 出現原因
+解除對GOPATH的完全依賴, 有go modules就能在$GOPATH外開專案了.
+不同環境或者是多專案, 需要一套切換vendor目錄.
+同一個依賴包的多種版本共存問題, 加入了版本化的支援.
+可以使用GOProxy來解決某些地區無法使用go get的問題.
+以往需要將vendor目錄一起提交到git, 避免CI/CD去拉到外部的依賴包.
+go modules有build cache, 在CI build server上速度飛快.​",
+        "wordCount": 1077
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2020/12/21/Go-Defer-延遲調用/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Go_Defer_延遲調用
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2020/12/21/GoVendor好多依賴要管理/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">好多依賴要管理</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Defer-延遲調用/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2R6EfyQ.png)" alt="Go_Defer_延遲調用" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Defer-延遲調用/" class="title">Go_Defer_延遲調用</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:19:31.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Op2TRi6.png)" alt="Go modules 終於不會再被GOPATH綁死了" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="title">Go modules 終於不會再被GOPATH綁死了</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:18:29.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/GoVendor好多依賴要管理/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://cdn-images-1.medium.com/max/800/1*nPaOoEou7T-cM9WZGtU-gg.png)" alt="好多依賴要管理" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/GoVendor好多依賴要管理/" class="title">好多依賴要管理</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:17:18.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoInterface/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Go/download.jpeg)" alt="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoInterface/" class="title">Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:47:46.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoTypeStruct/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoTypeStruct/" class="title">Type &amp; Struct, 從單細胞生物, 來到多細胞生物了</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:44:21.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">12</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/go-modules-終於不會再被GOPATH綁死了/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

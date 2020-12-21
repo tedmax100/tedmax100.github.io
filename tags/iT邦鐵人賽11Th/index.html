@@ -157,6 +157,159 @@
         <article class="article article-summary">
     <div class="article-summary-inner">
         
+        <a href="/2020/12/21/Go-Defer-延遲調用/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2R6EfyQ.png)" alt="Go_Defer_延遲調用" class="thumbnail-image"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-identifier="" data-disqus-url="https://tedmax100.github.io/2020/12/21/Go-Defer-延遲調用/">0</span>
+    
+</span>
+
+
+    
+</a>
+
+        
+        <div class="article-meta">
+            <div class="category">
+            <a class="article-category-link" href="/categories/Go/">Go</a>
+            </div>
+            <div class="date"><time datetime="2020-12-21T13:19:31.000Z" itemprop="datePublished">2020-12-21</time></div>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/2020/12/21/Go-Defer-延遲調用/">Go_Defer_延遲調用</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            看個例子, 這是一個讀取資料庫取資料的方法
+123456func (db *DB) ReadData(age int, results []Result) &#123;    // 查詢資料庫    // 錯誤, 釋放連線    // 取值反射錯誤, 釋放連線    // 成功, 釋放連線&#125;
+
+因為GO沒有try{} finally{} 這語句.所以很多情況如果要在離開函數之前, 作一些必要的動作時就要在各種case下, 加上處理.early return的寫法, 也要每個return前都寫一樣的處理, 破壞簡潔.
+wtf 很容易寫成這樣 … 只要邏輯的層數多點的話​
+        </p>
+    </div>
+</article>
+    
+
+    
+    
+    
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
+        <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Op2TRi6.png)" alt="Go modules 終於不會再被GOPATH綁死了" class="thumbnail-image"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-identifier="" data-disqus-url="https://tedmax100.github.io/2020/12/21/go-modules-終於不會再被GOPATH綁死了/">0</span>
+    
+</span>
+
+
+    
+</a>
+
+        
+        <div class="article-meta">
+            <div class="category">
+            <a class="article-category-link" href="/categories/Go/">Go</a>
+            </div>
+            <div class="date"><time datetime="2020-12-21T13:18:29.000Z" itemprop="datePublished">2020-12-21</time></div>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/">Go modules 終於不會再被GOPATH綁死了</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            Go ModulesGo modules 出現原因
+解除對GOPATH的完全依賴, 有go modules就能在$GOPATH外開專案了.
+不同環境或者是多專案, 需要一套切換vendor目錄.
+同一個依賴包的多種版本共存問題, 加入了版本化的支援.
+可以使用GOProxy來解決某些地區無法使用go get的問題.
+以往需要將vendor目錄一起提交到git, 避免CI/CD去拉到外部的依賴包.
+go modules有build cache, 在CI build server上速度飛快.​
+        </p>
+    </div>
+</article>
+    
+        </div>
+    
+
+    
+    
+    
+    
+        <div class="article-row">
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
+        <a href="/2020/12/21/GoVendor好多依賴要管理/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://cdn-images-1.medium.com/max/800/1*nPaOoEou7T-cM9WZGtU-gg.png)" alt="好多依賴要管理" class="thumbnail-image"></span>
+    
+    
+        
+<span class="comment-counter">
+    <i class="fa fa-comments-o"></i>
+    
+        <span class="disqus-comment-count" data-disqus-identifier="" data-disqus-url="https://tedmax100.github.io/2020/12/21/GoVendor好多依賴要管理/">0</span>
+    
+</span>
+
+
+    
+</a>
+
+        
+        <div class="article-meta">
+            <div class="category">
+            <a class="article-category-link" href="/categories/Go/">Go</a>
+            </div>
+            <div class="date"><time datetime="2020-12-21T13:17:18.000Z" itemprop="datePublished">2020-12-21</time></div>
+        </div>
+        
+    
+        <h1 class="article-title" itemprop="name">
+        <a href="/2020/12/21/GoVendor好多依賴要管理/">好多依賴要管理</a>
+        </h1>
+    
+
+        <p class="article-excerpt">
+            
+回憶一下之前Day01提到的​
+        </p>
+    </div>
+</article>
+    
+
+    
+    
+    
+    
+        <article class="article article-summary">
+    <div class="article-summary-inner">
+        
         <a href="/2020/12/20/GoInterface/" class="thumbnail">
     
     
@@ -195,10 +348,14 @@
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -241,14 +398,10 @@
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -292,10 +445,14 @@
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -338,14 +495,10 @@
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -388,10 +541,14 @@
     </div>
 </article>
     
+        </div>
+    
 
     
     
     
+    
+        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -434,14 +591,10 @@
     </div>
 </article>
     
-        </div>
-    
 
     
     
     
-    
-        <div class="article-row">
     
         <article class="article article-summary">
     <div class="article-summary-inner">
@@ -484,117 +637,17 @@
     </div>
 </article>
     
-
-    
-    
-    
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
-        <a href="/2020/12/20/學Golang的緣由/" class="thumbnail">
-    
-    
-        <span style="background-image:url(https://i.imgur.com/DNWjAse.gif)" alt="學Golang的緣由" class="thumbnail-image"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-identifier="" data-disqus-url="https://tedmax100.github.io/2020/12/20/學Golang的緣由/">0</span>
-    
-</span>
-
-
-    
-</a>
-
-        
-        <div class="article-meta">
-            <div class="category">
-            <a class="article-category-link" href="/categories/Go/">Go</a>
-            </div>
-            <div class="date"><time datetime="2020-12-20T08:17:50.000Z" itemprop="datePublished">2020-12-20</time></div>
         </div>
-        
-    
-        <h1 class="article-title" itemprop="name">
-        <a href="/2020/12/20/學Golang的緣由/">學Golang的緣由</a>
-        </h1>
-    
-
-        <p class="article-excerpt">
-            
-學Golang的緣由
-        </p>
-    </div>
-</article>
-    
-        </div>
-    
-
-    
-    
-        
-            </div></section>
-        
-        
-        <section class="archives-wrap">
-            <div class="archive-year-wrap">
-                <a href="/archives/2019" class="archive-year"><i class="icon fa fa-calendar-o"></i>2019</a>
-            </div>
-            <div class="archives">
-    
-    
-    
-        <div class="article-row">
-    
-        <article class="article article-summary">
-    <div class="article-summary-inner">
-        
-        <a href="/2019/07/14/Go-Package/" class="thumbnail">
-    
-    
-        <span style="background-image:url(/images/Go/source-files-to-package.001.png)" alt="Go Package" class="thumbnail-image"></span>
-    
-    
-        
-<span class="comment-counter">
-    <i class="fa fa-comments-o"></i>
-    
-        <span class="disqus-comment-count" data-disqus-identifier="" data-disqus-url="https://tedmax100.github.io/2019/07/14/Go-Package/">0</span>
-    
-</span>
-
-
-    
-</a>
-
-        
-        <div class="article-meta">
-            <div class="category">
-            <a class="article-category-link" href="/categories/Go/">Go</a>
-            </div>
-            <div class="date"><time datetime="2019-07-14T07:31:31.000Z" itemprop="datePublished">2019-07-14</time></div>
-        </div>
-        
-    
-        <h1 class="article-title" itemprop="name">
-        <a href="/2019/07/14/Go-Package/">Go Package</a>
-        </h1>
-    
-
-        <p class="article-excerpt">
-            ​
-        </p>
-    </div>
-</article>
     
 
 
     </div></section>
 
+
+    <nav id="page-nav">
+        <span class="pages">第 1 頁，共 2 頁</span>
+        <span class="page-number current">1</span><a class="page-number" href="/tags/iT邦鐵人賽11Th/page/2/">2</a><a class="extend next" rel="next" href="/tags/iT邦鐵人賽11Th/page/2/">&raquo;</a>
+    </nav>
 
 
                         </div>
@@ -639,6 +692,66 @@
                     <li>
                         
                         <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Defer-延遲調用/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2R6EfyQ.png)" alt="Go_Defer_延遲調用" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Defer-延遲調用/" class="title">Go_Defer_延遲調用</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:19:31.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Op2TRi6.png)" alt="Go modules 終於不會再被GOPATH綁死了" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="title">Go modules 終於不會再被GOPATH綁死了</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:18:29.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/GoVendor好多依賴要管理/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://cdn-images-1.medium.com/max/800/1*nPaOoEou7T-cM9WZGtU-gg.png)" alt="好多依賴要管理" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/GoVendor好多依賴要管理/" class="title">好多依賴要管理</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:17:18.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
                             <a href="/2020/12/20/GoInterface/" class="thumbnail">
     
     
@@ -676,66 +789,6 @@
                         </div>
                     </li>
                 
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2020/12/20/GoMap/" class="thumbnail">
-    
-    
-        <span style="background-image:url(https://i.imgur.com/87OwWpr.png)" alt="Map" class="thumbnail-image"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
-                            <p class="item-title"><a href="/2020/12/20/GoMap/" class="title">Map</a></p>
-                            <p class="item-date"><time datetime="2020-12-20T14:42:24.000Z" itemprop="datePublished">2020-12-20</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2020/12/20/3兄弟-Ring/" class="thumbnail">
-    
-    
-        <span style="background-image:url(https://i.imgur.com/kiOhD1T.png)" alt="3兄弟-Ring" class="thumbnail-image"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
-                            <p class="item-title"><a href="/2020/12/20/3兄弟-Ring/" class="title">3兄弟-Ring</a></p>
-                            <p class="item-date"><time datetime="2020-12-20T14:37:57.000Z" itemprop="datePublished">2020-12-20</time></p>
-                        </div>
-                    </li>
-                
-                    <li>
-                        
-                        <div class="item-thumbnail">
-                            <a href="/2020/12/20/3兄弟-Heap/" class="thumbnail">
-    
-    
-        <span style="background-image:url(https://i.imgur.com/XbheF2e.png)" alt="Container 3兄弟-Heap" class="thumbnail-image"></span>
-    
-    
-</a>
-
-                        </div>
-                        
-                        <div class="item-inner">
-                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
-                            <p class="item-title"><a href="/2020/12/20/3兄弟-Heap/" class="title">Container 3兄弟-Heap</a></p>
-                            <p class="item-date"><time datetime="2020-12-20T14:16:31.000Z" itemprop="datePublished">2020-12-20</time></p>
-                        </div>
-                    </li>
-                
             </ul>
         </div>
     </div>
@@ -745,7 +798,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">分類</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">12</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 
@@ -755,7 +808,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">所有文章</h3>
         <div class="widget">
-            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
         </div>
     </div>
 
@@ -765,7 +818,7 @@
     <div class="widget-wrap widget-list">
         <h3 class="widget-title">標籤</h3>
         <div class="widget">
-            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">9</span></li></ul>
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">12</span></li></ul>
         </div>
     </div>
 

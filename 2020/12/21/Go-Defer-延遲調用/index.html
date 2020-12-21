@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go_Defer_延遲調用 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="看個例子, 這是一個讀取資料庫取資料的方法 123456func (db *DB) ReadData(age int, results []Result) &amp;#123;    // 查詢資料庫    // 錯誤, 釋放連線    // 取值反射錯誤, 釋放連線    // 成功, 釋放連線&amp;#125;  因為GO沒有try{} finally{} 這語句.所以很多情況如果要在離開函數之前, 作一些">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go_Defer_延遲調用">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/Go-Defer-延遲調用/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="看個例子, 這是一個讀取資料庫取資料的方法 123456func (db *DB) ReadData(age int, results []Result) &amp;#123;    // 查詢資料庫    // 錯誤, 釋放連線    // 取值反射錯誤, 釋放連線    // 成功, 釋放連線&amp;#125;  因為GO沒有try{} finally{} 這語句.所以很多情況如果要在離開函數之前, 作一些">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/2R6EfyQ.png">
+<meta property="og:updated_time" content="2020-12-21T13:20:34.914Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go_Defer_延遲調用">
+<meta name="twitter:description" content="看個例子, 這是一個讀取資料庫取資料的方法 123456func (db *DB) ReadData(age int, results []Result) &amp;#123;    // 查詢資料庫    // 錯誤, 釋放連線    // 取值反射錯誤, 釋放連線    // 成功, 釋放連線&amp;#125;  因為GO沒有try{} finally{} 這語句.所以很多情況如果要在離開函數之前, 作一些">
+<meta name="twitter:image" content="https://i.imgur.com/2R6EfyQ.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Defer-延遲調用" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go_Defer_延遲調用
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/Go-Defer-延遲調用/" class="article-date">
+       <time datetime="2020-12-21T13:19:31.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/Go-Defer-延遲調用/" class="article-date">
+     <time datetime="2020-12-21T13:20:34.914Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>看個例子, 這是一個讀取資料庫取資料的方法</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">ReadData</span><span class="params">(age <span class="keyword">int</span>, results []Result)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 查詢資料庫</span></span><br><span class="line">    <span class="comment">// 錯誤, 釋放連線</span></span><br><span class="line">    <span class="comment">// 取值反射錯誤, 釋放連線</span></span><br><span class="line">    <span class="comment">// 成功, 釋放連線</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因為GO沒有try{} finally{} 這語句.<br>所以很多情況如果要在離開函數之前, 作一些必要的動作時<br>就要在各種case下, 加上處理.<br>early return的寫法, 也要每個return前都寫一樣的處理, 破壞簡潔.</p>
+<p><img src="https://i.imgur.com/2R6EfyQ.png" alt><br>wtf 很容易寫成這樣 … 只要邏輯的層數多點的話<br>​<a id="more"></a><br>But!!!<br>Go有Defer這延遲載入的語句!!!<br>剛剛的例子就能夠改成</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(db *DB)</span> <span class="title">ReadData</span><span class="params">(age <span class="keyword">int</span>, results []Result)</span></span> &#123;</span><br><span class="line">    <span class="comment">// 查詢資料庫</span></span><br><span class="line">    <span class="keyword">defer</span> 釋放連線</span><br><span class="line">    <span class="comment">// 錯誤</span></span><br><span class="line">    <span class="comment">// 取值反射錯誤</span></span><br><span class="line">    <span class="comment">// 成功</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>來看看defer實際的存放跟執行順序先<br><img src="https://i.imgur.com/IK2asNj.png" alt><br>defer 會被後面的執行語句, 依照後進先出LIFO的方式作執行, </p>
+<p>至於defer被觸發的時間點, 就在當前函數返回之前就會被調用.</p>
+<h2 id="defer的結構"><a href="#defer的結構" class="headerlink" title="defer的結構"></a>defer的結構</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> _defer <span class="keyword">struct</span> &#123;</span><br><span class="line">    siz     <span class="keyword">int32</span></span><br><span class="line">    started <span class="keyword">bool</span></span><br><span class="line">    sp      <span class="keyword">uintptr</span></span><br><span class="line">    pc      <span class="keyword">uintptr</span></span><br><span class="line">    fn      *funcval</span><br><span class="line">    _panic  *_panic</span><br><span class="line">    link    *_defer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>fn 存的就是指向defer關鍵字傳入的語句了</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    fmt.Println(<span class="string">"begin"</span>)</span><br><span class="line">    <span class="keyword">defer</span> fmt.Print(<span class="number">1</span>)</span><br><span class="line">    fmt.Println(<span class="string">"do something"</span>)</span><br><span class="line">    <span class="keyword">defer</span> fmt.Print(<span class="number">2</span>)</span><br><span class="line">    fmt.Println(<span class="string">"end"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">begin</span></span><br><span class="line"><span class="comment">do something</span></span><br><span class="line"><span class="comment">end</span></span><br><span class="line"><span class="comment">2</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>也能傳入匿名函數</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"ithome"</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"ironman"</span>)</span><br><span class="line">		fmt.Println(<span class="string">"Day 13 post sucess"</span>)</span><br><span class="line">	&#125;()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">ithome</span></span><br><span class="line"><span class="comment">ironman</span></span><br><span class="line"><span class="comment">Day 13 post sucess</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>進階題 : defer 裡函數裡包著函數</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">calc</span><span class="params">(index <span class="keyword">string</span>, a, b <span class="keyword">int</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	ret := a + b</span><br><span class="line">	fmt.Println(index, a, b, ret)</span><br><span class="line">	<span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	a := <span class="number">1</span></span><br><span class="line">	b := <span class="number">2</span></span><br><span class="line">    <span class="comment">// 記得是FILO</span></span><br><span class="line">	<span class="keyword">defer</span> calc(<span class="string">"1"</span>, a, calc(<span class="string">"10"</span>, <span class="number">2</span>, b))</span><br><span class="line"></span><br><span class="line">	a = <span class="number">0</span></span><br><span class="line">	<span class="keyword">defer</span> calc(<span class="string">"2"</span>, a, calc(<span class="string">"20"</span>, a, b))</span><br><span class="line"></span><br><span class="line">	b = <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">10 2 2 4</span></span><br><span class="line"><span class="comment">20 0 2 2</span></span><br><span class="line"><span class="comment">2 0 2 2</span></span><br><span class="line"><span class="comment">1 1 4 5</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">        <span class="keyword">defer</span> fmt.Println(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">4</span></span><br><span class="line"><span class="comment">3</span></span><br><span class="line"><span class="comment">2</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">0</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="使用情境"><a href="#使用情境" class="headerlink" title="使用情境"></a>使用情境</h2><ul>
+<li>打開文件後, 關閉/釋放文件</li>
+<li>接收請求後, 回覆請求</li>
+<li>加鎖後, 解鎖</li>
+</ul>
+<h3 id="釋放資源"><a href="#釋放資源" class="headerlink" title="釋放資源"></a>釋放資源</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">fileSize</span><span class="params">(filename <span class="keyword">string</span>)</span> <span class="title">int64</span></span> &#123;</span><br><span class="line">    <span class="comment">// 根據文件名稱打開</span></span><br><span class="line">    f, err := os.Open(filename)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">    <span class="comment">// 錯誤回傳, 觸發defer</span></span><br><span class="line">     <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 延遲調用Close(), 這時候還不會立刻被呼叫</span></span><br><span class="line">    <span class="keyword">defer</span> f.Close()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 獲取文件訊息</span></span><br><span class="line">    info, err := f.Stat()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="comment">// 錯誤回傳, 觸發defer</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 獲取文件大小</span></span><br><span class="line">    size := info.Size()</span><br><span class="line">    <span class="comment">// 回傳, 觸發defer</span></span><br><span class="line">    <span class="keyword">return</span> size</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="加鎖解鎖"><a href="#加鎖解鎖" class="headerlink" title="加鎖解鎖"></a>加鎖解鎖</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> (</span><br><span class="line">    valueByKey = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">int</span>)</span><br><span class="line">    valueByKeyGuard sync.Mutex</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">readValue</span><span class="params">(key <span class="keyword">string</span>)</span> <span class="title">int</span></span> &#123;</span><br><span class="line">    valueByKeyGuard.Lock()</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 延遲解鎖</span></span><br><span class="line">    <span class="keyword">defer</span> valueByKeyGuard.Unlocok()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> valueByKey[key]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="誤用defer"><a href="#誤用defer" class="headerlink" title="誤用defer"></a>誤用defer</h2><h3 id="defer-去執行nil"><a href="#defer-去執行nil" class="headerlink" title="defer 去執行nil"></a>defer 去執行nil</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> run <span class="function"><span class="keyword">func</span><span class="params">()</span> = <span class="title">nil</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">	<span class="title">defer</span> <span class="title">run</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line">	fmt.Println("ithome")</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">ithome</span></span><br><span class="line"><span class="comment">panic: runtime error: invalid memory address or nil pointer dereference</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="for-loop中使用"><a href="#for-loop中使用" class="headerlink" title="for loop中使用"></a>for loop中使用</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        row, err := db.Query(<span class="string">"select 1"</span>)</span><br><span class="line">        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">            fmt.Println(err)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">defer</span> row.Close()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這種用法會在main這方法內, 一直累加很多個defer…<br>直到崩潰.</p>
+<h4 id="解法-直接再開一個匿名函數-就會在這匿名函數結束前執行defer"><a href="#解法-直接再開一個匿名函數-就會在這匿名函數結束前執行defer" class="headerlink" title="解法, 直接再開一個匿名函數, 就會在這匿名函數結束前執行defer"></a>解法, 直接再開一個匿名函數, 就會在這匿名函數結束前執行defer</h4><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">            row, err := db.Query(<span class="string">"select 1"</span>)</span><br><span class="line">            <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">                fmt.Println(err)</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">defer</span> row.Close()</span><br><span class="line">        &#125;()</span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="panic恢復"><a href="#panic恢復" class="headerlink" title="panic恢復"></a>panic恢復</h3><p>透過defer將匿名函數延遲執行,<br>panic觸發時, protectRun()函數就會結束, defer就會被觸發.<br>透過defer內的recoever捕捉到panic與其內容.<br>判斷是否是運行時的錯誤, 還是手動拋出的錯誤, 並作不同處置.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"runtime"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> panicContext <span class="keyword">struct</span> &#123;</span><br><span class="line">	function <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">protectRun</span><span class="params">(entry <span class="keyword">func</span>()</span>)</span> &#123;</span><br><span class="line">	<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">if</span> err := <span class="built_in">recover</span>(); err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">switch</span> err.(<span class="keyword">type</span>) &#123;</span><br><span class="line">			<span class="keyword">case</span> runtime.Error:</span><br><span class="line">				fmt.Println(<span class="string">"runtime: "</span>, err)</span><br><span class="line">			<span class="keyword">default</span>:</span><br><span class="line">				fmt.Println(<span class="string">"error : "</span>, err)</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	entry()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">"執行前"</span>)</span><br><span class="line"></span><br><span class="line">	protectRun(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"手動觸發panic前"</span>)</span><br><span class="line">		<span class="built_in">panic</span>(&amp;panicContext&#123;<span class="string">"手動觸發!"</span>&#125;)</span><br><span class="line">		fmt.Println(<span class="string">"手動觸發panic後"</span>)</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	protectRun(<span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"賦值當機前"</span>)</span><br><span class="line">		<span class="keyword">var</span> a *<span class="keyword">int</span></span><br><span class="line">		*a = <span class="number">1</span></span><br><span class="line">		fmt.Println(<span class="string">"賦值當機後"</span>)</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">"執行後"</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">執行前</span></span><br><span class="line"><span class="comment">手動觸發panic前</span></span><br><span class="line"><span class="comment">error :  &amp;&#123;手動觸發!&#125;</span></span><br><span class="line"><span class="comment">賦值當機前</span></span><br><span class="line"><span class="comment">runtime:  runtime error: invalid memory address or nil pointer dereference</span></span><br><span class="line"><span class="comment">執行後</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>分享這個是因為…<br>未來很多真正使用上都會需要defer跟錯誤處理.</p>
+<blockquote>
+<p><a href="https://zhuanlan.zhihu.com/p/81857521?utm_source=jp.naver.line.android&utm_medium=social&utm_oi=1116288166998482944" target="_blank" rel="noopener">躲避 Go 1.13 defer 性能提升的姿势</a></p>
+</blockquote>
+<p><a href="https://ithelp.ithome.com.tw/articles/10217900" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/Go-Defer-延遲調用/" data-id="ckiyl7mmk000g3a6x479r4n1n" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go_Defer_延遲調用",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/2R6EfyQ.png",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/Go-Defer-延遲調用/",
+        "description": "看個例子, 這是一個讀取資料庫取資料的方法
+123456func (db *DB) ReadData(age int, results []Result) &#123;    // 查詢資料庫    // 錯誤, 釋放連線    // 取值反射錯誤, 釋放連線    // 成功, 釋放連線&#125;
+
+因為GO沒有try{} finally{} 這語句.所以很多情況如果要在離開函數之前, 作一些必要的動作時就要在各種case下, 加上處理.early return的寫法, 也要每個return前都寫一樣的處理, 破壞簡潔.
+wtf 很容易寫成這樣 … 只要邏輯的層數多點的話​",
+        "wordCount": 1426
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go modules 終於不會再被GOPATH綁死了</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Defer-延遲調用/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2R6EfyQ.png)" alt="Go_Defer_延遲調用" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Defer-延遲調用/" class="title">Go_Defer_延遲調用</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:19:31.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Op2TRi6.png)" alt="Go modules 終於不會再被GOPATH綁死了" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="title">Go modules 終於不會再被GOPATH綁死了</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:18:29.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/GoVendor好多依賴要管理/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://cdn-images-1.medium.com/max/800/1*nPaOoEou7T-cM9WZGtU-gg.png)" alt="好多依賴要管理" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/GoVendor好多依賴要管理/" class="title">好多依賴要管理</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:17:18.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoInterface/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/Go/download.jpeg)" alt="Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoInterface/" class="title">Interface &amp; OOP  就說你是鴨子! 你就是要呱呱叫</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:47:46.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/20/GoTypeStruct/" class="thumbnail">
+    
+    
+        <span class="thumbnail-image thumbnail-none"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/20/GoTypeStruct/" class="title">Type &amp; Struct, 從單細胞生物, 來到多細胞生物了</a></p>
+                            <p class="item-date"><time datetime="2020-12-20T14:44:21.000Z" itemprop="datePublished">2020-12-20</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">12</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/Go-Defer-延遲調用/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
