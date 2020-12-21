@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go_Channel | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="Channelchannel能夠在多個goroutine之間作數據交換, 任何時間, 同時只能有一個goroutine來存取通道進行發送或獲取資料. Channel就像是一個輸送帶, 遵守著FIFO的規則, 保證收發資料的順序.​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go_Channel">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/21/Go-Channel/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="Channelchannel能夠在多個goroutine之間作數據交換, 任何時間, 同時只能有一個goroutine來存取通道進行發送或獲取資料. Channel就像是一個輸送帶, 遵守著FIFO的規則, 保證收發資料的順序.​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/iQ4hriX.jpg">
+<meta property="og:updated_time" content="2020-12-21T13:24:23.918Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go_Channel">
+<meta name="twitter:description" content="Channelchannel能夠在多個goroutine之間作數據交換, 任何時間, 同時只能有一個goroutine來存取通道進行發送或獲取資料. Channel就像是一個輸送帶, 遵守著FIFO的規則, 保證收發資料的順序.​">
+<meta name="twitter:image" content="https://i.imgur.com/iQ4hriX.jpg">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Channel" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go_Channel
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/21/Go-Channel/" class="article-date">
+       <time datetime="2020-12-21T13:23:32.000Z" itemprop="datePublished">2020-12-21</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/21/Go-Channel/" class="article-date">
+     <time datetime="2020-12-21T13:24:23.918Z" itemprop="dateModified">2020-12-21</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p><img src="https://i.imgur.com/iQ4hriX.jpg" alt></p>
+<h1 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h1><p>channel能夠在多個goroutine之間作數據交換, 任何時間, 同時只能有一個goroutine來存取通道進行發送或獲取資料. Channel就像是一個輸送帶, 遵守著FIFO的規則, 保證收發資料的順序.<br><img src="https://i.imgur.com/qQx12ku.png" alt><br>​<a id="more"></a><br>通道就像是在捷運等公共場所很多人的情況下, 大家在遵守著排隊的習慣, 目的是避免擁擠、插隊導致的低效資源使用與交換過程.<br>多個goroutine為了搶奪存取資料, 勢必造成執行效率的低下, 使用queue是一種高效率的同步存取方式, channel就是一種queue一樣的結構.</p>
+<ul>
+<li>var 通道名稱 chan 通道類型</li>
+<li>chan的空值是nil</li>
+<li>聲明完通道後, 要透過make來產生實例</li>
+<li>通道實例  := make(chan 通類類型,  [bufferSize int]), 晚點會講解有沒有加上buffer size的使用差別</li>
+<li>發送資料 &lt;- ,   通道變數 &lt;- 值    </li>
+<li>接收資料 <ul>
+<li>阻塞式接收  資料變數 := &lt;- 通道變數</li>
+<li>非阻塞式接收  資料變數, ok := &lt;- 通道變數<ul>
+<li>ok : 表示是否收到資料</li>
+</ul>
+</li>
+<li>接收後忽略   &lt;- 通道變數<ul>
+<li>執行到這句會變成阻塞, 直到收到資料, 但收到的資料會被忽略</li>
+<li>最常用在goroutine間阻塞式地收發實現併發同步.</li>
+</ul>
+</li>
+<li>用for range 進行多個資料的接收</li>
+<li>相較於阻塞式, 會造成較高的CPU佔用. </li>
+<li>如果需要超時檢測, 可配合select和計時器channel使用.</li>
+</ul>
+</li>
+</ul>
+<p>Ex 1 : 無緩衝通道的併發列印, 發布者與訂閱者的簡易範例</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">printer</span><span class="params">(c <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 無限循環等待資料</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 從channel 取得資料</span></span><br><span class="line">		data := &lt;-c</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> data == <span class="number">0</span> &#123;</span><br><span class="line">			fmt.Println(<span class="string">"break"</span>)</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Println(data)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 通知main 已經結束了</span></span><br><span class="line">	c &lt;- <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 建立一個int channel</span></span><br><span class="line">	c := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 把channel 傳入, 讓它開始等待資料餵入</span></span><br><span class="line">	<span class="keyword">go</span> printer(c)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++ &#123;</span><br><span class="line">		<span class="comment">// 餵入資料給channel</span></span><br><span class="line">		c &lt;- i</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 通知printer 結束 ; 這裡 0 表示結束</span></span><br><span class="line">	c &lt;- <span class="number">0</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 等printer 結束通知</span></span><br><span class="line">	&lt;-c</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Ex2 : 單向通道, 只能發送或是接收</p>
+<ul>
+<li>只能發送, var 通道變數 chan &lt;- 類型 </li>
+<li>只能接收, var 通道變數 &lt;- chan 類型<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> sendOnlyCh <span class="keyword">chan</span> &lt;- <span class="keyword">int</span> = ch</span><br><span class="line"><span class="keyword">var</span> recvOnlyCh &lt;- <span class="keyword">chan</span> <span class="keyword">int</span> = chkjj</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>先來看一下內建的Timer的原始碼, 會發現他的屬性C也是個只能接收資料的通道.<br>透過從通道C獲得, 就能得知定時器到期這個事件的到來.<br>只要時間倒數一到, 定時器會對自己發送一個time.Time類型的值.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The Timer type represents a single event.</span></span><br><span class="line"><span class="comment">// When the Timer expires, the current time will be sent on C,</span></span><br><span class="line"><span class="comment">// unless the Timer was created by AfterFunc.</span></span><br><span class="line"><span class="comment">// A Timer must be created with NewTimer or AfterFunc.</span></span><br><span class="line"><span class="keyword">type</span> Timer <span class="keyword">struct</span> &#123;</span><br><span class="line">	C &lt;-<span class="keyword">chan</span> Time</span><br><span class="line">	r runtimeTimer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 設置每2秒就觸發的定時器</span></span><br><span class="line">	timer := time.NewTimer(time.Second * <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">defer</span> timer.Stop()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 從channel取值</span></span><br><span class="line">		fmt.Println(&lt;-timer.C)</span><br><span class="line">		<span class="comment">// 重新設置每一秒就觸發的定時器</span></span><br><span class="line">		timer.Reset(time.Second)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面宣告通道時都沒帶上最後一個參數<br>這參數定義的是緩衝空間的大小.</p>
+<p>剛剛我們用的叫做<strong>無緩衝區的通道</strong>, 這種通道類型, 就是沒有宣告buffer size的通道.<br>先來補充上面講的unbuffered 跟buffered channel的差異.</p>
+<p><strong>Unbuffered Channel 無緩衝區的通道</strong><br><img src="https://i.imgur.com/rmhLiOP.png" alt><br>無緩衝通道沒有任何緩衝區容量, 所以需要兩個goroutine(1發1收)準備好進行資料互換.<br>當發布者goroutine嘗試把資料發送到unbuffered channel時, 訂閱者goroutine等待接收資料的話.<br>該channel會把接著要發送資料的goroutine給lock作等待, 直到有其他訂閱者goroutine嘗試接收走.<br>如果有訂閱者goroutine嘗試從unbuffered接收資料,  但也沒有另一個發布者goroutine來發送資料的話, 該訂閱者goroutine也會被lock作等待.</p>
+<p>圖中的3、4、5, 就是兩方嘗試作交換的動作.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> wg sync.WaitGroup</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// unbuffered channel</span></span><br><span class="line">	baton := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">	wg.Add(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> Runner(baton)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// start from 1</span></span><br><span class="line">	baton &lt;- <span class="number">1</span></span><br><span class="line"></span><br><span class="line">	wg.Wait()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Runner</span><span class="params">(baton <span class="keyword">chan</span> <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> newRunner <span class="keyword">int</span></span><br><span class="line">	<span class="comment">// get baton from channel</span></span><br><span class="line">	runner := &lt;-baton</span><br><span class="line"></span><br><span class="line">	fmt.Printf(<span class="string">"Runner %d Running With Baton\n"</span>, runner)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> runner != <span class="number">4</span> &#123;</span><br><span class="line">		newRunner = runner + <span class="number">1</span></span><br><span class="line">		fmt.Printf(<span class="string">"Runner %d To The Line\n"</span>, newRunner)</span><br><span class="line">		<span class="comment">// 創建另一個goroutine, 等有發布者把接力棒丟進去通道內</span></span><br><span class="line">		<span class="keyword">go</span> Runner(baton)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	time.Sleep(<span class="number">100</span> * time.Millisecond)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> runner == <span class="number">4</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"Runner %d Finished, Race Over\n"</span>, runner)</span><br><span class="line">		wg.Done()</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	fmt.Printf(<span class="string">"Runner %d Exchange With Runner %d\n"</span>, runner, newRunner)</span><br><span class="line">	baton &lt;- newRunner</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Runner 1 Running With Baton</span></span><br><span class="line"><span class="comment">Runner 2 To The Line</span></span><br><span class="line"><span class="comment">Runner 1 Exchange With Runner 2</span></span><br><span class="line"><span class="comment">Runner 2 Running With Baton</span></span><br><span class="line"><span class="comment">Runner 3 To The Line</span></span><br><span class="line"><span class="comment">Runner 2 Exchange With Runner 3</span></span><br><span class="line"><span class="comment">Runner 3 Running With Baton</span></span><br><span class="line"><span class="comment">Runner 4 To The Line</span></span><br><span class="line"><span class="comment">Runner 3 Exchange With Runner 4</span></span><br><span class="line"><span class="comment">Runner 4 Running With Baton</span></span><br><span class="line"><span class="comment">Runner 4 Finished, Race Over</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Buffered Channel 有緩衝區的通道</strong><br>上面所提的unbuffered channel可以視為是size為0的buffered channel.<br><img src="https://i.imgur.com/oCOB31x.png" alt><br>有緩衝區的通道, 具有buffer size, 所以發跟收兩方能單獨作業.<br>可是當buffer已滿或是空的, 就跟unbuffered一樣的變成同步行為了.</p>
+<blockquote>
+<p><strong>為什麼要限制長度而不是提供無限長度的通道呢?</strong><br>channel是在兩個goroutine之間通信的橋樑.<br>因此必然有一方提供資料, 一方作為消費者接收資料.<br>當供給速度遠大過接收的處理速度時, 如果通道不限制長度, 則記憶體會不斷膨脹, 直到app崩潰.<br>因此發送資料量必須在消費方處理量+通道長度的範圍內, 才能正確的處理.</p>
+</blockquote>
+<p>結論 :<br>對於buffered channel 長度為C,<br>則通道中第K個接收完成操作發生在第K+C個發送完成之前.<br>如果把C設成0則對應unbuffered channel, 也就是第K個接收完成在K+1個發送完成之前.<br>因為該類型只能同步發送一個.</p>
+<p>故可以根據channel的buffer size來控制goroutine的最大數量.<br><strong>不要透過共享變數+Mutex來進行操作, 應該透過channel來共享</strong></p>
+<h2 id="Channel的循環接收"><a href="#Channel的循環接收" class="headerlink" title="Channel的循環接收"></a>Channel的循環接收</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通道內的資料可以透過for range進行多個資料的接收操作, 一次for就得到一筆資料</span></span><br><span class="line"><span class="keyword">for</span> data := <span class="keyword">range</span> channel &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">3</span>; i &gt;= <span class="number">0</span>; i-- &#123;</span><br><span class="line">			ch &lt;- i</span><br><span class="line">			time.Sleep(time.Second)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> data := <span class="keyword">range</span> ch &#123;</span><br><span class="line">		fmt.Println(data)</span><br><span class="line">		<span class="keyword">if</span> data == <span class="number">0</span> &#123;</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">3</span></span><br><span class="line"><span class="comment">2</span></span><br><span class="line"><span class="comment">1</span></span><br><span class="line"><span class="comment">0</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Channel的關閉回收"><a href="#Channel的關閉回收" class="headerlink" title="Channel的關閉回收"></a>Channel的關閉回收</h3><p>channel是一個reference object, 和map類似.<br>只要沒有外部在引用就會被回收掉. 但也能夠主動的關閉.<br><a href="http://xiaorui.cc/2018/10/19/%E6%8E%A2%E7%A9%B6golang%E7%9A%84channel%E5%92%8Cmap%E5%86%85%E5%AD%98%E9%87%8A%E6%94%BE%E9%97%AE%E9%A2%98/" target="_blank" rel="noopener">探究golang的channel和map内存释放问题</a></p>
+<p>透過 <strong>close(通道變數)</strong><br>被關閉的channel一樣可以被訪問,只是會觸發<strong>panic</strong></p>
+<h3 id="發送資料給被關閉的channel"><a href="#發送資料給被關閉的channel" class="headerlink" title="發送資料給被關閉的channel"></a>發送資料給被關閉的channel</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">	<span class="built_in">close</span>(ch)</span><br><span class="line"></span><br><span class="line">	fmt.Println(<span class="string">"ptr: %p, len: %d\n"</span>, ch, <span class="built_in">len</span>(ch))</span><br><span class="line"></span><br><span class="line">	ch &lt;- <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">ptr: %p, len: %d</span></span><br><span class="line"><span class="comment"> 0xc000076060 0</span></span><br><span class="line"><span class="comment">panic: send on closed channel</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>被關閉的channel, 其實不會是nil, 但如果嘗試發送資料給被關閉的通道,<br>就會發出panic.</p>
+<h3 id="從被關閉的channel接收資料"><a href="#從被關閉的channel接收資料" class="headerlink" title="從被關閉的channel接收資料"></a>從被關閉的channel接收資料</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">	ch &lt;- <span class="string">"0"</span></span><br><span class="line">	ch &lt;- <span class="string">"1"</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">close</span>(ch)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="built_in">cap</span>(ch)+<span class="number">1</span>; i++ &#123;</span><br><span class="line">		v, ok := &lt;-ch</span><br><span class="line">		fmt.Println(v, ok)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">0 true</span></span><br><span class="line"><span class="comment">1 true</span></span><br><span class="line"><span class="comment">   false</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>我們在執行for loop之前就關閉了通道, 但裡面的資料不會被釋放, 通道也不會消失.<br>我們還是可以從被關閉的channel取回資料來處理的, 然後通道這時停止阻塞.<br>前兩個結果表示, 還是可以進行接收資料的動作的.<br>這是字串通道, 第三行的  false, 表示通道在關閉狀態下取出的值. v表示該類型的默認值, 因為是字串類型, 所以返回空字串, false表示沒有獲取成功, 因為通道已經空了.</p>
+<h2 id="使用Select"><a href="#使用Select" class="headerlink" title="使用Select"></a>使用Select</h2><p>用來響應多個channel的操作, 行為類似switch case, 只是每個case被一個channel操作取代了.<br>在每個case都會對應一個channel的收發過程.<br>當收發完成後, 會出發case中對應的語句.<br>多個操作在每次select中挑選一個進行回應.<br>不過如果select中至少兩個以上的case同時被滿足觸發, 就只會<strong>隨機</strong>挑一個case執行.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> (</span><br><span class="line">    <span class="keyword">case</span> 成功操作ch1 :</span><br><span class="line">        響應操作<span class="number">1</span></span><br><span class="line">    <span class="keyword">case</span> 成功操作ch2 :</span><br><span class="line">        響應操作<span class="number">2</span></span><br><span class="line">    <span class="keyword">default</span>: </span><br><span class="line">        其他<span class="keyword">case</span>都沒有滿足觸發時, 會執行默認<span class="keyword">case</span>, 避免<span class="keyword">select</span>被阻塞.</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">操作</th>
+<th align="center">語句範例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">接收任意資料</td>
+<td align="center">case &lt;- ch:</td>
+</tr>
+<tr>
+<td align="center">接收資料到變數上</td>
+<td align="center">case d := &lt;- ch</td>
+</tr>
+<tr>
+<td align="center">發送資料</td>
+<td align="center">case ch &lt;- 100 ;</td>
+</tr>
+</tbody></table>
+<h3 id="Deadlock"><a href="#Deadlock" class="headerlink" title="Deadlock"></a>Deadlock</h3><h4 id="範例1-沒有default-case"><a href="#範例1-沒有default-case" class="headerlink" title="範例1 沒有default case:"></a>範例1 沒有default case:</h4><p>使用select但沒有default case, 上面提到這預設是為了不被阻塞用<br>也沒有發布者對channel發送資料, 導致main這goroutine被阻塞導致deadlock.<br>只要channel的另一方有goroutine會發送資料, 那怕是幾天才發一筆, 都不會造成deadlock, 頂多是block.<br>所以訂閱者執行時, 會檢查channel另一邊有沒有發布者已經註冊了, 不然就是拋deadlock panic.<br>但接收者先送資料,  沒人收卻不會拋panic的, 最多是channel滿了被block.</p>
+<p>如果channel是nil channel也是一樣的, 因為也會無法從中讀取資料, 也是會造成阻塞操作.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	dataCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">select</span> &#123;</span><br><span class="line">	    <span class="keyword">case</span> &lt;-dataCh:</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">fatal error: all goroutines are asleep - deadlock!</span></span><br><span class="line"><span class="comment">goroutine 1 [chan receive]:</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"log"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	dataCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">5</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">select</span> &#123;</span><br><span class="line">	<span class="keyword">case</span> &lt;-dataCh:</span><br><span class="line">    <span class="comment">// 補上default case來避免阻塞</span></span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		log.Println(<span class="string">"default case executed"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">2019/09/21 16:56:18 default case executed</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="範例2-沒有半個case"><a href="#範例2-沒有半個case" class="headerlink" title="範例2  沒有半個case :"></a>範例2  沒有半個case :</h4><p>一樣一直阻塞導致deadlock</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">select</span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">fatal error: all goroutines are asleep - deadlock!</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="隨機挑滿足的case"><a href="#隨機挑滿足的case" class="headerlink" title="隨機挑滿足的case"></a>隨機挑滿足的case</h3><p>看個例子滿足多個case下, 會隨機挑一個滿足的case執行對應操作.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	dataCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>, <span class="number">5</span>)</span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			<span class="keyword">select</span> &#123;</span><br><span class="line">			<span class="keyword">case</span> dataCh &lt;- <span class="number">1</span>:</span><br><span class="line">				log.Println(<span class="string">"send 1"</span>)</span><br><span class="line">			<span class="keyword">case</span> dataCh &lt;- <span class="number">2</span>:</span><br><span class="line">				log.Println(<span class="string">"send 2"</span>)</span><br><span class="line">			<span class="keyword">case</span> dataCh &lt;- <span class="number">3</span>:</span><br><span class="line">				log.Println(<span class="string">"send 3"</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> i == <span class="number">4</span> &#123;</span><br><span class="line">				<span class="built_in">close</span>(dataCh)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">		log.Printf(<span class="string">"receive %v\n"</span>, &lt;-dataCh)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 send 1</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 send 1</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 send 3</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 send 3</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 send 2</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 receive 1</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 receive 1</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 receive 3</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 receive 3</span></span><br><span class="line"><span class="comment">2019/09/21 16:32:32 receive 2</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="break跳脫"><a href="#break跳脫" class="headerlink" title="break跳脫"></a>break跳脫</h3><p>思考一下, for 裡面包select , 在case內break</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-time.After(time.Millisecond * time.Duration(<span class="number">500</span>)):</span><br><span class="line">			i++</span><br><span class="line">			<span class="keyword">if</span> i == <span class="number">3</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">"break now"</span>)</span><br><span class="line">				<span class="keyword">break</span></span><br><span class="line">			&#125;</span><br><span class="line">			fmt.Println(<span class="string">"inside the select: "</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Println(<span class="string">"inside the for: "</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	test()</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">inside the select: </span></span><br><span class="line"><span class="comment">inside the for: </span></span><br><span class="line"><span class="comment">inside the select: </span></span><br><span class="line"><span class="comment">inside the for: </span></span><br><span class="line"><span class="comment">break now</span></span><br><span class="line"><span class="comment">inside the select: </span></span><br><span class="line"><span class="comment">inside the for:  </span></span><br><span class="line"><span class="comment">...</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>break在這種使用下, 是無法跳出for之外.<br>只能使用標籤, 搭配break或是goto離開.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	END:</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-time.After(time.Millisecond * time.Duration(<span class="number">500</span>)):</span><br><span class="line">			i++</span><br><span class="line">			<span class="keyword">if</span> i == <span class="number">3</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">"break now"</span>)</span><br><span class="line">				<span class="keyword">break</span> END</span><br><span class="line">			&#125;</span><br><span class="line">			fmt.Println(<span class="string">"inside the select: "</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Println(<span class="string">"inside the for: "</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">test</span><span class="params">()</span></span> &#123;</span><br><span class="line">	i := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> &lt;-time.After(time.Millisecond * time.Duration(<span class="number">500</span>)):</span><br><span class="line">			i++</span><br><span class="line">			<span class="keyword">if</span> i == <span class="number">3</span> &#123;</span><br><span class="line">				fmt.Println(<span class="string">"break now"</span>)</span><br><span class="line">				<span class="keyword">goto</span> END</span><br><span class="line">			&#125;</span><br><span class="line">			fmt.Println(<span class="string">"inside the select: "</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		fmt.Println(<span class="string">"inside the for: "</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	END:</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="對channel的操作行為整理"><a href="#對channel的操作行為整理" class="headerlink" title="對channel的操作行為整理"></a>對channel的操作行為整理</h2><table>
+<thead>
+<tr>
+<th align="center">操作</th>
+<th align="center">nil channel</th>
+<th align="center">closed channel</th>
+<th align="center">not-closed &amp; not nil channel</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">close</td>
+<td align="center">panic</td>
+<td align="center">panic</td>
+<td align="center">success close</td>
+</tr>
+<tr>
+<td align="center">ch&lt;-</td>
+<td align="center">block</td>
+<td align="center">panic</td>
+<td align="center">block or sucess write</td>
+</tr>
+<tr>
+<td align="center">&lt;-ch</td>
+<td align="center">block</td>
+<td align="center">read zero value</td>
+<td align="center">block or read success</td>
+</tr>
+</tbody></table>
+<p>看得出來對channel不熟的話, 很容易panic.<br>尤其是在close操作上.<br>來整理一下怎樣的關閉通道, 能全身而退, 安全的在各goroutine之間結束.</p>
+<h3 id="The-Channel-Closing-Principle"><a href="#The-Channel-Closing-Principle" class="headerlink" title="The Channel Closing Principle"></a><a href="https://go101.org/article/channel-closing.html" target="_blank" rel="noopener">The Channel Closing Principle</a></h3><ol>
+<li>別再訂閱方這裡關閉channel</li>
+<li>如果有多個發布者對上同一個channel, 這情況下, 也別在發布端這裡作關閉</li>
+<li>不要去關閉一個已經被關閉的channel</li>
+<li>不要送資料去一個已經被關閉的channel</li>
+</ol>
+<p>那我們在發布端跟訂閱端這裡的使用場景就可分成</p>
+<ul>
+<li>一個發布者, 多個訂閱者</li>
+<li>多個發布者, 一個訂閱者</li>
+<li>M個發布者, N個訂閱者</li>
+</ul>
+<h3 id="一個發布者-多個訂閱者"><a href="#一個發布者-多個訂閱者" class="headerlink" title="一個發布者, 多個訂閱者"></a>一個發布者, 多個訂閱者</h3><p><img src="https://i.imgur.com/S9i9Prz.png" alt></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"math/rand"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一個發布者, 多個訂閱者</span></span><br><span class="line"><span class="comment">// 因為只有一個發布者對上channel, 所以由發布者自己決定什麼時候關閉通道</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	rand.Seed(time.Now().UnixNano())</span><br><span class="line">	log.SetFlags(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 隨機數字的最大值</span></span><br><span class="line">	<span class="keyword">const</span> Max = <span class="number">100000</span></span><br><span class="line">	<span class="comment">// 訂閱者數量</span></span><br><span class="line">	<span class="keyword">const</span> NumSubscribers = <span class="number">100</span></span><br><span class="line"></span><br><span class="line">	wgSubscribers := sync.WaitGroup&#123;&#125;</span><br><span class="line">	wgSubscribers.Add(NumSubscribers)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 資料通道</span></span><br><span class="line">	dataCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 發布者</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">for</span> &#123;</span><br><span class="line">			<span class="comment">// 當剛好出現0時</span></span><br><span class="line">			<span class="keyword">if</span> value := rand.Intn(Max); value == <span class="number">0</span> &#123;</span><br><span class="line">				<span class="comment">// 唯一的發布者可自己關閉通道</span></span><br><span class="line">				<span class="built_in">close</span>(dataCh)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				dataCh &lt;- value</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">//  訂閱者</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; NumSubscribers; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> wgSubscribers.Done()</span><br><span class="line"></span><br><span class="line">			<span class="comment">//一直從channel接收資料直到通道關閉, 且都沒資料為止</span></span><br><span class="line">			<span class="keyword">for</span> value := <span class="keyword">range</span> dataCh &#123;</span><br><span class="line">				log.Println(value)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	wgSubscribers.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="多個發布者-一個訂閱者"><a href="#多個發布者-一個訂閱者" class="headerlink" title="多個發布者, 一個訂閱者"></a>多個發布者, 一個訂閱者</h3><p><img src="https://i.imgur.com/C1DTcjh.png" alt></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"math/rand"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	rand.Seed(time.Now().UnixNano())</span><br><span class="line">	log.SetFlags(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> Max = <span class="number">100000</span></span><br><span class="line">	<span class="comment">// 發布者數量</span></span><br><span class="line">	<span class="keyword">const</span> NumPublishers = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line">	wgSubscriber := sync.WaitGroup&#123;&#125;</span><br><span class="line">	wgSubscriber.Add(<span class="number">1</span>)</span><br><span class="line">	<span class="comment">// 資料通道</span></span><br><span class="line">	dataCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="comment">// 停止訊號通道, 發訊號給他的是訂閱者, 訂閱者因為自己不能關閉通道, 會違反原則</span></span><br><span class="line">	<span class="comment">// 發布者收到停止訊號後, 就會停止發布並且返回</span></span><br><span class="line">	stopCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 創建多個發布者</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; NumPublishers; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">			<span class="keyword">for</span> &#123;</span><br><span class="line">    <span class="comment">// 如果只有一個select 內有從stopCh取值跟送值給dataCh這兩個case.</span></span><br><span class="line">    <span class="comment">// 當同時兩個條件都滿足下, 是會發生隨機挑一個case去執行的無法預估的情況.</span></span><br><span class="line">    <span class="comment">// 所以第一個select只會有從stopCh取值作提早返回和default case避免阻塞用.</span></span><br><span class="line">				<span class="keyword">select</span> &#123;</span><br><span class="line">				<span class="comment">// 發布者對資料通道是發布者的角色</span></span><br><span class="line">				<span class="comment">// 但是對停止訊號通道則是訂閱者的角色</span></span><br><span class="line">				<span class="keyword">case</span> &lt;-stopCh:</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				<span class="keyword">default</span>:</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="keyword">select</span> &#123;</span><br><span class="line">				<span class="keyword">case</span> &lt;-stopCh:</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				<span class="keyword">case</span> dataCh &lt;- rand.Intn(Max):</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//  訂閱者</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="keyword">defer</span> wgSubscriber.Done()</span><br><span class="line"></span><br><span class="line">		<span class="keyword">for</span> value := <span class="keyword">range</span> dataCh &#123;</span><br><span class="line">			<span class="keyword">if</span> value == Max<span class="number">-1</span> &#123;</span><br><span class="line">				<span class="comment">// 訂閱者對停止事件通道的角色則是發布的作用,</span></span><br><span class="line">				<span class="comment">// 所以由他負責關閉沒有違反原則, 且也只有他一位.</span></span><br><span class="line">				<span class="built_in">close</span>(stopCh)</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			log.Println(value)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	wgSubscriber.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="M個發布者-N個訂閱者"><a href="#M個發布者-N個訂閱者" class="headerlink" title="M個發布者, N個訂閱者"></a>M個發布者, N個訂閱者</h3><p><img src="https://i.imgur.com/RATwkQF.png" alt><br>最複雜的case</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"math/rand"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">	<span class="string">"sync"</span></span><br><span class="line">	<span class="string">"time"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 不能讓發布者或是訂閱者來關閉資料通道, 且不能讓發布者這邊來關閉額外的訊息通道來通知其他所有角色退出.</span></span><br><span class="line"><span class="comment">// 引入主持人這角色在這情境下, 來關閉訊息通道</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	rand.Seed(time.Now().UnixNano())</span><br><span class="line">	log.SetFlags(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> Max = <span class="number">100000</span></span><br><span class="line">	<span class="comment">// 訂閱者數量</span></span><br><span class="line">	<span class="keyword">const</span> NumSubscribers = <span class="number">10</span></span><br><span class="line">	<span class="comment">// 發布者數量</span></span><br><span class="line">	<span class="keyword">const</span> NumPublishers = <span class="number">1000</span></span><br><span class="line"></span><br><span class="line">	wgSubscribers := sync.WaitGroup&#123;&#125;</span><br><span class="line">	wgSubscribers.Add(NumSubscribers)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 資料通道</span></span><br><span class="line">	dataCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">int</span>)</span><br><span class="line">	<span class="comment">// 停止訊號通道, 給仲裁角色用來發送訊號的</span></span><br><span class="line">	stopCh := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">struct</span>&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 一個長度為1 的通道, 主要是用來告訴主持人說該關閉通道了</span></span><br><span class="line">	<span class="comment">// 看是發送者發起還是接收者發起的</span></span><br><span class="line">	toStop := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="keyword">string</span>, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> stoppedBy <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// 主持人, 就block自己, 直到從toStop取值成功, 再來關閉訊息通道</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		stoppedBy = &lt;-toStop</span><br><span class="line">		<span class="built_in">close</span>(stopCh)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 創建多個發布者</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; NumPublishers; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(id <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">			<span class="keyword">for</span> &#123;</span><br><span class="line">				value := rand.Intn(Max)</span><br><span class="line">				<span class="keyword">if</span> value == <span class="number">0</span> &#123;</span><br><span class="line">				<span class="comment">// 某一個發布者決定停止, 發訊號過去給主持人</span></span><br><span class="line">					<span class="keyword">select</span> &#123;</span><br><span class="line">					<span class="keyword">case</span> toStop &lt;- <span class="string">"sender#"</span> + id:</span><br><span class="line">					<span class="keyword">default</span>:</span><br><span class="line">					&#125;</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="comment">// 嘗試從停止通道中取值, 或者不阻塞往下繼續執行</span></span><br><span class="line">				<span class="keyword">select</span> &#123;</span><br><span class="line">				<span class="keyword">case</span> &lt;-stopCh:</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				<span class="keyword">default</span>:</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="comment">// 嘗試從停止通道中取值, 或者發送資料到資料通道</span></span><br><span class="line">				<span class="keyword">select</span> &#123;</span><br><span class="line">				<span class="keyword">case</span> &lt;-stopCh:</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				<span class="keyword">case</span> dataCh &lt;- value:</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;(strconv.Itoa(i))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 創建多個訂閱者</span></span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; NumSubscribers; i++ &#123;</span><br><span class="line">		<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(id <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">			<span class="keyword">defer</span> wgSubscribers.Done()</span><br><span class="line"></span><br><span class="line">			<span class="keyword">for</span> &#123;</span><br><span class="line">				<span class="comment">// 嘗試從停止通道中取值, 或者不阻塞往下繼續執行</span></span><br><span class="line">				<span class="keyword">select</span> &#123;</span><br><span class="line">				<span class="keyword">case</span> &lt;-stopCh:</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				<span class="keyword">default</span>:</span><br><span class="line">				&#125;</span><br><span class="line"></span><br><span class="line">				<span class="comment">// 嘗試從停止通道中取值, 或者從資料通道取值</span></span><br><span class="line">				<span class="keyword">select</span> &#123;</span><br><span class="line">				<span class="keyword">case</span> &lt;-stopCh:</span><br><span class="line">					<span class="keyword">return</span></span><br><span class="line">				<span class="keyword">case</span> value := &lt;-dataCh:</span><br><span class="line">					<span class="keyword">if</span> value == Max<span class="number">-1</span> &#123;</span><br><span class="line">						<span class="keyword">select</span> &#123;</span><br><span class="line">						<span class="keyword">case</span> toStop &lt;- <span class="string">"receiver#"</span> + id:</span><br><span class="line">						<span class="keyword">default</span>:</span><br><span class="line">						&#125;</span><br><span class="line">						<span class="keyword">return</span></span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					log.Println(value)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;(strconv.Itoa(i))</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	wgSubscribers.Wait()</span><br><span class="line">	log.Println(<span class="string">"stopped by"</span>, stoppedBy)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/0QSEw23.png" alt></p>
+<p><strong>好像資料通道跟主持人專用通道, 都沒人去負責Close() ??</strong><br>前面提過<br>因為只要大家都沒在用該通道, 不論是否有沒有主動去close().<br>最終該通道就會被GC掉, 因為沒人在引用該通道了.</p>
+<h3 id="Pub-Sub-觀察者模式"><a href="#Pub-Sub-觀察者模式" class="headerlink" title="Pub-Sub == 觀察者模式 ?"></a><a href="https://hackernoon.com/observer-vs-pub-sub-pattern-50d3b27f838c" target="_blank" rel="noopener">Pub-Sub == 觀察者模式 ?</a></h3><p>Pub-Sub中間都會有個第三個組件message broker或者event bus/channel, 負責作調度跟管理.<br>觀察者則是直接由主題變化時, 通知所有觀察者.<br>所以這裡有channel的例子其實都是Pub-Sub.</p>
+<p>Pub-Sub<br><img src="https://hackernoon.com/hn-images/1*-GHFC93E4ODwNc98IE5_vA.gif" alt></p>
+<p>觀察者<br><img src="https://hackernoon.com/hn-images/1*s1kclXywIwae86iNa7cKZQ.png" alt></p>
+<p>接著會陸續介紹幾種併發模型跟Context</p>
+<p>ps:<br>別任意地無限建立goroutine 並且裡面有這樣寫法, 還沒任何的return</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> &#123;</span><br><span class="line">  xxxx</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這會導致CPU被莫名其妙吃光, 因為CPU Time都花費在for(1) loop上了.<br>Channel本身可以是非阻塞操作讓出CPU時間, 但for (1) loop不會<br><a href="https://stackoverflow.com/questions/57717635/golang-for-select-blows-up-cpu" target="_blank" rel="noopener">參考來源</a></p>
+<p><a href="https://ithelp.ithome.com.tw/articles/10218923" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/21/Go-Channel/" data-id="ckiylchye000oyk6xa0lxwar1" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go_Channel",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/iQ4hriX.jpg",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-21",
+        "dateCreated": "2020-12-21",
+        "dateModified": "2020-12-21",
+        "url": "https://tedmax100.github.io/2020/12/21/Go-Channel/",
+        "description": "
+Channelchannel能夠在多個goroutine之間作數據交換, 任何時間, 同時只能有一個goroutine來存取通道進行發送或獲取資料. Channel就像是一個輸送帶, 遵守著FIFO的規則, 保證收發資料的順序.​",
+        "wordCount": 3065
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/12/21/Go_Routine/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Goroutine 讓你用少少的線程, 能接受更多的工作, 但沒說會作比較快</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Channel/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/iQ4hriX.jpg)" alt="Go_Channel" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Channel/" class="title">Go_Channel</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:23:32.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go_Routine/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/cGyNZXY.jpg)" alt="Goroutine 讓你用少少的線程, 能接受更多的工作, 但沒說會作比較快" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go_Routine/" class="title">Goroutine 讓你用少少的線程, 能接受更多的工作, 但沒說會作比較快</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:22:12.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Defer-延遲調用/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2R6EfyQ.png)" alt="Go_Defer_延遲調用" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Defer-延遲調用/" class="title">Go_Defer_延遲調用</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:19:31.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Op2TRi6.png)" alt="Go modules 終於不會再被GOPATH綁死了" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/go-modules-終於不會再被GOPATH綁死了/" class="title">Go modules 終於不會再被GOPATH綁死了</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:18:29.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/GoVendor好多依賴要管理/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://cdn-images-1.medium.com/max/800/1*nPaOoEou7T-cM9WZGtU-gg.png)" alt="好多依賴要管理" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/GoVendor好多依賴要管理/" class="title">好多依賴要管理</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:17:18.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">14</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/21/Go-Channel/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
