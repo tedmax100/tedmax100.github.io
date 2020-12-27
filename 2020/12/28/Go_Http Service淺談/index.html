@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go_Http Service淺談 | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="現在幾乎什麼服務都是走Http協議, 提供WebAPI給client使用.NodeJS幾年前盛起, 一小部份原因也是他做WebAPI很好寫沒太多複雜的設定.Go在建立http服務也是頗簡單.2者也都內建web server ; 以前寫C#還得放到IIS, Java則是放到Tomcat…. Go提供net/http包, 能提供路由、靜態文件、Template、Cookie、檔案系統等.​">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go_Http Service淺談">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/28/Go_Http Service淺談/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="現在幾乎什麼服務都是走Http協議, 提供WebAPI給client使用.NodeJS幾年前盛起, 一小部份原因也是他做WebAPI很好寫沒太多複雜的設定.Go在建立http服務也是頗簡單.2者也都內建web server ; 以前寫C#還得放到IIS, Java則是放到Tomcat…. Go提供net/http包, 能提供路由、靜態文件、Template、Cookie、檔案系統等.​">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/QbPpdfG.png">
+<meta property="og:updated_time" content="2020-12-27T16:19:49.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go_Http Service淺談">
+<meta name="twitter:description" content="現在幾乎什麼服務都是走Http協議, 提供WebAPI給client使用.NodeJS幾年前盛起, 一小部份原因也是他做WebAPI很好寫沒太多複雜的設定.Go在建立http服務也是頗簡單.2者也都內建web server ; 以前寫C#還得放到IIS, Java則是放到Tomcat…. Go提供net/http包, 能提供路由、靜態文件、Template、Cookie、檔案系統等.​">
+<meta name="twitter:image" content="https://i.imgur.com/QbPpdfG.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go_Http Service淺談" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go_Http Service淺談
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/28/Go_Http Service淺談/" class="article-date">
+       <time datetime="2020-12-27T16:18:37.000Z" itemprop="datePublished">2020-12-28</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/28/Go_Http Service淺談/" class="article-date">
+     <time datetime="2020-12-27T16:19:49.032Z" itemprop="dateModified">2020-12-28</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p>現在幾乎什麼服務都是走Http協議, 提供WebAPI給client使用.<br>NodeJS幾年前盛起, 一小部份原因也是他做WebAPI很好寫沒太多複雜的設定.<br>Go在建立http服務也是頗簡單.<br>2者也都內建web server ; 以前寫C#還得放到IIS, Java則是放到Tomcat….</p>
+<p>Go提供<a href="https://golang.org/pkg/net/http/" target="_blank" rel="noopener">net/http包</a>, 能提供路由、靜態文件、Template、Cookie、檔案系統等.<br>​<a id="more"></a></p>
+<p>來建立個會回Hello It Home的http服務吧.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 設置路由跟處理方法</span></span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, HelloHandler)</span><br><span class="line">	<span class="comment">// 設置監聽的port</span></span><br><span class="line">	log.Fatal(http.ListenAndServe(<span class="string">":8080"</span>, <span class="literal">nil</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HelloHandler</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	io.WriteString(w, <span class="string">"Hello, It Home!\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>啟動Http服務器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go run main.go</span><br></pre></td></tr></table></figure>
+
+<p>打開瀏覽器輸入localhost:8080<br><img src="https://i.imgur.com/QbPpdfG.png" alt></p>
+<p><img src="https://i.imgur.com/DUCUxCz.png" alt></p>
+<p>這樣就啟動一個最基本的Http服務了.<br>行數少少的, 就能起一個服務了.</p>
+<h2 id="Http-Handler"><a href="#Http-Handler" class="headerlink" title="Http Handler"></a>Http Handler</h2><p>第一個參數是路由匹配的字串.<br>第二個參數是func(ResponseWriter, *Request)這類型的方法.<br>該方法第一個參數是負責Respons, 另一個則是http請求.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HandleFunc</span><span class="params">(pattern <span class="keyword">string</span>, handler <span class="keyword">func</span>(ResponseWriter, *Request)</span>)</span> &#123;</span><br><span class="line">    DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到內部程式就1行, 執行DefaultServeMux.HandleFunc<br>來看看什麼是DefaultServeMux</p>
+<h2 id="DefaultServeMux"><a href="#DefaultServeMux" class="headerlink" title="DefaultServeMux"></a>DefaultServeMux</h2><p>默認的路由集合.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> ServeMux <span class="keyword">struct</span> &#123;</span><br><span class="line">	mu    sync.RWMutex</span><br><span class="line">	m     <span class="keyword">map</span>[<span class="keyword">string</span>]muxEntry</span><br><span class="line">	es    []muxEntry <span class="comment">// slice of entries sorted from longest to shortest.</span></span><br><span class="line">	hosts <span class="keyword">bool</span>       <span class="comment">// whether any patterns contain hostnames</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> muxEntry <span class="keyword">struct</span> &#123;</span><br><span class="line">	h       Handler</span><br><span class="line">	pattern <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Handler <span class="keyword">interface</span> &#123;</span><br><span class="line">	ServeHTTP(ResponseWriter, *Request)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>muxEntry 儲存路由路徑和對應的routing handler.<br>因為Handler是一個接口, 所以只要滿足的方法都能作註冊.<br><img src="https://i.imgur.com/MR103Yl.png" alt></p>
+<p>有兩個全局方法能針對DefaultServeMux作設定<br>第一個參數是告訴它要監聽哪個TCP地址.<br>第二個參數是能帶入自定義的server mux;<br>但我們傳nil, 就會使用DefaultServeMux, 來當預設的多工器.<br>certFile是我們如果要建立https的服務時, 要給它憑證證書的公鑰、私鑰.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">ListenAndServe</span><span class="params">(addr <span class="keyword">string</span>, handler Handler)</span> <span class="title">errorerror</span></span></span><br><span class="line"><span class="function"><span class="title">func</span> <span class="title">ListenAndServeTLS</span><span class="params">(addr, certFile, keyFile <span class="keyword">string</span>, handler Handler)</span> <span class="title">error</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Request"><a href="#Request" class="headerlink" title="Request"></a>Request</h2><p>一個請求最常見的有Method、Header、Body、Cookie…</p>
+<h3 id="Post-handler"><a href="#Post-handler" class="headerlink" title="Post handler"></a>Post handler</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"encoding/json"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"io/ioutil"</span></span><br><span class="line">	<span class="string">"log"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 設置路由跟處理方法</span></span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, HelloHandler)</span><br><span class="line">	http.HandleFunc(<span class="string">"/post"</span>, PostHandler)</span><br><span class="line">	<span class="comment">// http.HandleFunc("/get", GetHandler)</span></span><br><span class="line">	<span class="comment">// 設置監聽的port</span></span><br><span class="line">	log.Fatal(http.ListenAndServe(<span class="string">":8080"</span>, <span class="literal">nil</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ReqData <span class="keyword">struct</span> &#123;</span><br><span class="line">	Method  <span class="keyword">string</span></span><br><span class="line">	Body    <span class="keyword">string</span></span><br><span class="line">	Headers <span class="keyword">map</span>[<span class="keyword">string</span>][]<span class="keyword">string</span></span><br><span class="line">	Cookie  []*http.Cookie</span><br><span class="line">	Params  <span class="keyword">map</span>[<span class="keyword">string</span>][]<span class="keyword">string</span></span><br><span class="line">	Url     <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r ReqData)</span> <span class="title">String</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	b, err := json.Marshal(r)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err.Error()</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">string</span>(b)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PostHandler</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">"req method: "</span>, req.Method)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> req.Method == <span class="string">"POST"</span> &#123;</span><br><span class="line">		body, err := ioutil.ReadAll(req.Body)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			http.Error(w, <span class="string">"read request body error"</span>, http.StatusInternalServerError)</span><br><span class="line">		&#125;</span><br><span class="line">		reqdata := ReqData&#123;</span><br><span class="line">			Method:  req.Method,</span><br><span class="line">			Body:    <span class="keyword">string</span>(body),</span><br><span class="line">			Headers: req.Header,</span><br><span class="line">			Params:  req.URL.Query(),</span><br><span class="line">			Cookie:  req.Cookies(),</span><br><span class="line">			Url:     req.URL.String(),</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		fmt.Fprint(w, reqdata.String())</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	http.Error(w, <span class="string">"invalid request method"</span>, http.StatusMethodNotAllowed)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetHandler</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">"req method: "</span>, req.Method)</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, <span class="string">"Hello, It Home!\n"</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">HelloHandler</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	io.WriteString(w, <span class="string">"Hello, It Home!\n"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這裡我把幾個常用到的request屬性的型別給響應在response而已.<br>Body則是一個接口類型, 其內容是個[]byte, 可以透過讀取這[]byte來獲得內容.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ReadCloser <span class="keyword">interface</span> &#123;</span><br><span class="line">    Reader</span><br><span class="line">    Closer</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到Header跟Query string的Params其實內部實現都是map.<br>這裡最後我是把reqdata的字串寫入到w這ResponseWriter.<br>mux會把這w根據response的content-type作回應.<br>但我這裡沒表明用什麼type, 就只是一般的text.</p>
+<p>透過Postman發出POST請求, 就會得到回應了.<br><img src="https://i.imgur.com/0dcOtcR.png" alt><br>太丑了XD, 來美化一下.</p>
+<h2 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h2><p>response跟request結構大體接近. 也有header、body、cookie<br>為了讓回傳是Json, 我加上response.header是”Content-Type:application/json”, 告訴瀏覽器這回應的是json格式.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r ReqData)</span> <span class="title">Marshal</span><span class="params">()</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">	b, err := json.Marshal(r)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> []<span class="keyword">byte</span>(err.Error())</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> b</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PostHandler</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	log.Println(<span class="string">"req method: "</span>, req.Method)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> req.Method == <span class="string">"POST"</span> &#123;</span><br><span class="line">		body, err := ioutil.ReadAll(req.Body)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			http.Error(w, <span class="string">"read request body error"</span>, http.StatusInternalServerError)</span><br><span class="line">		&#125;</span><br><span class="line">		reqdata := ReqData&#123;</span><br><span class="line">			Method:  req.Method,</span><br><span class="line">			Body:    <span class="keyword">string</span>(body),</span><br><span class="line">			Headers: req.Header,</span><br><span class="line">			Params:  req.URL.Query(),</span><br><span class="line">			Cookie:  req.Cookies(),</span><br><span class="line">			Url:     req.URL.String(),</span><br><span class="line">		&#125;</span><br><span class="line">		w.Header().Set(<span class="string">"Content-Type"</span>, <span class="string">"application/json"</span>)</span><br><span class="line">		w.Write(reqdata.Marshal())</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	http.Error(w, <span class="string">"invalid request method"</span>, http.StatusMethodNotAllowed)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/XX0kZHb.png" alt><br><img src="https://i.imgur.com/iwsg56w.png" alt></p>
+<h3 id="Redirect"><a href="#Redirect" class="headerlink" title="Redirect"></a>Redirect</h3><p>只要Header標明是302, 然後header給上Location跟轉址的url.<br>就能輕鬆完成.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">w.Header().Set(<span class="string">"Location"</span>, <span class="string">"https://google.com"</span>)</span><br><span class="line">w.WriteHeader(<span class="number">302</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Http-Status"><a href="#Http-Status" class="headerlink" title="Http Status"></a>Http Status</h2><p>net/http內很貼心的把RFC有定義的status全列舉在這了.<br>使用時就只要呼叫http就會看到智慧選單, Status開頭且是int的都是.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> (</span><br><span class="line">	StatusContinue           = <span class="number">100</span> <span class="comment">// RFC 7231, 6.2.1</span></span><br><span class="line">	StatusSwitchingProtocols = <span class="number">101</span> <span class="comment">// RFC 7231, 6.2.2</span></span><br><span class="line">	StatusProcessing         = <span class="number">102</span> <span class="comment">// RFC 2518, 10.1</span></span><br><span class="line"></span><br><span class="line">	StatusOK                   = <span class="number">200</span> <span class="comment">// RFC 7231, 6.3.1</span></span><br><span class="line">	StatusCreated              = <span class="number">201</span> <span class="comment">// RFC 7231, 6.3.2</span></span><br><span class="line">	StatusAccepted             = <span class="number">202</span> <span class="comment">// RFC 7231, 6.3.3</span></span><br><span class="line">	StatusNonAuthoritativeInfo = <span class="number">203</span> <span class="comment">// RFC 7231, 6.3.4</span></span><br><span class="line">	StatusNoContent            = <span class="number">204</span> <span class="comment">// RFC 7231, 6.3.5</span></span><br><span class="line">	StatusResetContent         = <span class="number">205</span> <span class="comment">// RFC 7231, 6.3.6</span></span><br><span class="line">	StatusPartialContent       = <span class="number">206</span> <span class="comment">// RFC 7233, 4.1</span></span><br><span class="line">	StatusMultiStatus          = <span class="number">207</span> <span class="comment">// RFC 4918, 11.1</span></span><br><span class="line">	StatusAlreadyReported      = <span class="number">208</span> <span class="comment">// RFC 5842, 7.1</span></span><br><span class="line">	StatusIMUsed               = <span class="number">226</span> <span class="comment">// RFC 3229, 10.4.1</span></span><br><span class="line"></span><br><span class="line">	StatusMultipleChoices   = <span class="number">300</span> <span class="comment">// RFC 7231, 6.4.1</span></span><br><span class="line">	StatusMovedPermanently  = <span class="number">301</span> <span class="comment">// RFC 7231, 6.4.2</span></span><br><span class="line">	StatusFound             = <span class="number">302</span> <span class="comment">// RFC 7231, 6.4.3</span></span><br><span class="line">	StatusSeeOther          = <span class="number">303</span> <span class="comment">// RFC 7231, 6.4.4</span></span><br><span class="line">	StatusNotModified       = <span class="number">304</span> <span class="comment">// RFC 7232, 4.1</span></span><br><span class="line">	StatusUseProxy          = <span class="number">305</span> <span class="comment">// RFC 7231, 6.4.5</span></span><br><span class="line">	_                       = <span class="number">306</span> <span class="comment">// RFC 7231, 6.4.6 (Unused)</span></span><br><span class="line">	StatusTemporaryRedirect = <span class="number">307</span> <span class="comment">// RFC 7231, 6.4.7</span></span><br><span class="line">	StatusPermanentRedirect = <span class="number">308</span> <span class="comment">// RFC 7538, 3</span></span><br><span class="line"></span><br><span class="line">	StatusBadRequest                   = <span class="number">400</span> <span class="comment">// RFC 7231, 6.5.1</span></span><br><span class="line">	StatusUnauthorized                 = <span class="number">401</span> <span class="comment">// RFC 7235, 3.1</span></span><br><span class="line">	StatusPaymentRequired              = <span class="number">402</span> <span class="comment">// RFC 7231, 6.5.2</span></span><br><span class="line">	StatusForbidden                    = <span class="number">403</span> <span class="comment">// RFC 7231, 6.5.3</span></span><br><span class="line">	StatusNotFound                     = <span class="number">404</span> <span class="comment">// RFC 7231, 6.5.4</span></span><br><span class="line">	StatusMethodNotAllowed             = <span class="number">405</span> <span class="comment">// RFC 7231, 6.5.5</span></span><br><span class="line">	StatusNotAcceptable                = <span class="number">406</span> <span class="comment">// RFC 7231, 6.5.6</span></span><br><span class="line">	StatusProxyAuthRequired            = <span class="number">407</span> <span class="comment">// RFC 7235, 3.2</span></span><br><span class="line">	StatusRequestTimeout               = <span class="number">408</span> <span class="comment">// RFC 7231, 6.5.7</span></span><br><span class="line">	StatusConflict                     = <span class="number">409</span> <span class="comment">// RFC 7231, 6.5.8</span></span><br><span class="line">	StatusGone                         = <span class="number">410</span> <span class="comment">// RFC 7231, 6.5.9</span></span><br><span class="line">	StatusLengthRequired               = <span class="number">411</span> <span class="comment">// RFC 7231, 6.5.10</span></span><br><span class="line">	StatusPreconditionFailed           = <span class="number">412</span> <span class="comment">// RFC 7232, 4.2</span></span><br><span class="line">	StatusRequestEntityTooLarge        = <span class="number">413</span> <span class="comment">// RFC 7231, 6.5.11</span></span><br><span class="line">	StatusRequestURITooLong            = <span class="number">414</span> <span class="comment">// RFC 7231, 6.5.12</span></span><br><span class="line">	StatusUnsupportedMediaType         = <span class="number">415</span> <span class="comment">// RFC 7231, 6.5.13</span></span><br><span class="line">	StatusRequestedRangeNotSatisfiable = <span class="number">416</span> <span class="comment">// RFC 7233, 4.4</span></span><br><span class="line">	StatusExpectationFailed            = <span class="number">417</span> <span class="comment">// RFC 7231, 6.5.14</span></span><br><span class="line">	StatusTeapot                       = <span class="number">418</span> <span class="comment">// RFC 7168, 2.3.3</span></span><br><span class="line">	StatusMisdirectedRequest           = <span class="number">421</span> <span class="comment">// RFC 7540, 9.1.2</span></span><br><span class="line">	StatusUnprocessableEntity          = <span class="number">422</span> <span class="comment">// RFC 4918, 11.2</span></span><br><span class="line">	StatusLocked                       = <span class="number">423</span> <span class="comment">// RFC 4918, 11.3</span></span><br><span class="line">	StatusFailedDependency             = <span class="number">424</span> <span class="comment">// RFC 4918, 11.4</span></span><br><span class="line">	StatusTooEarly                     = <span class="number">425</span> <span class="comment">// RFC 8470, 5.2.</span></span><br><span class="line">	StatusUpgradeRequired              = <span class="number">426</span> <span class="comment">// RFC 7231, 6.5.15</span></span><br><span class="line">	StatusPreconditionRequired         = <span class="number">428</span> <span class="comment">// RFC 6585, 3</span></span><br><span class="line">	StatusTooManyRequests              = <span class="number">429</span> <span class="comment">// RFC 6585, 4</span></span><br><span class="line">	StatusRequestHeaderFieldsTooLarge  = <span class="number">431</span> <span class="comment">// RFC 6585, 5</span></span><br><span class="line">	StatusUnavailableForLegalReasons   = <span class="number">451</span> <span class="comment">// RFC 7725, 3</span></span><br><span class="line"></span><br><span class="line">	StatusInternalServerError           = <span class="number">500</span> <span class="comment">// RFC 7231, 6.6.1</span></span><br><span class="line">	StatusNotImplemented                = <span class="number">501</span> <span class="comment">// RFC 7231, 6.6.2</span></span><br><span class="line">	StatusBadGateway                    = <span class="number">502</span> <span class="comment">// RFC 7231, 6.6.3</span></span><br><span class="line">	StatusServiceUnavailable            = <span class="number">503</span> <span class="comment">// RFC 7231, 6.6.4</span></span><br><span class="line">	StatusGatewayTimeout                = <span class="number">504</span> <span class="comment">// RFC 7231, 6.6.5</span></span><br><span class="line">	StatusHTTPVersionNotSupported       = <span class="number">505</span> <span class="comment">// RFC 7231, 6.6.6</span></span><br><span class="line">	StatusVariantAlsoNegotiates         = <span class="number">506</span> <span class="comment">// RFC 2295, 8.1</span></span><br><span class="line">	StatusInsufficientStorage           = <span class="number">507</span> <span class="comment">// RFC 4918, 11.5</span></span><br><span class="line">	StatusLoopDetected                  = <span class="number">508</span> <span class="comment">// RFC 5842, 7.2</span></span><br><span class="line">	StatusNotExtended                   = <span class="number">510</span> <span class="comment">// RFC 2774, 7</span></span><br><span class="line">	StatusNetworkAuthenticationRequired = <span class="number">511</span> <span class="comment">// RFC 6585, 6</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>這篇文章有一張net/http的流程圖能學習; 能了解服務從開始到請求過來的過程<br><a href="https://www.cnblogs.com/Survivalist/p/10033169.html" target="_blank" rel="noopener">Golang构建HTTP服务（一）— net/http库源码笔记</a></p>
+</blockquote>
+<p>其實這樣只要路由一多, 很難維護.<br>有的還要寫middleware, 或是處理session等等的.<br>我剛學的時候是看<a href="https://github.com/gorilla/mux" target="_blank" rel="noopener">gorilla/mux</a><br>它可以方便的定義.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">r := mux.NewRouter()</span><br><span class="line">indexroute := r.PathPrefix(<span class="string">"/"</span>).Subrouter()</span><br><span class="line">indexroute.Use(MiddlewareOne)</span><br><span class="line"></span><br><span class="line">healthchecks := r.PathPrefix(<span class="string">"/health"</span>).Subrouter()</span><br><span class="line">healthchecks.Use(MiddlewareTwo)</span><br><span class="line"></span><br><span class="line">log.Fatal(http.ListenAndServe(<span class="string">"localhost:8000"</span>, r))</span><br></pre></td></tr></table></figure>
+
+<p>但現在更火熱的是<a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">Gin</a>這套Web框架.<br>明天來玩看看.</p>
+<p>這套可能不是效能最優的框架.<br>But…很多時候效能瓶頸可能都不在這些框架上;<br>而是我們對Go或者是Sql甚至是架構上的處理跟了解不夠深入.<br>所以我都是挑生態圈活躍的框架來深入.<br>畢竟很多雷, 大家都幫忙踩完解掉了^^</p>
+<p><a href="https://ithelp.ithome.com.tw/articles/10221840" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/28/Go_Http Service淺談/" data-id="ckj7cacnr001uk86xwi2425hh" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go_Http Service淺談",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/QbPpdfG.png",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-28",
+        "dateCreated": "2020-12-28",
+        "dateModified": "2020-12-28",
+        "url": "https://tedmax100.github.io/2020/12/28/Go_Http Service淺談/",
+        "description": "現在幾乎什麼服務都是走Http協議, 提供WebAPI給client使用.NodeJS幾年前盛起, 一小部份原因也是他做WebAPI很好寫沒太多複雜的設定.Go在建立http服務也是頗簡單.2者也都內建web server ; 以前寫C#還得放到IIS, Java則是放到Tomcat….
+Go提供net/http包, 能提供路由、靜態文件、Template、Cookie、檔案系統等.​",
+        "wordCount": 2191
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2020/12/28/Go-Gin/" id="article-nav-newer" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">下一篇</strong>
+        <p class="article-nav-title">
+        
+            Go_Gin
+        
+        </p>
+        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
+    </a>
+    
+    
+        <a href="/2020/12/21/Go-Testing/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go Testing初探</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/28/Go-Gin/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2sRi1ig.png)" alt="Go_Gin" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/28/Go-Gin/" class="title">Go_Gin</a></p>
+                            <p class="item-date"><time datetime="2020-12-27T16:19:59.000Z" itemprop="datePublished">2020-12-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/28/Go_Http Service淺談/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/QbPpdfG.png)" alt="Go_Http Service淺談" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/28/Go_Http Service淺談/" class="title">Go_Http Service淺談</a></p>
+                            <p class="item-date"><time datetime="2020-12-27T16:18:37.000Z" itemprop="datePublished">2020-12-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Testing/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Z9DjTgq.png)" alt="Go Testing初探" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Testing/" class="title">Go Testing初探</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database-Scan/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/a19yzfd.png)" alt="Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database-Scan/" class="title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/y47gGlS.jpg)" alt="Go database/sql, 和資料庫打個招呼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database/" class="title">Go database/sql, 和資料庫打個招呼</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">21</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/28/Go_Http Service淺談/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>

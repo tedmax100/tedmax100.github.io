@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+
+    
+
+    
+    <title>Go_Gin | 雷N&#39;s Blog</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="keywords" content="Go,iT邦鐵人賽11Th">
+    
+    <meta name="description" content="來杯琴酒(Gin)+萊姆=琴蕾(Gimlet)吧(誤) GinGin是一個基於Golang實做的框架, 特色是簡單!!!  設計精巧好懂的router/middleware系統 簡單好用的上下文gin.Context JSON、XML、DataBiding、Validation…">
+<meta name="keywords" content="Go,iT邦鐵人賽11Th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go_Gin">
+<meta property="og:url" content="https://tedmax100.github.io/2020/12/28/Go-Gin/index.html">
+<meta property="og:site_name" content="雷N&#39;s Blog">
+<meta property="og:description" content="來杯琴酒(Gin)+萊姆=琴蕾(Gimlet)吧(誤) GinGin是一個基於Golang實做的框架, 特色是簡單!!!  設計精巧好懂的router/middleware系統 簡單好用的上下文gin.Context JSON、XML、DataBiding、Validation…">
+<meta property="og:locale" content="zh-TW">
+<meta property="og:image" content="https://i.imgur.com/2sRi1ig.png">
+<meta property="og:updated_time" content="2020-12-27T16:20:41.684Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Go_Gin">
+<meta name="twitter:description" content="來杯琴酒(Gin)+萊姆=琴蕾(Gimlet)吧(誤) GinGin是一個基於Golang實做的框架, 特色是簡單!!!  設計精巧好懂的router/middleware系統 簡單好用的上下文gin.Context JSON、XML、DataBiding、Validation…">
+<meta name="twitter:image" content="https://i.imgur.com/2sRi1ig.png">
+    
+
+    
+
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/titillium-web/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/3.5.0/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+</html>
+<body>
+    <div id="wrap">
+        <header id="header">
+    <div id="header-outer" class="outer">
+        <div class="container">
+            <div class="container-inner">
+                <div id="header-title">
+                    <h1 class="logo-wrap">
+                        <a href="/" class="logo"></a>
+                    </h1>
+                    
+                        <h2 class="subtitle-wrap">
+                            <p class="subtitle">時間花在哪, 成就就在那. 充足的努力, 才能看起來毫不費力</p>
+                        </h2>
+                    
+                </div>
+                <div id="header-inner" class="nav-container">
+                    <a id="main-nav-toggle" class="nav-icon fa fa-bars"></a>
+                    <div class="nav-container-inner">
+                        <ul id="main-nav">
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/">首頁</a>
+                                </li>
+                            
+                                <li class="main-nav-list-item" >
+                                    <a class="main-nav-list-link" href="/about/index.html">關於</a>
+                                </li>
+                            
+                                    <ul class="main-nav-list"><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Docker/">Docker</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/Go/">Go</a></li><li class="main-nav-list-item"><a class="main-nav-list-link" href="/categories/TechWeekly/">TechWeekly</a></li></ul>
+                                
+                        </ul>
+                        <nav id="sub-nav">
+                            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜尋" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="輸入關鍵字..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '頁面',
+            CATEGORIES: '分類',
+            TAGS: '標籤',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+        <div class="container">
+            <div class="main-body container-inner">
+                <div class="main-body-inner">
+                    <section id="main">
+                        <div class="main-body-header">
+    <h1 class="header">
+    
+    <a class="page-title-link" href="/categories/Go/">Go</a>
+    </h1>
+</div>
+
+                        <div class="main-body-content">
+                            <article id="post-Go-Gin" class="article article-single article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+        Go_Gin
+        </h1>
+    
+
+            </header>
+        
+        
+            <div class="article-meta">
+                
+  <div class="article-date">
+    <i class="fa fa-calendar"></i>
+    <a href="/2020/12/28/Go-Gin/" class="article-date">
+       <time datetime="2020-12-27T16:19:59.000Z" itemprop="datePublished">2020-12-28</time>
+    </a>
+  </div>
+
+
+<div class="article-date">
+  <i class="fa fa-calendar-plus-o"></i>
+  <a href="/2020/12/28/Go-Gin/" class="article-date">
+     <time datetime="2020-12-27T16:20:41.684Z" itemprop="dateModified">2020-12-28</time>
+  </a>
+</div>
+
+
+                
+
+                
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Go/">Go</a>, <a class="tag-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a>
+    </div>
+
+                
+
+                
+
+            </div>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+            
+
+            
+
+            
+
+            <p><img src="https://i.imgur.com/2sRi1ig.png" alt><br>來杯琴酒(Gin)+萊姆=琴蕾(Gimlet)吧(誤)</p>
+<h1 id="Gin"><a href="#Gin" class="headerlink" title="Gin"></a><a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">Gin</a></h1><p>Gin是一個基於Golang實做的框架, 特色是簡單!!!</p>
+<ul>
+<li>設計精巧好懂的router/middleware系統</li>
+<li>簡單好用的上下文gin.Context</li>
+<li>JSON、XML、DataBiding、Validation…<a id="more"></a>
+
+</li>
+</ul>
+<h2 id="安裝Gin"><a href="#安裝Gin" class="headerlink" title="安裝Gin"></a>安裝Gin</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u github.com/gin-gonic/gin</span><br></pre></td></tr></table></figure>
+
+<h2 id="Hello-It-Home"><a href="#Hello-It-Home" class="headerlink" title="Hello It Home"></a>Hello It Home</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	router := gin.Default()</span><br><span class="line">	router.GET(<span class="string">"/hello"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">		c.Data(<span class="number">200</span>, <span class="string">"text/plain"</span>, []<span class="keyword">byte</span>(<span class="string">"Hello, It Home!"</span>))</span><br><span class="line">	&#125;)</span><br><span class="line">	</span><br><span class="line">	router.Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/UdN8zyi.png" alt></p>
+<p>昨天的hello路由, 這樣就寫完了.<br>且啟動時跟收到請求時, Gin有預設的log middleware會列印出耗費時間.<br>且還支援RESTful API的動詞(GET/POST/PATCH/DELETE/PUT…)<br>這個gin.Default()作用等同於net/http包內的DefaultServeMux, 只是這是gin包裝過的預設路由引擎.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Default returns an Engine instance with the Logger and Recovery middleware already attached.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Default</span><span class="params">()</span> *<span class="title">Engine</span></span> &#123;</span><br><span class="line">	debugPrintWARNINGDefault()</span><br><span class="line">	engine := New()</span><br><span class="line">	engine.Use(Logger(), Recovery())</span><br><span class="line">	<span class="keyword">return</span> engine</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>這預設引擎使用了Logger()和Recovery()<br>Logger就是負責我們終端機上看到的log.<br>Recovery負責的是當有panic發生時, 就進行http status 500的錯誤處理(避免服務因此就終止了). </p>
+<h2 id="測試"><a href="#測試" class="headerlink" title="測試"></a>測試</h2><p>為了方便測試, 我們把路由處理放到一個單獨的資料夾內.<br>又開一個test資料夾.<br><img src="https://i.imgur.com/mE8ghFA.png" alt></p>
+<p>然後安裝一下斷言包<a href="https://github.com/stretchr/testify" target="_blank" rel="noopener">testify</a></p>
+<p><code>main.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/tedmax100/gin-angular/router"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	router := router.SetupRouter()</span><br><span class="line">	router.Run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>helloRouter.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> router</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetupRouter</span><span class="params">()</span> *<span class="title">gin</span>.<span class="title">Engine</span></span> &#123;</span><br><span class="line">	router := gin.Default()</span><br><span class="line">	router.GET(<span class="string">"/hello"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">		c.Data(<span class="number">200</span>, <span class="string">"text/plain"</span>, []<span class="keyword">byte</span>(<span class="string">"Hello, It Home!"</span>))</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我們會想測試這/hello會回給我們200的狀態跟Hello, It Home!<br>net/http包當中還提供了一樣神器<a href="https://golang.org/pkg/net/http/httptest/" target="_blank" rel="noopener">httptest</a></p>
+<p><strong>httptest</strong>能讓我們快速的建立一個server, 或者建立一個recorder來紀錄response.<br>server我們就用Gin.<br>所以這裡就用recorder來捕捉response的內容來測試.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"net/http/httptest"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/stretchr/testify/assert"</span></span><br><span class="line">	<span class="string">"github.com/tedmax100/gin-angular/router"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestIHelloGetRouter</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	router := router.SetupRouter()</span><br><span class="line"></span><br><span class="line">	w := httptest.NewRecorder()</span><br><span class="line">	req, _ := http.NewRequest(http.MethodGet, <span class="string">"/hello"</span>, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">	router.ServeHTTP(w, req)</span><br><span class="line"></span><br><span class="line">	assert.Equal(t, http.StatusOK, w.Code)</span><br><span class="line">	assert.Equal(t, <span class="string">"Hello, It Home!"</span>, w.Body.String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> ./...</span><br><span class="line">----------------</span><br><span class="line">?       github.com/tedmax100/gin-angular        [no <span class="built_in">test</span> files]</span><br><span class="line">?       github.com/tedmax100/gin-angular/router [no <span class="built_in">test</span> files]</span><br><span class="line">ok      github.com/tedmax100/gin-angular/<span class="built_in">test</span>   0.004s</span><br></pre></td></tr></table></figure>
+
+<p>測試成功!<br>來看看寫的測試程式碼.</p>
+<p>net/http包也是能發出Request請求, 所以這裡就是透過http.NewRequest來對我們想測試的API發出請求.</p>
+<p>重點在於router.ServeHTTP(w, req)</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ServeHTTP conforms to the http.Handler interface.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(engine *Engine)</span> <span class="title">ServeHTTP</span><span class="params">(w http.ResponseWriter, req *http.Request)</span></span> &#123;</span><br><span class="line">	c := engine.pool.Get().(*Context)</span><br><span class="line">	c.writermem.reset(w)</span><br><span class="line">	c.Request = req</span><br><span class="line">	c.reset()</span><br><span class="line"></span><br><span class="line">	engine.handleHTTPRequest(c)</span><br><span class="line"></span><br><span class="line">	engine.pool.Put(c)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我們的router是一個已經註冊好/hello的router了.<br>當收到請求後, gin會從連線池中取得一個空的context, 而不是每次都去生成一個新的context, 這樣效率會快很多.<br>然後再過engine.handleHTTPRequest(c), 來處理這context.</p>
+<p>昨天提到的net/http的DefaultServeMux也有ServeHTTP(),<br>只是它沒有context池子跟context上下文物件的概念來處理請求.</p>
+<p>然後就能測試status code跟body內容了.</p>
+<h2 id="URL-Parameter-路徑參數"><a href="#URL-Parameter-路徑參數" class="headerlink" title="URL Parameter 路徑參數"></a>URL Parameter 路徑參數</h2><p>我們在寫RESTful API時, 因為都是以資源為維度在操作.<br>所以URL裡會有地方表示資源代碼或是名稱.<br>也不可能是hard code寫死. 所以這裡要透過Param()來取得這部份的表示.</p>
+<p>helloRouter.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> router</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetupRouter</span><span class="params">()</span> *<span class="title">gin</span>.<span class="title">Engine</span></span> &#123;</span><br><span class="line">	router := gin.Default()</span><br><span class="line">	router.GET(<span class="string">"/hello"</span>, <span class="function"><span class="keyword">func</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">		ctx.Data(<span class="number">200</span>, <span class="string">"text/plain"</span>, []<span class="keyword">byte</span>(<span class="string">"Hello, It Home!"</span>))</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	router.DELETE(<span class="string">"/hello/:id"</span>, <span class="function"><span class="keyword">func</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">		id := ctx.Param(<span class="string">"id"</span>)</span><br><span class="line">		ctx.String(http.StatusOK, <span class="string">"hello DELETE %s"</span>, id)</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Gin就是能這樣快速的加入一個RESTful的路由.<br>我們的DELETE(“/hello/:id”), 這裡會需要對hello id是?的資源作刪除的動作.<br>並且在response body加入被刪除的id.<br><img src="https://i.imgur.com/RmMMs55.png" alt></p>
+<p>來看看Context.Param()</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Param returns the value of the URL param.</span></span><br><span class="line"><span class="comment">// It is a shortcut for c.Params.ByName(key)</span></span><br><span class="line"><span class="comment">//     router.GET("/user/:id", func(c *gin.Context) &#123;</span></span><br><span class="line"><span class="comment">//         // a GET request to /user/john</span></span><br><span class="line"><span class="comment">//         id := c.Param("id") // id == "john"</span></span><br><span class="line"><span class="comment">//     &#125;)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Context)</span> <span class="title">Param</span><span class="params">(key <span class="keyword">string</span>)</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.Params.ByName(key)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Params []Param</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Param <span class="keyword">struct</span> &#123;</span><br><span class="line">	Key   <span class="keyword">string</span></span><br><span class="line">	Value <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(ps Params)</span> <span class="title">ByName</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="params">(va <span class="keyword">string</span>)</span></span> &#123;</span><br><span class="line">	va, _ = ps.Get(name)</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(ps Params)</span> <span class="title">Get</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, <span class="keyword">bool</span>)</span></span> &#123;</span><br><span class="line">	<span class="keyword">for</span> _, entry := <span class="keyword">range</span> ps &#123;</span><br><span class="line">		<span class="keyword">if</span> entry.Key == name &#123;</span><br><span class="line">			<span class="keyword">return</span> entry.Value, <span class="literal">true</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">""</span>, <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>就很簡單的在Param[]裡面, 嘗試找看看有沒有這名稱.</p>
+<p>多了個方法, 又能來寫測試了.<br>因為我自己還不熟TDD這樣的開發習慣, 所以我都是先寫可執行程式後, 再補單元測試.</p>
+<h2 id="重構"><a href="#重構" class="headerlink" title="重構"></a>重構</h2><h3 id="程式碼搬家去"><a href="#程式碼搬家去" class="headerlink" title="程式碼搬家去"></a>程式碼搬家去</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetupRouter</span><span class="params">()</span> *<span class="title">gin</span>.<span class="title">Engine</span></span> &#123;</span><br><span class="line">	router := gin.Default()</span><br><span class="line">	router.GET(<span class="string">"/hello"</span>, <span class="function"><span class="keyword">func</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">		ctx.Data(<span class="number">200</span>, <span class="string">"text/plain"</span>, []<span class="keyword">byte</span>(<span class="string">"Hello, It Home!"</span>))</span><br><span class="line">	&#125;)</span><br><span class="line"></span><br><span class="line">	router.DELETE(<span class="string">"/hello/:id"</span>, <span class="function"><span class="keyword">func</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">		id := ctx.Param(<span class="string">"id"</span>)</span><br><span class="line">		ctx.String(http.StatusOK, <span class="string">"hello DELETE %s"</span>, id)</span><br><span class="line">	&#125;)</span><br><span class="line">	<span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原本的SetupRouter這方法, 裡面有出現處理邏輯的部份.<br>這樣會讓這方法出現除了只定義路由與處理方法之外的職責.<br>我們把它們搬家.<br><img src="https://i.imgur.com/k8USfva.png" alt><br>建立了一個handler資料夾, 並在裡面建立了一個<code>helloHandler.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> handler</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetHello</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">	ctx.Data(<span class="number">200</span>, <span class="string">"text/plain"</span>, []<span class="keyword">byte</span>(<span class="string">"Hello, It Home!"</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">DeleteHello</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">	id := ctx.Param(<span class="string">"id"</span>)</span><br><span class="line">	ctx.String(http.StatusOK, <span class="string">"hello DELETE %s"</span>, id)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>搬家之後的SetupRouter()就變得很清爽了, 程式碼只有路由跟處理方法.<br>這算是設計原則中的<a href="https://ithelp.ithome.com.tw/articles/10191955" target="_blank" rel="noopener">單一職責</a>的應用.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> router</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">	<span class="string">"github.com/tedmax100/gin-angular/handler"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetupRouter</span><span class="params">()</span> *<span class="title">gin</span>.<span class="title">Engine</span></span> &#123;</span><br><span class="line">	router := gin.Default()</span><br><span class="line">	router.GET(<span class="string">"/hello"</span>, handler.GetHello)</span><br><span class="line"></span><br><span class="line">	router.DELETE(<span class="string">"/hello/:id"</span>, handler.DeleteHello)</span><br><span class="line">	<span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因為搬了家, 之前寫好的測試這時一定要是ok! 跑看看測試.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> ./...</span><br><span class="line">----------------</span><br><span class="line">?       github.com/tedmax100/gin-angular        [no <span class="built_in">test</span> files]</span><br><span class="line">?       github.com/tedmax100/gin-angular/router [no <span class="built_in">test</span> files]</span><br><span class="line">ok      github.com/tedmax100/gin-angular/<span class="built_in">test</span>   0.004s</span><br></pre></td></tr></table></figure>
+
+<h3 id="新增Delete測試"><a href="#新增Delete測試" class="headerlink" title="新增Delete測試"></a>新增Delete測試</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestIHelloDeleteRouter</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	id := <span class="string">"123"</span></span><br><span class="line">	router := router.SetupRouter()</span><br><span class="line"></span><br><span class="line">	w := httptest.NewRecorder()</span><br><span class="line">	req, _ := http.NewRequest(http.MethodDelete, <span class="string">"/hello/"</span>+id, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">	router.ServeHTTP(w, req)</span><br><span class="line"></span><br><span class="line">	assert.Equal(t, http.StatusOK, w.Code)</span><br><span class="line">	assert.Equal(t, <span class="string">"hello DELETE "</span>+id, w.Body.String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>列印更多資訊, 只要加上-v (verbose的縮寫)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> -v ./...  </span><br><span class="line">----------------</span><br><span class="line">?       github.com/tedmax100/gin-angular        [no <span class="built_in">test</span> files]</span><br><span class="line">?       github.com/tedmax100/gin-angular/handler        [no <span class="built_in">test</span> files]</span><br><span class="line">?       github.com/tedmax100/gin-angular/router [no <span class="built_in">test</span> files]</span><br><span class="line">=== RUN   TestIHelloGetRouter</span><br><span class="line">[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.</span><br><span class="line"></span><br><span class="line">[GIN-debug] [WARNING] Running <span class="keyword">in</span> <span class="string">"debug"</span> mode. Switch to <span class="string">"release"</span> mode <span class="keyword">in</span> production.</span><br><span class="line"> - using env:   <span class="built_in">export</span> GIN_MODE=release</span><br><span class="line"> - using code:  gin.SetMode(gin.ReleaseMode)</span><br><span class="line"></span><br><span class="line">[GIN-debug] GET    /hello                    --&gt; github.com/tedmax100/gin-angular/handler.GetHello (3 handlers)</span><br><span class="line">[GIN-debug] DELETE /hello/:id                --&gt; github.com/tedmax100/gin-angular/handler.DeleteHello (3 handlers)</span><br><span class="line">[GIN] 2019/09/29 - 00:02:31 | 200 |       4.699µs |                 | GET      /hello</span><br><span class="line">--- PASS: TestIHelloGetRouter (0.00s)</span><br><span class="line">=== RUN   TestIHelloDeleteRouter</span><br><span class="line">[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.</span><br><span class="line"></span><br><span class="line">[GIN-debug] [WARNING] Running <span class="keyword">in</span> <span class="string">"debug"</span> mode. Switch to <span class="string">"release"</span> mode <span class="keyword">in</span> production.</span><br><span class="line"> - using env:   <span class="built_in">export</span> GIN_MODE=release</span><br><span class="line"> - using code:  gin.SetMode(gin.ReleaseMode)</span><br><span class="line"></span><br><span class="line">[GIN-debug] GET    /hello                    --&gt; github.com/tedmax100/gin-angular/handler.GetHello (3 handlers)</span><br><span class="line">[GIN-debug] DELETE /hello/:id                --&gt; github.com/tedmax100/gin-angular/handler.DeleteHello (3 handlers)</span><br><span class="line">[GIN] 2019/09/29 - 00:02:31 | 200 |       2.938µs |                 | DELETE   /hello/123</span><br><span class="line">--- PASS: TestIHelloDeleteRouter (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      github.com/tedmax100/gin-angular/<span class="built_in">test</span>   0.004s</span><br></pre></td></tr></table></figure>
+
+<p>可以看得出來2個測試都成功.<br>我們舊有的測試沒問題, 新增的測試也成功.<br>這就是<a href="https://zh.wikipedia.org/wiki/%E5%9B%9E%E5%BD%92%E6%B5%8B%E8%AF%95" target="_blank" rel="noopener"><strong>回歸測試Regression Testing</strong></a></p>
+<h2 id="路由分類分組"><a href="#路由分類分組" class="headerlink" title="路由分類分組"></a>路由分類分組</h2><p>我們剛剛的routing都是/hello開頭相關的.<br>現在業務變多了, 加上user相關的!</p>
+<p>把helloRouter.go 改名成SetupRouter.go<br>並且透過Group(), 來建立路由分組.</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Group creates a new router group. You should add all the routes that have common middlewares or the same path prefix.</span></span><br><span class="line"><span class="comment">// For example, all the routes that use a common middleware for authorization could be grouped.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(group *RouterGroup)</span> <span class="title">Group</span><span class="params">(relativePath <span class="keyword">string</span>, handlers ...HandlerFunc)</span> *<span class="title">RouterGroup</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;RouterGroup&#123;</span><br><span class="line">		Handlers: group.combineHandlers(handlers),</span><br><span class="line">		basePath: group.calculateAbsolutePath(relativePath),</span><br><span class="line">		engine:   group.engine,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> router</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">	<span class="string">"github.com/tedmax100/gin-angular/handler"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetupRouter</span><span class="params">()</span> *<span class="title">gin</span>.<span class="title">Engine</span></span> &#123;</span><br><span class="line">	router := gin.Default()</span><br><span class="line">	helloRouting := router.Group(<span class="string">"/hello"</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		helloRouting.GET(<span class="string">""</span>, handler.GetHello)</span><br><span class="line"></span><br><span class="line">		helloRouting.DELETE(<span class="string">"/:id"</span>, handler.DeleteHello)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	userRouting := router.Group(<span class="string">"/user"</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		userRouting.GET(<span class="string">""</span>, handler.GetUser)</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> router</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>userHandler.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> handler</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetUser</span><span class="params">(ctx *gin.Context)</span></span> &#123;</span><br><span class="line">	uid := ctx.Param(<span class="string">"uid"</span>)</span><br><span class="line">	ctx.JSON(http.StatusOK, gin.H&#123;</span><br><span class="line">		<span class="string">"userId"</span>: uid,</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>老樣子先跑原本的測試. 都ok!</p>
+<p>透過Postman打看看<br><img src="https://i.imgur.com/tUI0p3l.png" alt></p>
+<p>再來新增測試<br><code>userRouter_test.go</code></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> test</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"encoding/json"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"net/http/httptest"</span></span><br><span class="line">	<span class="string">"testing"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/stretchr/testify/assert"</span></span><br><span class="line">	<span class="string">"github.com/tedmax100/gin-angular/router"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestIUserGetRouter</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">	<span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">		UserId <span class="keyword">string</span> <span class="string">`json:"userId"`</span></span><br><span class="line">	&#125;</span><br><span class="line">	user := User&#123;</span><br><span class="line">		UserId: <span class="string">"123"</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	expectedBody, _ := json.Marshal(user)</span><br><span class="line">	router := router.SetupRouter()</span><br><span class="line"></span><br><span class="line">	w := httptest.NewRecorder()</span><br><span class="line">	req, _ := http.NewRequest(http.MethodGet, <span class="string">"/user/"</span>+user.UserId, <span class="literal">nil</span>)</span><br><span class="line"></span><br><span class="line">	router.ServeHTTP(w, req)</span><br><span class="line"></span><br><span class="line">	assert.Equal(t, http.StatusOK, w.Code)</span><br><span class="line">	assert.Equal(t, <span class="keyword">string</span>(expectedBody), w.Body.String())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">go <span class="built_in">test</span> -v ./...</span><br><span class="line">--------------</span><br><span class="line">?       github.com/tedmax100/gin-angular        [no <span class="built_in">test</span> files]</span><br><span class="line">?       github.com/tedmax100/gin-angular/handler        [no <span class="built_in">test</span> files]</span><br><span class="line">?       github.com/tedmax100/gin-angular/router [no <span class="built_in">test</span> files]</span><br><span class="line">=== RUN   TestIHelloGetRouter</span><br><span class="line">[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.</span><br><span class="line"></span><br><span class="line">[GIN-debug] [WARNING] Running <span class="keyword">in</span> <span class="string">"debug"</span> mode. Switch to <span class="string">"release"</span> mode <span class="keyword">in</span> production.</span><br><span class="line"> - using env:   <span class="built_in">export</span> GIN_MODE=release</span><br><span class="line"> - using code:  gin.SetMode(gin.ReleaseMode)</span><br><span class="line"></span><br><span class="line">[GIN-debug] GET    /hello                    --&gt; github.com/tedmax100/gin-angular/handler.GetHello (3 handlers)</span><br><span class="line">[GIN-debug] DELETE /hello/:id                --&gt; github.com/tedmax100/gin-angular/handler.DeleteHello (3 handlers)</span><br><span class="line">[GIN-debug] GET    /user/:uid                --&gt; github.com/tedmax100/gin-angular/handler.GetUser (3 handlers)</span><br><span class="line">[GIN] 2019/09/29 - 00:49:09 | 200 |       9.512µs |                 | GET      /hello</span><br><span class="line">--- PASS: TestIHelloGetRouter (0.00s)</span><br><span class="line">=== RUN   TestIHelloDeleteRouter</span><br><span class="line">[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.</span><br><span class="line"></span><br><span class="line">[GIN-debug] [WARNING] Running <span class="keyword">in</span> <span class="string">"debug"</span> mode. Switch to <span class="string">"release"</span> mode <span class="keyword">in</span> production.</span><br><span class="line"> - using env:   <span class="built_in">export</span> GIN_MODE=release</span><br><span class="line"> - using code:  gin.SetMode(gin.ReleaseMode)</span><br><span class="line"></span><br><span class="line">[GIN-debug] GET    /hello                    --&gt; github.com/tedmax100/gin-angular/handler.GetHello (3 handlers)</span><br><span class="line">[GIN-debug] DELETE /hello/:id                --&gt; github.com/tedmax100/gin-angular/handler.DeleteHello (3 handlers)</span><br><span class="line">[GIN-debug] GET    /user/:uid                --&gt; github.com/tedmax100/gin-angular/handler.GetUser (3 handlers)</span><br><span class="line">[GIN] 2019/09/29 - 00:49:09 | 200 |        3.06µs |                 | DELETE   /hello/123</span><br><span class="line">--- PASS: TestIHelloDeleteRouter (0.00s)</span><br><span class="line">=== RUN   TestIUserGetRouter</span><br><span class="line">[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.</span><br><span class="line"></span><br><span class="line">[GIN-debug] [WARNING] Running <span class="keyword">in</span> <span class="string">"debug"</span> mode. Switch to <span class="string">"release"</span> mode <span class="keyword">in</span> production.</span><br><span class="line"> - using env:   <span class="built_in">export</span> GIN_MODE=release</span><br><span class="line"> - using code:  gin.SetMode(gin.ReleaseMode)</span><br><span class="line"></span><br><span class="line">[GIN-debug] GET    /hello                    --&gt; github.com/tedmax100/gin-angular/handler.GetHello (3 handlers)</span><br><span class="line">[GIN-debug] DELETE /hello/:id                --&gt; github.com/tedmax100/gin-angular/handler.DeleteHello (3 handlers)</span><br><span class="line">[GIN-debug] GET    /user/:uid                --&gt; github.com/tedmax100/gin-angular/handler.GetUser (3 handlers)</span><br><span class="line">[GIN] 2019/09/29 - 00:49:09 | 200 |        8.62µs |                 | GET      /user/123</span><br><span class="line">--- PASS: TestIUserGetRouter (0.00s)</span><br><span class="line">PASS</span><br><span class="line">ok      github.com/tedmax100/gin-angular/<span class="built_in">test</span>   0.004s</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.imgur.com/1npXan0.png" alt><br>全綠燈~爽!!<br><img src="https://i.imgur.com/VyBKlTl.png" alt></p>
+<p>以下是我在NodeJS的Express框架設定路由分組跟用Jest+Supertest寫Api測試.<br>可以發現Gin+httptest+testify, 讓我可以把以前的習慣帶過來.<br><img src="https://i.imgur.com/TFd1GKG.png" alt><br><img src="https://i.imgur.com/8L3p71L.png" alt><br>我自己會儘可能補上必要的測試情境.<br>因為這是能替未來的自己在這專案上省時間的解法之一.<br>未來回頭重構或者是交接給別人, 我也能從測試這裡開始講解就好.<br>不必痛苦的一開始就看業務邏輯.</p>
+<p><a href="https://ithelp.ithome.com.tw/articles/10222303" target="_blank" rel="noopener">鐵人賽連結</a></p>
+
+        </div>
+        <footer class="article-footer">
+            
+
+
+
+    <a data-url="https://tedmax100.github.io/2020/12/28/Go-Gin/" data-id="ckj7cacni000tk86xi3o0sbph" class="article-share-link"><i class="fa fa-share"></i>分享到</a>
+<script>
+    (function ($) {
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+        </footer>
+    </div>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "author": {
+            "@type": "Person",
+            "name": "Nathan雷N"
+        },
+        "headline": "Go_Gin",
+        "image": "https://tedmax100.github.iohttps://i.imgur.com/2sRi1ig.png",
+        "keywords": "Go iT邦鐵人賽11Th",
+        "genre": "Go",
+        "datePublished": "2020-12-28",
+        "dateCreated": "2020-12-28",
+        "dateModified": "2020-12-28",
+        "url": "https://tedmax100.github.io/2020/12/28/Go-Gin/",
+        "description": "來杯琴酒(Gin)+萊姆=琴蕾(Gimlet)吧(誤)
+GinGin是一個基於Golang實做的框架, 特色是簡單!!!
+
+設計精巧好懂的router/middleware系統
+簡單好用的上下文gin.Context
+JSON、XML、DataBiding、Validation…",
+        "wordCount": 2496
+    }
+</script>
+
+</article>
+
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+
+    
+    </section>
+
+
+
+                        </div>
+                    </section>
+                    <aside id="sidebar">
+    <a class="sidebar-toggle" title="Expand Sidebar"><i class="toggle icon"></i></a>
+    <div class="sidebar-top">
+        <p>追蹤 :</p>
+        <ul class="social-links">
+            
+                
+                <li>
+                    <a class="social-tooltip" title="facebook" href="https://www.facebook.com/profile.php?id=100000721194461" target="_blank" rel="noopener">
+                        <i class="icon fa fa-facebook"></i>
+                    </a>
+                </li>
+                
+            
+                
+                <li>
+                    <a class="social-tooltip" title="github" href="https://github.com/tedmax100" target="_blank" rel="noopener">
+                        <i class="icon fa fa-github"></i>
+                    </a>
+                </li>
+                
+            
+        </ul>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2020/12/28/Go_Http Service淺談/" id="article-nav-older" class="article-nav-link-wrap">
+        <strong class="article-nav-caption">上一篇</strong>
+        <p class="article-nav-title">Go_Http Service淺談</p>
+        <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
+        </a>
+    
+</nav>
+
+    
+    <div class="widgets-container">
+        
+            
+                
+
+            
+                
+    <div class="widget-wrap">
+        <h3 class="widget-title">最新文章</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/28/Go-Gin/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/2sRi1ig.png)" alt="Go_Gin" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/28/Go-Gin/" class="title">Go_Gin</a></p>
+                            <p class="item-date"><time datetime="2020-12-27T16:19:59.000Z" itemprop="datePublished">2020-12-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/28/Go_Http Service淺談/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/QbPpdfG.png)" alt="Go_Http Service淺談" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/28/Go_Http Service淺談/" class="title">Go_Http Service淺談</a></p>
+                            <p class="item-date"><time datetime="2020-12-27T16:18:37.000Z" itemprop="datePublished">2020-12-28</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Testing/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/Z9DjTgq.png)" alt="Go Testing初探" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Testing/" class="title">Go Testing初探</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:39:23.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database-Scan/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/a19yzfd.png)" alt="Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database-Scan/" class="title">Go database/sql Scan &amp; Value, 讓操作sql有一點點ORM的感覺</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:38:10.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/2020/12/21/Go-Database/" class="thumbnail">
+    
+    
+        <span style="background-image:url(https://i.imgur.com/y47gGlS.jpg)" alt="Go database/sql, 和資料庫打個招呼" class="thumbnail-image"></span>
+    
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/Go/">Go</a></p>
+                            <p class="item-title"><a href="/2020/12/21/Go-Database/" class="title">Go database/sql, 和資料庫打個招呼</a></p>
+                            <p class="item-date"><time datetime="2020-12-21T13:37:15.000Z" itemprop="datePublished">2020-12-21</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">分類</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Docker/">Docker</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Go/">Go</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TechWeekly/">TechWeekly</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">所有文章</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">四月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/">十一月 2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a><span class="archive-list-count">2</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">標籤</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AWS/">AWS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CleanCode/">CleanCode</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Pattern/">Design Pattern</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Docker/">Docker</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Go/">Go</a><span class="tag-list-count">25</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JS30Day/">JS30Day</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaSCript/">JavaSCript</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Lua/">Lua</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MQ/">MQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Pixi/">Pixi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RabbitMQ/">RabbitMQ</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Redis/">Redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Rx/">Rx</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Sportsbook/">Sportsbook</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TechWeekly/">TechWeekly</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/">TypeScript</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iT邦鐵人賽11Th/">iT邦鐵人賽11Th</a><span class="tag-list-count">21</span></li></ul>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-float">
+        <h3 class="widget-title">標籤雲</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/AWS/" style="font-size: 10px;">AWS</a> <a href="/tags/CleanCode/" style="font-size: 10px;">CleanCode</a> <a href="/tags/Design-Pattern/" style="font-size: 15px;">Design Pattern</a> <a href="/tags/Docker/" style="font-size: 11.67px;">Docker</a> <a href="/tags/Go/" style="font-size: 20px;">Go</a> <a href="/tags/JS30Day/" style="font-size: 10px;">JS30Day</a> <a href="/tags/JavaSCript/" style="font-size: 11.67px;">JavaSCript</a> <a href="/tags/JavaScript/" style="font-size: 16.67px;">JavaScript</a> <a href="/tags/Lua/" style="font-size: 10px;">Lua</a> <a href="/tags/MQ/" style="font-size: 10px;">MQ</a> <a href="/tags/Pixi/" style="font-size: 10px;">Pixi</a> <a href="/tags/RabbitMQ/" style="font-size: 10px;">RabbitMQ</a> <a href="/tags/Redis/" style="font-size: 10px;">Redis</a> <a href="/tags/Rx/" style="font-size: 13.33px;">Rx</a> <a href="/tags/Sportsbook/" style="font-size: 10px;">Sportsbook</a> <a href="/tags/TechWeekly/" style="font-size: 10px;">TechWeekly</a> <a href="/tags/TypeScript/" style="font-size: 15px;">TypeScript</a> <a href="/tags/iT邦鐵人賽11Th/" style="font-size: 18.33px;">iT邦鐵人賽11Th</a>
+        </div>
+    </div>
+
+
+            
+                
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">連結</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://mileschou.github.io/">Miles Blog</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://jame2408.github.io/">James 的技術隨筆</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+            
+        
+    </div>
+</aside>
+
+                </div>
+            </div>
+        </div>
+        <footer id="footer">
+    <div class="container">
+        <div class="container-inner">
+            <a id="back-to-top" href="javascript:;"><i class="icon fa fa-angle-up"></i></a>
+            <div class="credit">
+                <h1 class="logo-wrap">
+                    <a href="/" class="logo"></a>
+                </h1>
+                <p>&copy; 2020 Nathan雷N</p>
+                
+                <p>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="https://github.com/ppoffice" target="_blank">PPOffice</a></p>
+                
+            </div>
+            <div class="footer-plugins">
+              
+    
+
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+    </div>
+    
+    
+    <script>
+    var disqus_shortname = 'hexo-theme-hueman';
+    
+    
+    var disqus_url = 'https://tedmax100.github.io/2020/12/28/Go-Gin/';
+    
+    (function() {
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+    
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+</body>
+</html>
